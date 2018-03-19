@@ -1,0 +1,40 @@
+body {
+	margin: 0;
+	background-color: #7aafec;
+	font-family: Arial, sans-serif;
+	text-align: center;
+}
+
+h1.title {
+	margin: 0;
+	background-color: #e04c56;
+	box-shadow: #777777 4px 4px 8px;
+}
+
+input {
+	font-size: 1.1em;
+	line-height: 1.1;
+}
+
+#Phone {
+	width: 120px;
+}
+
+#Age {
+	width: 30px;
+}
+
+#BottomImage {
+	width: 100%;
+	display: block;
+}
+
+section {
+	text-align: left;
+	border: 1px solid #555;
+	background: #fdfdfd;
+	padding: 2px 8px;
+	margin: 16px auto;
+	box-shadow: #777777 4px 4px 8px;
+	width: 450px;
+}
