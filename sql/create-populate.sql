@@ -1,11 +1,8 @@
-DROP DATABASE IF EXISTS lovematch;
-CREATE DATABASE lovematch;
-USE lovematch;
+DROP DATABASE IF EXISTS ds;
+CREATE DATABASE ds;
+USE ds;
 
-GRANT ALL ON project280.* TO user280@localhost IDENTIFIED BY 'p4ssw0rd';
-
-GRANT ALL ON lovematch.* TO client24@localhost IDENTIFIED BY 'letmein';
-GRANT ALL ON lovematch.* TO specialist88@localhost IDENTIFIED BY 'password';
+GRANT ALL ON user280.* TO user280@localhost IDENTIFIED BY 'psswrd';
 
 CREATE TABLE Client(
 ssn INT PRIMARY KEY NOT NULL,
