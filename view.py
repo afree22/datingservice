@@ -18,12 +18,25 @@ app.port = config.APP_PORT
 app.debug = config.APP_DEBUG
 
 
+@app.route('/signup', methods=['GET'])
+def signup():
+    """ Sign up page
+    """
+    
+    # name = request.form['Name']
+
+    return render_template('index2.html')
+
+@app.route('/insert_client', methods=['POST'])
+def insert_client():
+    name = request.form['Name']
+    return redirect('/signup')
+
 @app.route('/', methods=['GET'])
 def index():
     """Get the main page"""
     people = db.get_people()
-    interests = db.get_interests()
-    return render_template('index.html', people=people, interests=interests)
+    return render_template('index.html', people=people)
 
 
 @app.route('/insert', methods=['POST'])
@@ -31,8 +44,6 @@ def insert():
     """Add the person"""
     firstname, lastname = request.form['firstname'], request.form['lastname']
     phone, age = request.form['phone'], request.form['age']
-
-    # TODO: handle interests
 
     # insert person
     if db.insert_person(firstname, lastname, phone, age):
