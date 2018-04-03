@@ -54,6 +54,28 @@ class Database(object):
 
         return result
 
+    def add_interests(self, ssn, interest_cat, interest_type):
+
+        # test if interest table already exists
+        test_sql = "SHOW TABLES LIKE '%s'"
+        test_result = cur.execute(test_sql, (interest_cat))
+
+        if not test_result:
+            # should these have pks?
+            new_interest_sql = "CREATE TABLE %s (type varchar(120))"
+            new_interest_result = cur.execute(new_interest_sql, (interest_cat))
+
+            # todo: verify this
+            if not new_interest_result:
+                return new_interest_result
+
+        interest_sql = "INSERT INTO %s (ssn, interest, category) VALUES (%s, %s, %s)"
+        interest_result = cur.execute(interest_sql, (ssn, interest_cat, interest_type))
+
+        # todo: verify what to return here
+        return interest_result
+
+
     def insert_child_(self, ssn, name, dob, status):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = 'INSERT INTO Children (ssn, childName, childDOB, childStatus) VALUES (%s,%s,%s,%s)'

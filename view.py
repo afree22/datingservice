@@ -36,6 +36,8 @@ def signup_kids():
 
 @app.route('/insert_client', methods=['POST'])
 def insert_client():
+    """ Take client info from signup and insert into db
+    """
     name = request.form['name']
     phone = request.form['phone']
     dob = request.form['dob']
@@ -59,6 +61,10 @@ def client_search():
     # we don't have this in the schema yet
     # this html file is just a placeholder, haven't actually started this yet
     return render_template('index4.html')
+
+@app.route('/insert_interets', methods=['POST'])
+def insert_interests():
+    pass
 
 @app.route('/insert_child', methods=['POST'])
 def insert_child():
