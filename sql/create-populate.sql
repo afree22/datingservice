@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS ds;
 CREATE DATABASE ds;
 USE ds;
 
-GRANT ALL ON user280.* TO user280@localhost IDENTIFIED BY 'psswrd';
+GRANT ALL ON ds.* TO user280@localhost IDENTIFIED BY 'psswrd';
 
 CREATE TABLE Client(
 ssn INT PRIMARY KEY NOT NULL,
@@ -58,6 +58,56 @@ status CHAR(8) NOT NULL,
 PRIMARY KEY(ssn, date_incurred),
 FOREIGN KEY(ssn) REFERENCES Client(ssn)
 );
+
+
+
+
+
+CREATE TABLE categories(
+category VARCHAR(60) NOT NULL,
+PRIMARY KEY(category)
+);
+
+CREATE TABLE interests(
+interest VARCHAR(30) NOT NULL,
+PRIMARY KEY(interest)
+);
+
+CREATE TABLE client_interests(
+ssn INT NOT NULL,
+interest VARCHAR(30) NOT NULL,
+PRIMARY KEY(ssn, interest),
+FOREIGN KEY(ssn) REFERENCES Client(ssn),
+FOREIGN KEY(interest) REFERENCES interests(interest)
+);
+
+CREATE TABLE interest_category(
+interest VARCHAR(30) NOT NULL,
+category VARCHAR(60) NOT NULL,
+PRIMARY KEY(interest, category),
+FOREIGN KEY(category) REFERENCES categories(category),
+FOREIGN KEY(interest) REFERENCES interests(interest)
+);
+
+
+INSERT INTO categories(category)
+VALUES ('sports'), ('music'), ('creative arts'), ('collecting');
+
+INSERT INTO interests(interest)
+VALUES ('tennis'),('piano'),('football'),('3D printing'),('stamp collecting'),('cooking');
+
+INSERT INTO client_interests(ssn, interest)
+VALUES (045783475, 'tennis'), 
+(045783475, 'cooking'), 
+(045783475, 'piano'), 
+(123567823, 'football'), 
+(123567823, '3D printing'), 
+(123567823, 'stamp collecting');
+
+INSERT INTO interest_category(interest, category)
+VALUES ('tennis', 'sports'), ('piano', 'music'), ('football', 'sports'), 
+('3D printing', 'creative arts'), ('stamp collecting', 'collecting');
+
 
 
 INSERT INTO Client( ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status)
