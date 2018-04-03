@@ -2,7 +2,7 @@ DROP DATABASE IF EXISTS ds;
 CREATE DATABASE ds;
 USE ds;
 
-GRANT ALL ON user280.* TO user280@localhost IDENTIFIED BY 'psswrd';
+GRANT ALL ON ds.* TO user280@localhost IDENTIFIED BY 'psswrd';
 
 CREATE TABLE Client(
 ssn INT PRIMARY KEY NOT NULL,
