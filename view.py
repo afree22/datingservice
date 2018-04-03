@@ -2,6 +2,7 @@
 
 # third party modules
 from flask import (Flask, render_template, request, send_from_directory, redirect)
+import datetime
 
 # project modules
 import config
@@ -23,14 +24,52 @@ def signup():
     """ Sign up page
     """
     
-    # name = request.form['Name']
+    clients = db.get_people()
 
-    return render_template('index2.html')
+    return render_template('index2.html', clients=clients)
+
+@app.route('/signup_kids', methods=['GET'])
+def signup_kids():
+    """ Page for information on client's children
+    """
+    return render_template('index3.html')
 
 @app.route('/insert_client', methods=['POST'])
 def insert_client():
-    name = request.form['Name']
-    return redirect('/signup')
+    name = request.form['name']
+    phone = request.form['phone']
+    dob = request.form['dob']
+    ssn = request.form['ssn']
+    gender = request.form['gender']
+    eye_color = request.form['EyeColor']
+    weight = request.form['weight']
+    height = request.form['height']
+    prev_marraige = request.form['PrevMarriage']
+    interested_in = request.form['InterestedIn']
+    open_date = str(datetime.datetime.now()).split()[0]
+
+    if db.insert_person_(ssn, name, gender, dob, phone, eye_color, weight, height, prev_marraige, interested_in, open_date, None, "active"):
+        return redirect('/signup_kids')
+    return "Error"
+
+@app.route('/interests', methods=['GET'])
+def client_search():
+
+    # show interests that already exist???
+    # we don't have this in the schema yet
+    # this html file is just a placeholder, haven't actually started this yet
+    return render_template('index4.html')
+
+@app.route('/insert_child', methods=['POST'])
+def insert_child():
+    name = request.form['name']
+    dob = request.form['dob']
+    status = request.form['status']
+    ssn = request.form['ParentSSN']
+
+    if db.insert_child_(ssn, name, dob, status):
+        return redirect('/signup_kids')
+    return "Error"
 
 @app.route('/', methods=['GET'])
 def index():

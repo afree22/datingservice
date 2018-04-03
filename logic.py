@@ -33,20 +33,34 @@ class Database(object):
                                     self.opts.DB_PASSWORD, self.opts.DB_NAME)
 
     def insert_person_(self, ssn, name, gender, DOB, phone, eye_color, weight,
-        height, prior_marriage, interest_in, date_open, date_close, status, child_name, child_DOB, child_status):
-        """Search for a venue in the database"""
+        height, prior_marriage, interest_in, date_open, date_close, status, interest_cat=None, interest_specific=None):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
 
         # also insert into children and interest tables probably
-
-        # multiple children????
-
-        sql = 'INSERT INTO Client (ssn, name, gender, DOB, phone, eye_color, weight, height, prior_marriage, interest_in, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s, NOW())'
+        # check if user already signed up, don't insert if so
+        sql = 'INSERT INTO Client (ssn, name, gender, DOB, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         result = cur.execute(sql, (ssn, name, gender, DOB, phone, eye_color, weight, height, prior_marriage, interest_in, date_open, date_close, status))
-        sql2 = 'INSERT INTO children (pssn, name, dob, status) VALUES (%s,%s,%s,%s, NOW())'
-        result2 = cur.execute(sql, (ssn, child_name, child_DOB, child_status))
 
-        return result and result2
+        # sql2 = "SHOW TABLES LIKE 'cooking'"
+        # result2 = cur.execute(sql2)
+        # print(result2)
+
+        # do interests
+        # can we have them sign up with just one interest and then edit in more later?
+        # another view/function like with children
+
+        # need this to keep changes between local and other
+        self.conn.commit()
+
+        return result
+
+    def insert_child_(self, ssn, name, dob, status):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'INSERT INTO Children (ssn, childName, childDOB, childStatus) VALUES (%s,%s,%s,%s)'
+        result = cur.execute(sql, (ssn, name, dob, status))
+        self.conn.commit()
+
+        return result
 
     def insert_person(self, firstname, lastname, phone, age):
         """Search for a venue in the database"""
@@ -62,6 +76,11 @@ class Database(object):
         cur.execute('SELECT name FROM Client;')
 
         return CursorIterator(cur)
+
+    def get_specialists(self):
+        # is maintaining specialist info in schema?
+        # no but maybe can tell from who has what permissions
+        pass
 
 
     def get_interests(self):
