@@ -73,14 +73,19 @@ class Database(object):
         # just a new type
 
     def add_interest(self, interest):
-        pass
+        sql = "INSERT INTO Interests (interest) VALUES (%s)"
+        result = cur.execute(sql, (interest))
+        return result
 
     def add_interest_type(self, interest_type):
-        sql = "INSERT INTO CATEGORIES (category) VALUES (%s)"
-        pass
+        sql = "INSERT INTO Categories (category) VALUES (%s)"
+        result = cur.execute(sql, (interest_type))
+        return result
 
-    def add_client_interest(self, ssn, interest_cat, interest_type):
-        pass
+    def add_client_interest(self, ssn, interest_cat, interest_type=None):
+        sql = "INSERT INTO client_interests (ssn, interest) VALUES (%s, %s)"
+        result = cur.execute(sql, (ssn, interest_cat))
+        return result
 
     def check_interest(self, interest):
         sql = "SELECT * FROM interests WHERE interest = %s"

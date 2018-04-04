@@ -61,18 +61,29 @@ def insert_client():
 
 @app.route('/interests', methods=['GET'])
 def interests():
-
-    # show interests that already exist???
-    # we don't have this in the schema yet
     # this html file is just a placeholder, haven't actually started this yet
     return render_template('index4.html')
 
 @app.route('/insert_interets', methods=['POST'])
 def insert_interests():
-    if db.check_interest():
-        pass
-        
-    pass
+    interest = request.form['interest']
+    interest_type = request.form['interest_type']
+    ssn = request.form['ssn']
+    if not db.check_interest(interest):
+        db.add_interest(interest)
+        if db.add_interest_type(interest_type):
+            return redirect('/interests')
+        return "Error"
+
+    if not db.check_interest_type(interest_type):
+        if db.add_interest_type(interest_type):
+            return redirect('/interests')
+        return "Error"
+
+    if db.add_client_interest(ssn, interest, interest_type):
+        return redirect('/interests')
+    return "Error"
+
 
 @app.route('/insert_child', methods=['POST'])
 def insert_child():
@@ -90,6 +101,11 @@ def index():
     """Get the main page"""
     people = db.get_people()
     return render_template('index.html', people=people)
+
+@app.route('/client_search', methods=['GET'])
+def client_search():
+    # return page with possible things to search for
+    pass
 
 @app.route('/client-welcome', methods=['GET'])
 def client_welcome():
