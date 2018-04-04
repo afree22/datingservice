@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head> 
+    <link rel="stylesheet" type="text/css" href="/resources/button.css">
+    <title>Very Good Dating Service</title>
+  </head>
+  <body>
+    <h1 class="title">
+    </h1>
+    <section>
+	<div style="width:100%">
+	<div style="float:left; width:40%; padding-top:20px">
+		<form action = "match_search">
+		<table style="padding-left:30px">
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">SSN:</p>
+			</td>
+			<td>
+				<input name="SSN" class="enjoy-input" placeholder="SSN" value = ""/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Name:</p>
+			</td>
+			<td>
+				<input name="Name" class="enjoy-input" placeholder="Name" value = "" />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Gender:</p>
+			</td>
+			<td>
+				<input name="Gender" class="enjoy-input" placeholder="Gender" value = ""/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Date of Birth:</p>
+			</td>
+			<td>
+				<input name="DOB" class="enjoy-input" placeholder="Date of Birth" value = "" />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Phone Number:</p>
+			</td>
+			<td>
+				<input name="phone" class="enjoy-input" placeholder="Phone Number" value = "" />
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Eye Color:</p>
+			</td>
+			<td>
+				<input name="eyecolor" class="enjoy-input" placeholder="Eye Color" value = ""/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Weight:</p>
+			</td>
+			<td>
+				<input name="weight" class="enjoy-input" placeholder="Weight" value = ""/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Height:</p>
+			</td>
+			<td>
+				<input name="height" class="enjoy-input" placeholder="Height" value = ""/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Prior Marriage? (yes/no):</p>
+			</td>
+			<td>
+				<input name="prior_marriage" class="enjoy-input" placeholder="Prior Marriage? (yes/no)" value = ""/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Interested in Males or Females?:</p>
+			</td>
+			<td>
+				<input name="prior_marriage" class="enjoy-input" placeholder="Interested in Males or Females?" value = ""/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Date Account Opened:</p>
+			</td>
+			<td>
+				<input name="date-open" class="enjoy-input" placeholder="Date Account Opened" value = ""/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Date Account Closed:</p>
+			</td>
+			<td>
+				<input name="date_close" class="enjoy-input" placeholder="Date Account Closed" value = ""/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Account Status:</p>
+			</td>
+			<td>
+				<input name="status" class="enjoy-input" placeholder="Account Status" value = ""/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Crime:</p>
+			</td>
+			<td>
+				<input name="crime" class="enjoy-input" placeholder="Crime" value = ""/>
+			</td>
+		</tr>
+	</table>
+	
+	<div class="selectHolder">
+		<input type="text" name="submit" placeholder="Search For A Match!" />
+		<button type="submit"></button>
+	</div>
+</form>
+</div>
+
+<div style="float:right; width:60%; padding-top:20px">
+<div class="SearchResultsTable">
+    <table>
+        <tr>
+            <td>SSN</td>
+            <td>Name</td>       
+            <td>Gender</td>   
+            <td>Date of Birth</td>
+            <td>Phone Number</td>
+            <td>Eye Color</td>
+            <td>Weight</td>
+            <td>Height</td> 
+            <td>Prior Marriage?</td> 
+            <td>Interested in Males or Females?</td> 
+            <td>Date Opened</td> 
+            <td>Date Closed</td> 
+            <td>Account Status</td>
+            <td>Crime</td>          
+        </tr>
+        {% for r in results %}
+            <tr>
+                <td>{{ r['ssn'] }}</td>
+                <td>{{ r['name'] }}</td>
+                <td>{{ r['gender'] }}</td>
+                <td>{{ r['dob'] }}</td>
+                <td>{{ r['phone'] }}</td>
+                <td>{{ r['eyecolor'] }}</td>
+                <td>{{ r['weight'] }}</td>
+                <td>{{ r['height'] }}</td>
+                <td>{{ r['prior_marriage'] }}</td>
+                <td>{{ r['interest'] }}</td>
+                <td>{{ r['date_open'] }}</td>
+                <td>{{ r['date_close'] }}</td>
+                <td>{{ r['status'] }}</td>
+                <td>{{ r['crime'] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+ </section>
+  </body>
+</html>

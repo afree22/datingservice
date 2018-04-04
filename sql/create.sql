@@ -2,19 +2,21 @@ DROP DATABASE IF EXISTS ds;
 CREATE DATABASE ds;
 USE ds;
 
-GRANT ALL ON ds.* TO user280@localhost IDENTIFIED BY 'psswrd';
+GRANT ALL ON ds.* TO 'user280'@'localhost' IDENTIFIED BY 'psswrd' WITH GRANT OPTION;
+flush privileges;
+
 
 CREATE TABLE Client(
 ssn INT PRIMARY KEY NOT NULL,
 name VARCHAR(60) DEFAULT ' ',
-gender CHAR(8) NOT NULL,
+gender ENUM('male', 'female') NOT NULL,
 dob DATE NOT NULL,
 phone CHAR(11) NOT NULL,
 eyecolor CHAR(15) NOT NULL,
 weight INT NOT NULL,
 height INT NOT NULL,
-prior_marriage CHAR(3) NOT NULL,
-interest CHAR(8) NOT NULL,
+prior_marriage ENUM('yes','no') NOT NULL,
+interest ENUM('male', 'female') NOT NULL,
 date_open DATE NOT NULL,
 date_close DATE NULL,
 status VARCHAR(120) NOT NULL
@@ -41,9 +43,9 @@ c1_ssn INT NOT NULL,
 c2_ssn INT NOT NULL,
 location VARCHAR(40) NOT NULL,
 scheduled_date DATE NOT NULL,
-occured CHAR(3) NULL,
-interested CHAR(3) NULL,
-see_again CHAR(3) NULL,
+occured ENUM('yes','no') NULL,
+interested ENUM('yes','no') NULL,
+see_again ENUM('yes','no') NULL,
 PRIMARY KEY(c1_ssn, c2_ssn),
 FOREIGN KEY(c1_ssn) REFERENCES Client(ssn),
 FOREIGN KEY(c2_ssn) REFERENCES Client(ssn)
@@ -58,7 +60,6 @@ status CHAR(8) NOT NULL,
 PRIMARY KEY(ssn, date_incurred),
 FOREIGN KEY(ssn) REFERENCES Client(ssn)
 );
-
 
 
 
@@ -89,27 +90,3 @@ FOREIGN KEY(category) REFERENCES categories(category),
 FOREIGN KEY(interest) REFERENCES interests(interest)
 );
 
-
-INSERT INTO categories(category)
-VALUES ('sports'), ('music'), ('creative arts'), ('collecting');
-
-INSERT INTO interests(interest)
-VALUES ('tennis'),('piano'),('football'),('3D printing'),('stamp collecting'),('cooking');
-
-INSERT INTO client_interests(ssn, interest)
-VALUES (045783475, 'tennis'), 
-(045783475, 'cooking'), 
-(045783475, 'piano'), 
-(123567823, 'football'), 
-(123567823, '3D printing'), 
-(123567823, 'stamp collecting');
-
-INSERT INTO interest_category(interest, category)
-VALUES ('tennis', 'sports'), ('piano', 'music'), ('football', 'sports'), 
-('3D printing', 'creative arts'), ('stamp collecting', 'collecting');
-
-
-
-INSERT INTO Client( ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status)
-VALUES (045783475, 'Jennie', 'female', '1991-07-19', '2028855700', 'green', 120, 64, 'n', 'male', '2017-04-06',NULL, 'active'),
-		(123567823, 'John', 'male', '1990-10-21', '2028978394', 'blue',170, 70, 'n', 'female', '2017-02-25',NULL, 'active');
