@@ -25,9 +25,6 @@ class Database(object):
         super(Database, self).__init__()
         self.opts = opts
         self.__connect()
-    
-
-
 
     def __connect(self):
         """Connect to the database"""
@@ -92,6 +89,19 @@ class Database(object):
         cur.execute('SELECT id, name FROM Interests ORDER BY sort_order;')
 
         return CursorIterator(cur)
+    
+    """ This isn't finished yet"""
+    def login_client(self, ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        return 'SELECT COUNT(ssn) FROM ds.CLient WHERE ssn LIKE "%s";'.format(ssn)
+
+
+    """ NEED TO FINISH LOG IN STUFF """ 
+    def login_other(self, username, password, use_type):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        return ('SELECT ssn FROM ds.Client WHERE ssn IN (SELECT ssn from ds.CLient WHERE ssn LIKE "%s");'.format(ssn))
+    
+    
 
     def fetch_allClients(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)

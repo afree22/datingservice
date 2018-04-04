@@ -61,8 +61,12 @@ PRIMARY KEY(ssn, date_incurred),
 FOREIGN KEY(ssn) REFERENCES Client(ssn)
 );
 
-
-
+CREATE TABLE OtherLogin(
+username VARCHAR(15) NOT NULL,
+password VARCHAR(15) NOT NULL,
+use_type ENUM('specialist','entry level', 'upper level') NOT NULL,
+PRIMARY KEY(username)
+);
 
 CREATE TABLE categories(
 category VARCHAR(60) NOT NULL,
