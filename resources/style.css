@@ -1,13 +1,13 @@
 body {
 	margin: 0;
-	background-color: #7aafec;
+	background-color: #ec88f7;
 	font-family: Arial, sans-serif;
 	text-align: center;
 }
 
 h1.title {
 	margin: 0;
-	background-color: #e04c56;
+	background-color: #ec88f7;
 	box-shadow: #777777 4px 4px 8px;
 }
 
@@ -32,9 +32,29 @@ input {
 section {
 	text-align: left;
 	border: 1px solid #555;
-	background: #fdfdfd;
 	padding: 2px 8px;
 	margin: 16px auto;
 	box-shadow: #777777 4px 4px 8px;
 	width: 450px;
+}
+
+.container{
+    text-align: center;
+}
+
+.btn {
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  font-size: 20px;
+  background: #ec88f7;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #bc3fcc;
+  text-decoration: none;
 }
