@@ -1,4 +1,3 @@
-# original author: Luca Soldaini
 
 import pymysql
 
@@ -26,6 +25,9 @@ class Database(object):
         super(Database, self).__init__()
         self.opts = opts
         self.__connect()
+    
+
+
 
     def __connect(self):
         """Connect to the database"""
@@ -89,4 +91,16 @@ class Database(object):
 
         cur.execute('SELECT id, name FROM Interests ORDER BY sort_order;')
 
+        return CursorIterator(cur)
+
+    def fetch_allClients(self):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        cur.execute('SELECT * FROM ds.Client;')
+        return CursorIterator(cur)
+    
+    def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime):
+        """Fetch matches from database"""
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        cur.execute('SELECT * FROM ds.Client AS clients INNER JOIN CriminalRecord ON clients.ssn = CriminalRecord.ssn WHERE clients.ssn LIKE "%s" OR clients.name LIKE "%s" OR clients.gender LIKE "%s" OR  clients.dob LIKE "%s" OR clients.phone LIKE "%s" OR clients.eyecolor LIKE "%s" OR clients.weight LIKE "%s" OR clients.height LIKE "%s" OR clients.prior_marriage LIKE "%s" OR clients.interest LIKE "%s" OR clients.date_open LIKE "%s" OR clients.date_close LIKE "%s" OR clients.status LIKE "%s" OR CriminalRecord.crime LIKE "%s";'.format(ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime))
+        """cur.execute('SELECT * FROM ds.Client AS clients, CriminalRecord as crimeRec, WHERE clients.ssn = CriminalRecord.ssn AND clients.ssn LIKE "%%{0}%%" AND clients.name LIKE "%%{1}%%" AND clients.gender LIKE "%%{2}%%" AND  clients.dob LIKE "%%{3}%%" AND clients.phone LIKE "%%{4}%%" AND clients.eyecolor LIKE "%%{5}%%" AND clients.weight LIKE "%%{6}%%" AND clients.height LIKE "%%{7}%%" AND clients.prior_marriage LIKE "%%{8}%%" AND clients.interest LIKE "%%{9}%%" AND clients.date_open LIKE "%%{10}%%" AND clients.date_close LIKE "%%{11}%%" AND clients.status LIKE "%%{12}%%" AND crimeRec.crime LIKE "%%{13}"";'.format(ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status,crime))"""
         return CursorIterator(cur)
