@@ -38,3 +38,20 @@ section {
 	box-shadow: #777777 4px 4px 8px;
 	width: 450px;
 }
+
+.btn {
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial, sans-serif;
+  color: #ffffff;
+  font-size: 20px;
+  background: #ec88f7;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #bc3fcc;
+  text-decoration: none;
+}
