@@ -91,7 +91,18 @@ def index():
     people = db.get_people()
     return render_template('index.html', people=people)
 
+@app.route('/client-welcome', methods=['GET'])
+def client_welcome():
+    return render_template('client-welcome.html')
 
+@app.route('/staff-welcome', methods=['GET'])
+def staff_welcome():
+    return render_template('staff-welcome.html')
+
+@app.route('/specialist-welcome', methods=['GET'])
+def specialist_welcome():
+    return render_template('specialist-welcome.html')
+                               
 @app.route('/insert', methods=['POST'])
 def insert():
     """Add the person"""
