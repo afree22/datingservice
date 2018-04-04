@@ -56,25 +56,41 @@ class Database(object):
 
     def add_interests(self, ssn, interest_cat, interest_type):
 
-        # test if interest table already exists
-        test_sql = "SHOW TABLES LIKE '%s'"
+        # remember to test for duplicates????
+
+        # test if interest already exists
+        test_sql = "SELECT * FROM interests WHERE interest = %s"
         test_result = cur.execute(test_sql, (interest_cat))
 
         if not test_result:
-            # should these have pks?
-            new_interest_sql = "CREATE TABLE %s (type varchar(120))"
+            new_interest_sql = "INSERT INTO interests (interest) VALUES (%s)"
             new_interest_result = cur.execute(new_interest_sql, (interest_cat))
+            new_type_sql = "INSERT INTO categories (category) VALUES (%s)"
+            new_type_result = cur.execute(new_type_sql, (interest_type))
 
-            # todo: verify this
-            if not new_interest_result:
-                return new_interest_result
+        # just a new type
 
-        interest_sql = "INSERT INTO %s (ssn, interest, category) VALUES (%s, %s, %s)"
-        interest_result = cur.execute(interest_sql, (ssn, interest_cat, interest_type))
+    def add_interest(self, interest):
+        pass
 
-        # todo: verify what to return here
-        return interest_result
+    def add_interest_type(self, interest_type):
+        sql = "INSERT INTO CATEGORIES (category) VALUES (%s)"
+        pass
 
+    def add_client_interest(self, ssn, interest_cat, interest_type):
+        pass
+
+    def check_interest(self, interest):
+        sql = "SELECT * FROM interests WHERE interest = %s"
+        result = cur.execute(sql, (interest))
+        # todo check how this works with error handling
+        return result
+
+    def check_interest_type(self, interest_type):
+        sql = "SELECT * FROM types WHERE type = %s"
+        result = cur.execute(sql, (interest_type))
+        # todo check how this works with error handling
+        return result
 
     def insert_child_(self, ssn, name, dob, status):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)

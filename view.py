@@ -1,5 +1,10 @@
 # original author: Luca Soldaini
 
+
+# conferring of supervising privileges doesn't need to be supported by app
+# users should have input on when dates happen/can just input/edit themselves
+
+
 # third party modules
 from flask import (Flask, render_template, request, send_from_directory, redirect)
 import datetime
@@ -55,7 +60,7 @@ def insert_client():
     return "Error"
 
 @app.route('/interests', methods=['GET'])
-def client_search():
+def interests():
 
     # show interests that already exist???
     # we don't have this in the schema yet
@@ -64,6 +69,9 @@ def client_search():
 
 @app.route('/insert_interets', methods=['POST'])
 def insert_interests():
+    if db.check_interest():
+        pass
+        
     pass
 
 @app.route('/insert_child', methods=['POST'])
