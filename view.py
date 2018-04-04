@@ -31,13 +31,13 @@ def signup():
     
     clients = db.get_people()
 
-    return render_template('index2.html', clients=clients)
+    return render_template('signup.html', clients=clients)
 
 @app.route('/signup_kids', methods=['GET'])
 def signup_kids():
     """ Page for information on client's children
     """
-    return render_template('index3.html')
+    return render_template('children.html')
 
 @app.route('/insert_client', methods=['POST'])
 def insert_client():
@@ -62,7 +62,7 @@ def insert_client():
 @app.route('/interests', methods=['GET'])
 def interests():
     # this html file is just a placeholder, haven't actually started this yet
-    return render_template('index4.html')
+    return render_template('interests.html')
 
 @app.route('/insert_interets', methods=['POST'])
 def insert_interests():
