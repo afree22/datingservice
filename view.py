@@ -219,9 +219,29 @@ def send_resources(path):
 
 
 """Client Match Search Results"""
+@app.route('/all_clients', methods=['GET'])
+def all_clients():
+    results = db.fetch_allClients()
+    return render_template('all_clients.html', results=results)
+
 @app.route('/match_results', methods=['GET'])
 def match_results():
-    results = db.fetch_allClients()
+    ssn = request.args.get('SSN')
+    name = request.args.get('Name')
+    gender = request.args.get('Gender')
+    dob = request.args.get('DOB')
+    phone = request.args.get('Phone')
+    eyecolor = request.args.get('eyecolor')
+    weight = request.args.get('weight')
+    height = request.args.get('height')
+    prior_marriage = request.args.get('prior_marriage')
+    interest = request.args.get('interest')
+    date_open = request.args.get('date_open')
+    date_close = request.args.get('date_close')
+    status = request.args.get('status')
+    crime = request.args.get('crime')
+    
+    results = db.fetch_potential_match(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime)
     return render_template('match_results.html', results=results)
 
 @app.route('/match_search', methods=['GET'])
