@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Very Good Dating Service</title>
+  </head>
+  <body>
+    <h1 class="title">
+      <img src="resources/logo.png" alt="EugeneNeedsLove.com">
+    </h1>
+     <section>
+      <form action="make_date" method="POST">
+        <h2>Here are your matches!</h2>
+        Your ssn: <input type="number" name="userssn" required>
+        {% for match in matches %}
+          <p>
+            Request date with {{match['name']}}: <input type="checkbox" name="datessn" id={{match["ssn"]}} />
+            When: <input type="date" name="date">
+            Where: <input type="text" name="location">
+          </p>
+        {% endfor %}
+          <input type="submit" value="Request!" />
+        </p>
+      </form>
+    </section>
+  </body>
+</html>
