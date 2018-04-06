@@ -146,9 +146,13 @@ def make_date():
 def client_welcome():
     return render_template('client-welcome.html')
 
-@app.route('/other-login', methods=['GET'])
-def other_login():
-    return render_template('other-login.html')
+@app.route('/specialist-login', methods=['GET'])
+def specialist_login():
+    return render_template('specialist-login.html')
+
+@app.route('/staff-login', methods=['GET'])
+def staff_login():
+    return render_template('staff-login.html')
 
 @app.route('/client-login', methods=['GET'])
 def client_login():
@@ -156,21 +160,26 @@ def client_login():
 
 @app.route('/cli_validation', methods=['GET'])
 def cli_validate():
-    ssn = request.form['ssn']
-    if db.login_client(ssn):
-        return render_template('client-page.html')
-    else:
-        return render_template('client-login.html')
+    return render_template('client-page.html')
+    #ssn = request.form['ssn']
+    #if db.login_client(ssn):
+    #    return render_template('client-page.html')
+    #else:
+    #    return render_template('client-login.html')
 
-@app.route('/other_validation', methods=['GET'])
-def other_validate():
-    username = request.form['username']
-    password = request.form['password']
-    use_type = request.form['use_type']
-    if db.login_other(username,password,use_type):
-        return render_template('cli_welcome.html')
-    else:
-        return render_template('other-login.html')
+@app.route('/staff_validation', methods=['GET'])
+def staff_validate():
+    #username = request.form['username']
+    #password = request.form['password']
+    return render_template('staff-welcome.html')
+
+@app.route('/specialist_validation', methods=['GET'])
+def specialist_validate():
+    #username = request.form['username']
+    #password = request.form['password']
+    return render_template('specialist-welcome.html')
+
+
 
 
 

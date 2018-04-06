@@ -182,12 +182,14 @@ class Database(object):
     def login_client(self, ssn):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         return 'SELECT COUNT(ssn) FROM ds.CLient WHERE ssn LIKE "%s";'.format(ssn)
-
-
-    """ NEED TO FINISH LOG IN STUFF """ 
-    def login_other(self, username, password, use_type):
+    
+    def login_staff(self, username, password):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        return ('SELECT ssn FROM ds.Client WHERE ssn IN (SELECT ssn from ds.CLient WHERE ssn LIKE "%s");'.format(ssn))
+    
+    def login_specialist(self, username, password):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+    
+
     
     
 
