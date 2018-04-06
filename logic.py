@@ -53,44 +53,89 @@ class Database(object):
 
         return result
 
-    def add_interests(self, ssn, interest_cat, interest_type):
+    # it think this is redundant now
+    # def add_interests(self, ssn, interest_cat, interest_type):
 
-        # remember to test for duplicates????
+    #     # remember to test for duplicates????
 
-        # test if interest already exists
-        test_sql = "SELECT * FROM interests WHERE interest = %s"
-        test_result = cur.execute(test_sql, (interest_cat))
+    #     # test if interest already exists
+    #     test_sql = "SELECT * FROM interests WHERE interest = %s"
+    #     test_result = cur.execute(test_sql, (interest_cat))
 
-        if not test_result:
-            new_interest_sql = "INSERT INTO interests (interest) VALUES (%s)"
-            new_interest_result = cur.execute(new_interest_sql, (interest_cat))
-            new_type_sql = "INSERT INTO categories (category) VALUES (%s)"
-            new_type_result = cur.execute(new_type_sql, (interest_type))
+    #     if not test_result:
+    #         new_interest_sql = "INSERT INTO interests (interest) VALUES (%s)"
+    #         new_interest_result = cur.execute(new_interest_sql, (interest_cat))
+    #         new_type_sql = "INSERT INTO categories (category) VALUES (%s)"
+    #         new_type_result = cur.execute(new_type_sql, (interest_type))
 
-        # just a new type
+    #     # just a new type
+
+    def get_client_matches(self, gender, age, eye_color, weight, height, prev_marriage, interest_cat, interest_type):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        select = "SELECT DISTINCT name FROM client c, client_interests i WHERE c.ssn = i.ssn AND "
+        client_attrs = []
+        if gender:
+            client_attrs.append("gender = '{}'".format(gender))
+        if age:
+            # todo deal with age
+            pass
+        if eye_color:
+            client_attrs.append("eyecolor = '{}'".format(eye_color))
+        if weight:
+            client_attrs.append("weight = {}".format(weight))
+        if height:
+            client_attrs.append("height = {}".format(height))
+        if prev_marriage:
+            client_attrs.append("prior_marriage = '{}'".format(prev_marriage))
+        if interest_cat:
+            client_attrs.append("interest = '{}'".format(interest_cat))
+        # todo remember interest_type
+
+        # todo look into or querying
+        attrs = " AND ".join(client_attrs)
+        sql = "{}{}".format(select, attrs)
+        print(sql)
+
+        cur.execute(sql)
+        return CursorIterator(cur)
+
+    def insert_date(self, user_ssn, date_ssn, location, date):
+
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        # using dummy date and location for now until i figure out smth better
+        sql = "INSERT INTO dates (c1_ssn, c2_ssn, location, scheduled_date, occured, interested, see_again) VALUES (%s, %s, %s, %s, NULL, NULL, NULL)"
+        print(sql)
+        print(user_ssn, date_ssn, location, date)
+        result = cur.execute(sql, (user_ssn, date_ssn, location, date))
+        return result
 
     def add_interest(self, interest):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "INSERT INTO Interests (interest) VALUES (%s)"
         result = cur.execute(sql, (interest))
         return result
 
     def add_interest_type(self, interest_type):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "INSERT INTO Categories (category) VALUES (%s)"
         result = cur.execute(sql, (interest_type))
         return result
 
     def add_client_interest(self, ssn, interest_cat, interest_type=None):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "INSERT INTO client_interests (ssn, interest) VALUES (%s, %s)"
         result = cur.execute(sql, (ssn, interest_cat))
         return result
 
     def check_interest(self, interest):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "SELECT * FROM interests WHERE interest = %s"
         result = cur.execute(sql, (interest))
         # todo check how this works with error handling
         return result
 
     def check_interest_type(self, interest_type):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "SELECT * FROM types WHERE type = %s"
         result = cur.execute(sql, (interest_type))
         # todo check how this works with error handling

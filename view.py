@@ -84,7 +84,6 @@ def insert_interests():
         return redirect('/interests')
     return "Error"
 
-
 @app.route('/insert_child', methods=['POST'])
 def insert_child():
     name = request.form['name']
@@ -105,7 +104,43 @@ def index():
 @app.route('/client_search', methods=['GET'])
 def client_search():
     # return page with possible things to search for
-    pass
+    return render_template('client_search.html')
+
+@app.route('/client_matches', methods=['POST'])
+def client_matches():
+    gender = request.form.get('gender')
+    age = request.form.get('age')
+    eye_color = request.form.get('eyecolor')
+    weight = request.form.get('weight')
+    height = request.form.get('height')
+    prev_marraige = request.form.get('prior_marriage')
+    interest = request.form.get('interest')
+    interest_type = request.form.get('interest_type')
+    
+    matches = db.get_client_matches(
+        gender,
+        age,
+        eye_color,
+        weight,
+        height,
+        prev_marraige,
+        interest,
+        interest_type)
+    
+    return render_template('request_date.html', matches=matches)
+
+@app.route('/make_date', methods=['POST'])
+def make_date():
+    # insert date
+    user_ssn = request.form['userssn']
+    date_ssn = request.form['datessn']
+    location = 'beach'
+    date = '2019-01-01'
+
+    if db.insert_date(user_ssn, date_ssn, location, date):
+        return redirect('/client_search')
+    return "Error"
+    
 
 @app.route('/client-welcome', methods=['GET'])
 def client_welcome():
