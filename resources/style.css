@@ -8,7 +8,7 @@ body {
 h1.title {
 	margin: 0;
 	background-color: #ec88f7;
-	box-shadow: #777777 4px 4px 8px;
+	#box-shadow: #777777 4px 4px 8px;
 }
 
 input {
@@ -34,12 +34,8 @@ section {
 	border: 1px solid #555;
 	padding: 2px 8px;
 	margin: 16px auto;
-	box-shadow: #777777 4px 4px 8px;
+	#box-shadow: #777777 4px 4px 8px;
 	width: 450px;
-}
-
-.container{
-    text-align: center;
 }
 
 .btn {
@@ -55,6 +51,7 @@ section {
 }
 
 .btn:hover {
+  
   background: #bc3fcc;
   text-decoration: none;
 }
