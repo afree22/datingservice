@@ -77,11 +77,11 @@ class Database(object):
     def insert_date(self, user_ssn, date_ssn, location, date):
 
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        # using dummy date and location for now until i figure out smth better
         sql = "INSERT INTO dates (c1_ssn, c2_ssn, location, scheduled_date, occured, interested, see_again) VALUES (%s, %s, %s, %s, NULL, NULL, NULL)"
-        print(sql)
-        print(user_ssn, date_ssn, location, date)
-        result = cur.execute(sql, (user_ssn, date_ssn, location, date))
+        result = cur.execute(
+            sql, (int(user_ssn), int(date_ssn), location, date))
+
+        self.conn.commit()
         return result
 
     def add_interest(self, interest):
