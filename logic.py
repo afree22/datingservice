@@ -182,8 +182,41 @@ class Database(object):
         return CursorIterator(cur)
     
     def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime):
-        """Fetch matches from database"""
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        cur.execute('SELECT * FROM ds.Client AS clients INNER JOIN CriminalRecord ON clients.ssn = CriminalRecord.ssn WHERE clients.ssn LIKE "%s" OR clients.name LIKE "%s" OR clients.gender LIKE "%s" OR  clients.dob LIKE "%s" OR clients.phone LIKE "%s" OR clients.eyecolor LIKE "%s" OR clients.weight LIKE "%s" OR clients.height LIKE "%s" OR clients.prior_marriage LIKE "%s" OR clients.interest LIKE "%s" OR clients.date_open LIKE "%s" OR clients.date_close LIKE "%s" OR clients.status LIKE "%s" OR CriminalRecord.crime LIKE "%s";'.format(ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime))
-        """cur.execute('SELECT * FROM ds.Client AS clients, CriminalRecord as crimeRec, WHERE clients.ssn = CriminalRecord.ssn AND clients.ssn LIKE "%%{0}%%" AND clients.name LIKE "%%{1}%%" AND clients.gender LIKE "%%{2}%%" AND  clients.dob LIKE "%%{3}%%" AND clients.phone LIKE "%%{4}%%" AND clients.eyecolor LIKE "%%{5}%%" AND clients.weight LIKE "%%{6}%%" AND clients.height LIKE "%%{7}%%" AND clients.prior_marriage LIKE "%%{8}%%" AND clients.interest LIKE "%%{9}%%" AND clients.date_open LIKE "%%{10}%%" AND clients.date_close LIKE "%%{11}%%" AND clients.status LIKE "%%{12}%%" AND crimeRec.crime LIKE "%%{13}"";'.format(ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status,crime))"""
+        select = "SELECT c.ssn, name, gender, dob, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn WHERE "
+        client_attrs = []
+
+        if ssn:
+            client_attrs.append(ssn = "{}".format(ssn))
+        if name:
+            client_attrs.append("name = '{}'".format(name))
+        if gender:
+            client_attrs.append("gender = '{}'".format(gender))
+        if dob:
+            client_attrs.append("dob = '{}'".format(dob))
+        if eyecolor:
+            client_attrs.append("eyecolor = '{}'".format(eyecolor))
+        if weight:
+            client_attrs.append("weight = {}".format(weight))
+        if height:
+            client_attrs.append("height = {}".format(height))
+        if prior_marriage:
+            client_attrs.append("prior_marriage = '{}'".format(prior_marriage))
+        if interest:
+            client_attrs.append("interest = '{}'".format(interest))
+        if date_open:
+            client_attrs.append("date_open = '{}'".format(date_open))
+        if date_close:
+            client_attrs.append("date_close = '{}'".format(date_close))
+        if status:
+            client_attrs.append("status = '{}'".format(status))
+        if crime:
+            client_attrs.append("crime = '{}'".format(crime))
+        
+        # todo look into or querying
+        attrs = " AND ".join(client_attrs)
+        sql = "{}{}".format(select, attrs)
+        print(sql)
+        
+        cur.execute(sql)
         return CursorIterator(cur)

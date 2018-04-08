@@ -234,6 +234,7 @@ def all_clients():
     results = db.fetch_allClients()
     return render_template('all_clients.html', results=results)
 
+
 @app.route('/match_results', methods=['GET'])
 def match_results():
     ssn = request.args.get('SSN')
@@ -251,7 +252,21 @@ def match_results():
     status = request.args.get('status')
     crime = request.args.get('crime')
     
-    results = db.fetch_potential_match(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime)
+    matches = db.fetch_potential_match(
+                                    ssn,
+                                    name,
+                                    gender,
+                                    dob,
+                                    phone,
+                                    eyecolor,
+                                    weight,
+                                    height,
+                                    prior_marriage,
+                                    interest,
+                                    date_open,
+                                    date_close,
+                                    status,
+                                    crime)
     return render_template('match_results.html', results=results)
 
 @app.route('/match_search', methods=['GET'])
