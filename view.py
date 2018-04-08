@@ -149,7 +149,6 @@ def finalize_date():
 
 @app.route('/date_history', methods=['GET'])
 def date_history():
-    # for now, have user enter id before clicking to go to this url?
     ssn = request.cookies['userID']
     dates = db.get_dates(ssn)
 

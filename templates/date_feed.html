@@ -12,7 +12,13 @@
         <h2>Your dates</h2>
         {% for date in dates %}
           <p>
-            {{date}}
+            {{date['name']}}
+          </p>
+          <p>
+            {{date['scheduled_date']}}
+          </p>
+          <p>
+            {{date['location']}}
           </p>
         {% endfor %}
           <input type="submit" value="Request!" />
