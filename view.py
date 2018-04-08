@@ -6,7 +6,7 @@
 
 
 # third party modules
-from flask import (Flask, render_template, request, send_from_directory, redirect)
+from flask import (Flask, render_template, request, send_from_directory, redirect, make_response)
 import datetime
 
 # project modules
@@ -147,14 +147,21 @@ def finalize_date():
         return redirect('/client_search')
     return "Error"
 
-@app.route('/date_feed', methods=['GET'])
-def date_feed():
+@app.route('/date_history', methods=['GET'])
+def date_history():
     # for now, have user enter id before clicking to go to this url?
-    dates = db.get_dates()
+    ssn = request.cookies['userID']
+    dates = db.get_dates(ssn)
+
+    return render_template('date_feed.html', dates=dates)
 
 @app.route('/client-welcome', methods=['GET'])
 def client_welcome():
     return render_template('client-welcome.html')
+
+@app.route('/client-home', methods=['GET'])
+def client_home():
+    return render_template('client-page.html')
 
 @app.route('/specialist-login', methods=['GET'])
 def specialist_login():
@@ -168,14 +175,20 @@ def staff_login():
 def client_login():
     return render_template('client-login.html')
 
-@app.route('/cli_validation', methods=['GET'])
+@app.route('/cli_validation', methods=['POST'])
 def cli_validate():
-    return render_template('client-page.html')
-    #ssn = request.form['ssn']
-    #if db.login_client(ssn):
-    #    return render_template('client-page.html')
-    #else:
-    #    return render_template('client-login.html')
+    # return render_template('client-page.html')
+    # import pdb; pdb.set_trace()
+    # pass
+    ssn = request.form['ssn']
+    if db.login_client(ssn):
+        resp = make_response(redirect('/client-home'))
+        resp.set_cookie('userID', str(ssn))
+        return resp
+        # return render_template('client-page.html')
+    else:
+       # return render_template('client-login.html')
+       return redirect('/client-login')
 
 @app.route('/staff_validation', methods=['GET'])
 def staff_validate():

@@ -8,15 +8,9 @@
     <h1 class="title">
       <img src="resources/LoveHeader.jpg" alt="Find love">
     </h1>
-     <section>
-     <form action="cli_validation">
-		<div class="selectHolder">
-			<input name="ssn" class="enjoy-input" placeholder="SSN" />
-		</div>
-		<div class="buttonHolder">
-			<button type="submit" class="btn" id="submit-button">Submit</button>
-		</div>
-	</form>
-	</section>
+     <form action="cli_validation" method="POST">
+			<input name="ssn" class="enjoy-input" placeholder="SSN" type="number"/>
+			<input type="submit" value="Login!" />
+	   </form>
 </body>
 </html>
