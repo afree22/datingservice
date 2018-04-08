@@ -8,16 +8,15 @@
       <img src="resources/logo.png" alt="EugeneNeedsLove.com">
     </h1>
      <section>
-      <form action="make_date" method="POST">
-        <h2>Here are your matches!</h2>
+      <form action="finalize_date" method="POST">
+        <h2>Finalize date request</h2>
         Your ssn: <input type="number" name="userssn" required>
-        {% for match in matches %}
           <p>
-            Request date with {{match['name']}}: <input type="radio" name="match" value="{{match['ssn']}}"/>
-            <!-- When: <input type="date" name="date">
-            Where: <input type="text" name="location"> -->
+            When: <input type="date" name="date">
+            Where: <input type="text" name="location">
           </p>
-        {% endfor %}
+          <input type="hidden" name="user_ssn" value="{{user_ssn}}">
+          <input type="hidden" name="date_ssn" value="{{date_ssn}}">
           <input type="submit" value="Request!" />
         </p>
       </form>

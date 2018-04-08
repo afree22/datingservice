@@ -126,6 +126,11 @@ def client_matches():
         prev_marraige,
         interest,
         interest_type)
+
+    # import pdb; pdb.set_trace()
+    # pass
+
+    # match_ids = {match['ssn']: i for i, match in enumerate(matches)}
     
     return render_template('request_date.html', matches=matches)
 
@@ -133,14 +138,29 @@ def client_matches():
 def make_date():
     # insert date
     user_ssn = request.form['userssn']
-    date_ssn = request.form['datessn']
-    location = 'beach'
-    date = '2019-01-01'
+    date_ssn = request.form['match']
+
+    # this might be the dumbest possible way of doing this but oh well
+    # for key in request.form:
+    #     if request.form[key] == 'on':
+    #         date_ssn = key
+
+    # if db.insert_date(user_ssn, date_ssn, location, date):
+    #     return redirect('/client_search')
+    # return redirect('/finalize_date', user_ssn, date_ssn)
+    return render_template('finalize_date.html', user_ssn=user_ssn, date_ssn=date_ssn)
+    # return "Error"
+
+@app.route('/finalize_date', methods=['POST'])
+def finalize_date():
+    date = request.form['date']
+    location = request.form['location']
+    user_ssn = request.form['user_ssn']
+    date_ssn = request.form['date_ssn']
 
     if db.insert_date(user_ssn, date_ssn, location, date):
         return redirect('/client_search')
     return "Error"
-    
 
 @app.route('/client-welcome', methods=['GET'])
 def client_welcome():

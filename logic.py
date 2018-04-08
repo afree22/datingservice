@@ -40,39 +40,14 @@ class Database(object):
         sql = 'INSERT INTO Client (ssn, name, gender, DOB, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         result = cur.execute(sql, (ssn, name, gender, DOB, phone, eye_color, weight, height, prior_marriage, interest_in, date_open, date_close, status))
 
-        # sql2 = "SHOW TABLES LIKE 'cooking'"
-        # result2 = cur.execute(sql2)
-        # print(result2)
-
-        # do interests
-        # can we have them sign up with just one interest and then edit in more later?
-        # another view/function like with children
-
         # need this to keep changes between local and other
         self.conn.commit()
 
         return result
 
-    # it think this is redundant now
-    # def add_interests(self, ssn, interest_cat, interest_type):
-
-    #     # remember to test for duplicates????
-
-    #     # test if interest already exists
-    #     test_sql = "SELECT * FROM interests WHERE interest = %s"
-    #     test_result = cur.execute(test_sql, (interest_cat))
-
-    #     if not test_result:
-    #         new_interest_sql = "INSERT INTO interests (interest) VALUES (%s)"
-    #         new_interest_result = cur.execute(new_interest_sql, (interest_cat))
-    #         new_type_sql = "INSERT INTO categories (category) VALUES (%s)"
-    #         new_type_result = cur.execute(new_type_sql, (interest_type))
-
-    #     # just a new type
-
     def get_client_matches(self, gender, age, eye_color, weight, height, prev_marriage, interest_cat, interest_type):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        select = "SELECT DISTINCT name FROM client c, client_interests i WHERE c.ssn = i.ssn AND "
+        select = "SELECT DISTINCT name, c.ssn FROM client c, client_interests i WHERE c.ssn = i.ssn AND "
         client_attrs = []
         if gender:
             client_attrs.append("gender = '{}'".format(gender))
