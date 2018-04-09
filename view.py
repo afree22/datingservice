@@ -151,13 +151,24 @@ def finalize_date():
 @app.route('/date_history', methods=['GET'])
 def date_history():
     ssn = request.cookies['userID']
+    # dates = db.get_dates(ssn)
+    prev_dates = db.get_prev_dates(ssn)
+    future_dates = db.get_future_dates(ssn)
 
-    import pdb; pdb.set_trace()
-    pass
+    return render_template('date_feed.html', prev_dates=prev_dates, future_dates=future_dates)
 
-    dates = db.get_dates(ssn)
+@app.route('/edit_dates', methods=['GET', 'POST'])
+def edit_req_date():
+    date_info = request.form['edit_req']
+    date_id = date_info.split()[0]
+    date_date = date_info.split()[1]
+    user_ssn = request.cookies['userID']
 
-    return render_template('date_feed.html', dates=dates)
+    dates = db.get_dates(user_ssn, date_id, date_date)
+    date = [i for i in dates][0]
+    # import pdb; pdb.set_trace()
+    # pass
+    return render_template('/edit_dates.html', date=date)
 
 @app.route('/client-welcome', methods=['GET'])
 def client_welcome():
@@ -165,8 +176,6 @@ def client_welcome():
 
 @app.route('/client-home', methods=['GET'])
 def client_home():
-    import pdb; pdb.set_trace()
-    pass
     return render_template('client-page.html')
 
 @app.route('/specialist-login', methods=['GET'])

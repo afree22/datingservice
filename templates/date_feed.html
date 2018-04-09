@@ -8,7 +8,7 @@
       <img src="resources/logo.png" alt="EugeneNeedsLove.com">
     </h1>
      <section>
-      <form action="" method="POST">
+      <!-- <form action="" method="POST">
         <h2>Your dates</h2>
         {% for date in dates %}
           <p>
@@ -22,6 +22,42 @@
           </p>
         {% endfor %}
           <input type="submit" value="Request!" />
+        </p>
+      </form> -->
+      <form action="edit_dates" method="POST">
+        <h2>Your requested dates</h2>
+        {% for date in future_dates %}
+        <input type="radio" name="edit_req" value="{{date['ssn']}} {{date['scheduled_date']}}">
+          <p>
+            {{date['name']}}
+          </p>
+          <p>
+            {{date['scheduled_date']}}
+          </p>
+          <p>
+            {{date['location']}}
+          </p>
+        {% endfor %}
+          <input type="submit" value="Edit!" />
+        </p>
+      </form>
+
+
+      <form action="" method="POST">
+        <h2>Your past dates</h2>
+        {% for date in prev_dates %}
+        <!-- <input type="radio" name="edit_prev" value={{date}}> -->
+          <p>
+            {{date['name']}}
+          </p>
+          <p>
+            {{date['scheduled_date']}}
+          </p>
+          <p>
+            {{date['location']}}
+          </p>
+        {% endfor %}
+          <!-- <input type="submit" value="Edit!" /> -->
         </p>
       </form>
     </section>

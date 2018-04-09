@@ -131,14 +131,35 @@ class Database(object):
         result = cur.execute(sql, (firstname, lastname, phone, age))
         return result
 
-    def get_dates(self, user_ssn):
+    def get_dates(self, user_ssn, date_ssn, date_date):
         """ Display dates for a user
         """
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        # sql = 'SELECT * FROM dates WHERE c1_ssn = %s OR c2_ssn = %s'
-        # joining like this so we can get date's name
-        # sql = 'SELECT * FROM client c, dates d WHERE c.ssn = c2_ssn AND (c1_ssn = %s OR c2_ssn = %s)'
-        sql = 'SELECT * FROM client, dates where (ssn = c1_ssn or ssn = c2_ssn) and ssn != %s'
+        # i think this works, only want to get the name of the people who
+        # aren't the current user
+        # sql = 'SELECT * FROM client, dates where (ssn = c1_ssn or ssn = c2_ssn) and ssn != %s'
+        # dates = cur.execute(sql, (user_ssn))
+
+        # sql = "SELECT * FROM dates WHERE scheduled_date = '%s' AND ((c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s))"
+        sql = "SELECT * FROM dates WHERE scheduled_date = '{}' AND (c1_ssn = {} AND c2_ssn = {}) OR (c1_ssn = {} AND c2_ssn = {})".format(date_date, user_ssn, date_ssn, date_ssn, user_ssn)
+        # result = cur.execute(
+        #     sql, (date_date, user_ssn, date_ssn, date_ssn, user_ssn))
+        result = cur.execute(sql)
+        return CursorIterator(cur)
+
+    def get_prev_dates(self, user_ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        # i think this works, only want to get the name of the people who
+        # aren't the current user
+        sql = 'SELECT * FROM client, dates where (ssn = c1_ssn OR ssn = c2_ssn) and ssn != %s AND occured IS NOT NULL'
+        dates = cur.execute(sql, (user_ssn))
+        return CursorIterator(cur)
+
+    def get_future_dates(self, user_ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        # i think this works, only want to get the name of the people who
+        # aren't the current user
+        sql = 'SELECT * FROM client, dates where (ssn = c1_ssn OR ssn = c2_ssn) and ssn != %s AND occured IS NULL'
         dates = cur.execute(sql, (user_ssn))
         return CursorIterator(cur)
 
