@@ -137,8 +137,9 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         # sql = 'SELECT * FROM dates WHERE c1_ssn = %s OR c2_ssn = %s'
         # joining like this so we can get date's name
-        sql = 'SELECT * FROM client c, dates d WHERE c.ssn = c2_ssn AND c1_ssn = %s or c2_ssn = %s'
-        dates = cur.execute(sql, (user_ssn, user_ssn))
+        # sql = 'SELECT * FROM client c, dates d WHERE c.ssn = c2_ssn AND (c1_ssn = %s OR c2_ssn = %s)'
+        sql = 'SELECT * FROM client, dates where (ssn = c1_ssn or ssn = c2_ssn) and ssn != %s'
+        dates = cur.execute(sql, (user_ssn))
         return CursorIterator(cur)
 
     def get_people(self):
