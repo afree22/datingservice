@@ -32,10 +32,25 @@ section {
 	text-align: left;
 	padding: 2px 8px;
 	margin: 16px auto;
-	width: 450px;
+	width: 500px;
+	
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+table#SearchResultsTable {
+	padding-left:100px
+    padding-top: 12px;
+    padding-bottom: 12px;
+    border: 1px solid #c3c3c3;
+    text-align: left;
+    color: black;
+    border-collapse: collapse;
 }
 
 .btn {
+	float: center;
   -webkit-border-radius: 28;
   -moz-border-radius: 28;
   border-radius: 28px;
@@ -48,7 +63,7 @@ section {
 }
 
 .btn:hover {
-  
+  float: center;
   background: #bc3fcc;
   text-decoration: none;
 }

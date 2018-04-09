@@ -1,6 +1,3 @@
-# original author: Luca Soldaini
-
-
 # conferring of supervising privileges doesn't need to be supported by app
 # users should have input on when dates happen/can just input/edit themselves
 
@@ -178,14 +175,41 @@ def client_welcome():
 def client_home():
     return render_template('client-page.html')
 
+""" Specialist Login Process """
 @app.route('/specialist-login', methods=['GET'])
 def specialist_login():
     return render_template('specialist-login.html')
 
-@app.route('/staff-login', methods=['GET'])
-def staff_login():
-    return render_template('staff-login.html')
+@app.route('/specialist_validation', methods=['GET'])
+def specialist_validate():
+    #username = request.form['username']
+    #password = request.form['password']
+    return render_template('specialist-welcome.html')
 
+""" Entry Staff Login Process """
+@app.route('/entry_login', methods=['GET'])
+def entry_login():
+    return render_template('entry_login.html')
+
+@app.route('/entry_validate', methods=['GET'])
+def entry_validate():
+    #username = request.form['username']
+    #password = request.form['password']
+    return redirect('entry_view_clients')
+
+""" Other Staff Login Process """
+@app.route('/staff_login', methods=['GET'])
+def staff_login():
+    return render_template('staff_login.html')
+
+@app.route('/staff_validate', methods=['GET'])
+def staff_validate():
+    #username = request.form['username']
+    #password = request.form['password']
+    return redirect('all_clients')
+
+
+""" Client Login Process """
 @app.route('/client-login', methods=['GET'])
 def client_login():
     return render_template('client-login.html')
@@ -204,18 +228,6 @@ def cli_validate():
     else:
        # return render_template('client-login.html')
        return redirect('/client-login')
-
-@app.route('/staff_validation', methods=['GET'])
-def staff_validate():
-    #username = request.form['username']
-    #password = request.form['password']
-    return render_template('staff-welcome.html')
-
-@app.route('/specialist_validation', methods=['GET'])
-def specialist_validate():
-    #username = request.form['username']
-    #password = request.form['password']
-    return render_template('specialist-welcome.html')
 
 
 
@@ -323,13 +335,13 @@ def delete_client():
 
 
 """ Staff Search """
-@app.route('/staff_view_clients', methods=['GET'])
-def staff_view_clients():
-    results = db.fetch_allClients()
-    return render_template('staff_view_clients.html', results=results)
+@app.route('/entry_view_clients', methods=['GET'])
+def entry_view_clients():
+    results = db.fetch_staffClients()
+    return render_template('entry_view_clients.html', results=results)
 
-@app.route('/staff_search', methods=['GET'])
-def staff_search():
+@app.route('/entry_search', methods=['GET'])
+def entry_search():
     ssn = request.args.get('SSN')
     name = request.args.get('Name')
     gender = request.args.get('Gender')
@@ -345,8 +357,8 @@ def staff_search():
     status = request.args.get('status')
     crime = request.args.get('crime')
     
-    results = db.fetch_potential_match(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime)
-    return render_template('staff_results.html', results=results)
+    results = db.fetch_staff_match(name,gender,dob, eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime)
+    return render_template('entry_results.html', results=results)
 
 
 """Client Match Search Results"""
