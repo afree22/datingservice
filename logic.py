@@ -173,12 +173,72 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
     
 
+    """ Specialist Insert Client """
+    def insert_client(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'INSERT INTO Client (ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        result = cur.execute(sql, (ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status))
+        self.conn.commit()
+        return result
     
+    def insert_crime(self, ssn, crime):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'INSERT INTO CriminalRecord (ssn, crime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        result = cur.execute(sql, (ssn, crime))
+        self.conn.commit()
+        return result
     
+    """ Specialist Update Client """
+    def modify_client(self, ssn, ssn_new, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        update = "UPDATE client set"
+        rightClient = " WHERE ssn = '{}'".format(ssn)
+        client_attrs = []
+        
+        if ssn_new:
+            client_attrs.append("ssn = '{}'".format(ssn_new))
+        if name:
+            client_attrs.append("name = '{}'".format(name))
+        if gender:
+            client_attrs.append("gender = '{}'".format(gender))
+        if dob:
+            client_attrs.append("dob = '{}'".format(dob))
+        if eyecolor:
+            client_attrs.append("eyecolor = '{}'".format(eyecolor))
+        if weight:
+            client_attrs.append("weight = {}".format(weight))
+        if height:
+            client_attrs.append("height = {}".format(height))
+        if prior_marriage:
+            client_attrs.append("prior_marriage = '{}'".format(prior_marriage))
+        if interest:
+            client_attrs.append("interest = '{}'".format(interest))
+        if date_open:
+            client_attrs.append("date_open = '{}'".format(date_open))
+        if date_close:
+            client_attrs.append("date_close = '{}'".format(date_close))
+        if status:
+            client_attrs.append("status = '{}'".format(status))
+        
+        attrs = " , ".join(client_attrs)
+        sql = "{}{}{}".format(update, attrs, rightClient)
+        print(sql)
+                    
+        cur.execute(sql)
+        return CursorIterator(cur)
+            
+            
+    """ Specialist Delete Client """
+    def delete_client(self, ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "DELETE c, cr FROM Client C LEFT JOIN CriminalRecord cr ON c.ssn = cr.ssn"
+        cur.execute(sql,(ssn))
 
+    
+    """ Specialist Search for Client """
     def fetch_allClients(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        cur.execute('SELECT * FROM ds.Client;')
+        cur.execute("SELECT * FROM ds.Client;")
         return CursorIterator(cur)
     
     def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime):
@@ -187,7 +247,7 @@ class Database(object):
         client_attrs = []
 
         if ssn:
-            client_attrs.append(ssn = "{}".format(ssn))
+            client_attrs.append("ssn = '{}'".format(ssn))
         if name:
             client_attrs.append("name = '{}'".format(name))
         if gender:
