@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Very Good Dating Service</title>
+  </head>
+  <body>
+    <h1 class="title">
+      <img src="resources/logo.png" alt="EugeneNeedsLove.com">
+    </h1>
+     <section>
+      <form action="" method="POST">
+        <h2>Edit this date</h2>
+          <p>
+            {{date['name']}}
+          </p>
+          <p>
+            {{date['scheduled_date']}}, change: 
+            <input type="date" name="new_date">
+          </p>
+          <p>
+            {{date['location']}}, change: 
+            <input type="text" name="new_location">
+          </p>
+          <input type="submit" value="Edit!" />
+        </p>
+      </form>
+    </section>
+  </body>
+</html>
