@@ -135,9 +135,11 @@ class Database(object):
         """ Display dates for a user
         """
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = 'SELECT * FROM dates WHERE c1_ssn = %s OR c2_ss = %s'
+        # sql = 'SELECT * FROM dates WHERE c1_ssn = %s OR c2_ssn = %s'
+        # joining like this so we can get date's name
+        sql = 'SELECT * FROM client c, dates d WHERE c.ssn = c2_ssn AND c1_ssn = %s or c2_ssn = %s'
         dates = cur.execute(sql, (user_ssn, user_ssn))
-        return CursorIterator(curr)
+        return CursorIterator(cur)
 
     def get_people(self):
         """Fetch a veuw from the database"""

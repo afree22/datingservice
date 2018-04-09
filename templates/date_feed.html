@@ -8,12 +8,17 @@
       <img src="resources/logo.png" alt="EugeneNeedsLove.com">
     </h1>
      <section>
-      <form action="make_date" method="POST">
+      <form action="" method="POST">
         <h2>Your dates</h2>
-        <!-- Your ssn: <input type="number" name="userssn" required> -->
-        {% for match in matches %}
+        {% for date in dates %}
           <p>
-            Request date with {{match['name']}}: <input type="radio" name="match" value="{{match['ssn']}}"/>
+            {{date['name']}}
+          </p>
+          <p>
+            {{date['scheduled_date']}}
+          </p>
+          <p>
+            {{date['location']}}
           </p>
         {% endfor %}
           <input type="submit" value="Request!" />
