@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head> 
@@ -7,21 +6,12 @@
   </head>
   <body>
     <h1 class="title">
-       <img src="resources/LoveHeader.jpg" alt="Find love">
     </h1>
     <section>
 	<div style="width:100%">
-	<div style="align-content: center; padding:0px">
-		<form action = "match_search">
-		<table>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">SSN:</p>
-			</td>
-			<td>
-				<input name="SSN" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
+	<div style="float:left; width:40%; padding-top:20px">
+		<form action = "entry_search">
+		<table style="padding-left:30px">
 		<tr>
 			<td>
 				<p style="color:white; font-family:arial; font-size:125%">Name:</p>
@@ -46,15 +36,6 @@
 				<input name="DOB" class="enjoy-input" placeholder="" value = "" />
 			</td>
 		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Phone Number:</p>
-			</td>
-			<td>
-				<input name="phone" class="enjoy-input" placeholder="" value = "" />
-			</td>
-		</tr>
-		<tr>
 			<td>
 				<p style="color:white; font-family:arial; font-size:125%">Eye Color:</p>
 			</td>
@@ -127,21 +108,19 @@
 			</td>
 		</tr>
 	</table>
-	<form action="match_search">
-		<button id="specialist-button" class="btn">Search for a Match!</button>
-	</form>
+	<div class="buttonHolder">
+		<button type="submit" class="btn" id="submit-button">Submit</button>
+	</div>
 </form>
 </div>
 
-<div style="float: left; padding-top: 10px;">
-<div>
-    <table id = "SearchResultsTable">
+<div style="float:right; width:60%; padding-top:20px">
+<div class="SearchResultsTable">
+    <table>
         <tr>
-            <td>SSN</td>
             <td>Name</td>       
             <td>Gender</td>   
             <td>Date of Birth</td>
-            <td>Phone Number</td>
             <td>Eye Color</td>
             <td>Weight</td>
             <td>Height</td> 
@@ -154,11 +133,9 @@
         </tr>
         {% for r in results %}
             <tr>
-                <td>{{ r['ssn'] }}</td>
                 <td>{{ r['name'] }}</td>
                 <td>{{ r['gender'] }}</td>
                 <td>{{ r['dob'] }}</td>
-                <td>{{ r['phone'] }}</td>
                 <td>{{ r['eyecolor'] }}</td>
                 <td>{{ r['weight'] }}</td>
                 <td>{{ r['height'] }}</td>

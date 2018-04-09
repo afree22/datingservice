@@ -1,4 +1,3 @@
-
 import pymysql
 
 
@@ -245,11 +244,62 @@ class Database(object):
     
     def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        select = "SELECT c.ssn, name, gender, dob, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn WHERE "
+        select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn WHERE "
         client_attrs = []
 
         if ssn:
             client_attrs.append("ssn = '{}'".format(ssn))
+        if name:
+            client_attrs.append("name = '{}'".format(name))
+        if gender:
+            client_attrs.append("gender = '{}'".format(gender))
+        if dob:
+            client_attrs.append("dob = '{}'".format(dob))
+        if phone:
+            client_attrs.append("phone = '{}'".format(phone))
+        if eyecolor:
+            client_attrs.append("eyecolor = '{}'".format(eyecolor))
+        if weight:
+            client_attrs.append("weight = {}".format(weight))
+        if height:
+            client_attrs.append("height = {}".format(height))
+        if prior_marriage:
+            client_attrs.append("prior_marriage = '{}'".format(prior_marriage))
+        if interest:
+            client_attrs.append("interest = '{}'".format(interest))
+        if date_open:
+            client_attrs.append("date_open = '{}'".format(date_open))
+        if date_close:
+            client_attrs.append("date_close = '{}'".format(date_close))
+        if status:
+            client_attrs.append("status = '{}'".format(status))
+        if crime:
+            client_attrs.append("crime = '{}'".format(crime))
+        
+        # todo look into or querying
+        attrs = " AND ".join(client_attrs)
+        sql = "{}{}".format(select, attrs)
+        print(sql)
+        
+        cur.execute(sql)
+        return CursorIterator(cur)
+
+
+
+
+
+
+    """ Staff Search for Client """
+    def fetch_staffClients(self):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        cur.execute("SELECT name, gender, dob, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn;")
+        return CursorIterator(cur)
+    
+    def fetch_staff_match(self, name, gender, dob, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        select = "SELECT name, gender, dob, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn WHERE "
+        client_attrs = []
+        
         if name:
             client_attrs.append("name = '{}'".format(name))
         if gender:
