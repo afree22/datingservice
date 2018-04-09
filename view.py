@@ -128,7 +128,8 @@ def client_matches():
 
 @app.route('/make_date', methods=['POST'])
 def make_date():
-    user_ssn = request.form['userssn']
+    # user_ssn = request.form['userssn']
+    user_ssn = request.cookies['userID']
     date_ssn = request.form['match']
 
     return render_template('finalize_date.html', user_ssn=user_ssn, date_ssn=date_ssn)
@@ -147,6 +148,10 @@ def finalize_date():
 @app.route('/date_history', methods=['GET'])
 def date_history():
     ssn = request.cookies['userID']
+
+    import pdb; pdb.set_trace()
+    pass
+
     dates = db.get_dates(ssn)
 
     return render_template('date_feed.html', dates=dates)
@@ -157,6 +162,8 @@ def client_welcome():
 
 @app.route('/client-home', methods=['GET'])
 def client_home():
+    import pdb; pdb.set_trace()
+    pass
     return render_template('client-page.html')
 
 """ Specialist Login Process """
