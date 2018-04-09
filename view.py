@@ -240,11 +240,104 @@ def insert():
     # insert person
     if db.insert_person(firstname, lastname, phone, age):
         return redirect('/')
-    return "Error adding to list" # TODO: better error handling
+    return render_template('error.html')
+    #return "Error adding to list" # TODO: better error handling
 
 @app.route('/resources/<path:path>')
 def send_resources(path):
     return send_from_directory('resources', path)
+
+""" Specialist Add Client """
+@app.route('/specialist_add', methods=['GET'])
+def specialist_add():
+    return render_template('specialist_add.html')
+
+@app.route('/add_new_client', methods=['GET'])
+def add_new_client():
+    ssn = request.args.get('SSN')
+    name = request.args.get('Name')
+    gender = request.args.get('Gender')
+    dob = request.args.get('DOB')
+    phone = request.args.get('Phone')
+    eyecolor = request.args.get('eyecolor')
+    weight = request.args.get('weight')
+    height = request.args.get('height')
+    prior_marriage = request.args.get('prior_marriage')
+    interest = request.args.get('interest')
+    date_open = request.args.get('date_open')
+    date_close = request.args.get('date_close')
+    status = request.args.get('status')
+    crime = request.args.get('crime')
+    db.insert_client(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status)
+    db.insert_crime(ssn,crime)
+    return render_template('specialist-welcome.html')
+    return render_template('error.html')
+
+""" Specialist Modify Client """
+@app.route('/specialist_update', methods=['GET'])
+def specialist_update():
+    return render_template('specialist_update.html')
+
+@app.route('/update_client', methods=['GET'])
+def update_client():
+    ssn = request.args.get('ssn')
+    ssn_new = request.args.get('ssn_new')
+    name = request.args.get('Name')
+    gender = request.args.get('Gender')
+    dob = request.args.get('DOB')
+    phone = request.args.get('Phone')
+    eyecolor = request.args.get('eyecolor')
+    weight = request.args.get('weight')
+    height = request.args.get('height')
+    prior_marriage = request.args.get('prior_marriage')
+    interest = request.args.get('interest')
+    date_open = request.args.get('date_open')
+    date_close = request.args.get('date_close')
+    status = request.args.get('status')
+    crime = request.args.get('crime')
+    if db.modify_client(ssn,ssn_new,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status):
+         return render_template('specialist-welcome.html')
+    return render_template('error.html')
+
+""" Specialist Delete Client """
+@app.route('/specialist_delete', methods=['GET'])
+def specialist_delete():
+    return render_template('specialist_delete.html')
+
+@app.route('/delete_client', methods=['GET'])
+def delete_client():
+    ssn = request.args.get('ssn')
+    if db.delete_client(ssn):
+         return render_template('specialist-welcome.html')
+    else:
+        return render_template('error.html')
+
+
+""" Staff Search """
+@app.route('/staff_view_clients', methods=['GET'])
+def staff_view_clients():
+    results = db.fetch_allClients()
+    return render_template('staff_view_clients.html', results=results)
+
+@app.route('/staff_search', methods=['GET'])
+def staff_search():
+    ssn = request.args.get('SSN')
+    name = request.args.get('Name')
+    gender = request.args.get('Gender')
+    dob = request.args.get('DOB')
+    phone = request.args.get('Phone')
+    eyecolor = request.args.get('eyecolor')
+    weight = request.args.get('weight')
+    height = request.args.get('height')
+    prior_marriage = request.args.get('prior_marriage')
+    interest = request.args.get('interest')
+    date_open = request.args.get('date_open')
+    date_close = request.args.get('date_close')
+    status = request.args.get('status')
+    crime = request.args.get('crime')
+    
+    results = db.fetch_potential_match(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime)
+    return render_template('staff_results.html', results=results)
 
 
 """Client Match Search Results"""
