@@ -68,29 +68,16 @@ use_type ENUM('specialist','entry level', 'upper level') NOT NULL,
 PRIMARY KEY(username)
 );
 
-CREATE TABLE categories(
-category VARCHAR(60) NOT NULL,
-PRIMARY KEY(category)
-);
-
-CREATE TABLE interests(
+CREATE TABLE interest_category(
 interest VARCHAR(30) NOT NULL,
-PRIMARY KEY(interest)
-);
+category VARCHAR(60) NOT NULL,
+PRIMARY KEY(interest));
 
 CREATE TABLE client_interests(
 ssn INT NOT NULL,
 interest VARCHAR(30) NOT NULL,
 PRIMARY KEY(ssn, interest),
 FOREIGN KEY(ssn) REFERENCES Client(ssn),
-FOREIGN KEY(interest) REFERENCES interests(interest)
-);
+FOREIGN KEY(interest) REFERENCES interest_category(interest));
 
-CREATE TABLE interest_category(
-interest VARCHAR(30) NOT NULL,
-category VARCHAR(60) NOT NULL,
-PRIMARY KEY(interest, category),
-FOREIGN KEY(category) REFERENCES categories(category),
-FOREIGN KEY(interest) REFERENCES interests(interest)
-);
 

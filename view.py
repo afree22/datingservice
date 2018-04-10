@@ -204,10 +204,14 @@ def staff_login():
 
 @app.route('/staff_validate', methods=['GET'])
 def staff_validate():
-    #username = request.form['username']
-    #password = request.form['password']
-    return redirect('all_clients')
-
+    username = request.form['username']
+    password = request.form['password']
+    if db.login_staff(username, password):
+        resp = make_response(redirect('/all_clients'))
+        resp.set_cookie('userID', str(username))
+        return resp
+    else:
+        return redirect('/staff_login')
 
 """ Client Login Process """
 @app.route('/client-login', methods=['GET'])
@@ -273,7 +277,7 @@ def send_resources(path):
 def specialist_add():
     return render_template('specialist_add.html')
 
-@app.route('/add_new_client', methods=['GET'])
+@app.route('/add_new_client', methods=['POST'])
 def add_new_client():
     ssn = request.args.get('SSN')
     name = request.args.get('Name')
@@ -291,7 +295,7 @@ def add_new_client():
     crime = request.args.get('crime')
     db.insert_client(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status)
     db.insert_crime(ssn,crime)
-    return render_template('specialist-welcome.html')
+    return redirect('specialist_success')
     return render_template('error.html')
 
 """ Specialist Modify Client """
@@ -299,9 +303,9 @@ def add_new_client():
 def specialist_update():
     return render_template('specialist_update.html')
 
-@app.route('/update_client', methods=['GET'])
+@app.route('/update_client', methods=['POST'])
 def update_client():
-    ssn = request.args.get('ssn')
+    ssn = request.args.get('SSN')
     ssn_new = request.args.get('ssn_new')
     name = request.args.get('Name')
     gender = request.args.get('Gender')
@@ -316,22 +320,35 @@ def update_client():
     date_close = request.args.get('date_close')
     status = request.args.get('status')
     crime = request.args.get('crime')
-    if db.modify_client(ssn,ssn_new,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status):
-         return render_template('specialist-welcome.html')
-    return render_template('error.html')
+    childName = request.args.get('childName')
+    childDOB = request.args.get('childDOB')
+    childStatus = request.args.get('childStatus')
+    if db.modify_client(ssn,ssn_new,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime, childName, childDOB, childStatus):
+         return redirect('specialist_success')
+    return redirect('error')
+
+@app.route('/specialist_success', methods=['GET'])
+def specialist_success():
+    return render_template('specialist_success.html')
 
 """ Specialist Delete Client """
 @app.route('/specialist_delete', methods=['GET'])
 def specialist_delete():
     return render_template('specialist_delete.html')
 
-@app.route('/delete_client', methods=['GET'])
+@app.route('/delete_client', methods=['POST'])
 def delete_client():
     ssn = request.args.get('ssn')
     if db.delete_client(ssn):
-         return render_template('specialist-welcome.html')
+         return redirect('specialist_success')
     else:
-        return render_template('error.html')
+        return redirect('error')
+
+""" Specialist Queries """
+@app.route('/specialist_query', methods=['GET'])
+def specialist_query():
+    return render_template('specialist_query.html')
+
 
 
 """ Staff Search """
@@ -356,8 +373,11 @@ def entry_search():
     date_close = request.args.get('date_close')
     status = request.args.get('status')
     crime = request.args.get('crime')
+    childName = request.args.get('childName')
+    childDOB = request.args.get('childDOB')
+    childStatus = request.args.get('childStatus')
     
-    results = db.fetch_staff_match(name,gender,dob, eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime)
+    results = db.fetch_staff_match(name,gender,dob, eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime, childName, childDOB, childStatus)
     return render_template('entry_results.html', results=results)
 
 
@@ -383,8 +403,11 @@ def match_search():
     date_close = request.args.get('date_close')
     status = request.args.get('status')
     crime = request.args.get('crime')
+    childName = request.args.get('childName')
+    childDOB = request.args.get('childDOB')
+    childStatus = request.args.get('childStatus')
 
-    results = db.fetch_potential_match(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime)
+    results = db.fetch_potential_match(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime, childName, childDOB, childStatus)
     return render_template('match_results.html', results=results)
 
 if __name__ == '__main__':

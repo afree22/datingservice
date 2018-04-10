@@ -216,7 +216,7 @@ class Database(object):
     """ Specialist Update Client """
     def modify_client(self, ssn, ssn_new, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime, childName, childDOB, childStatus):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        update = "UPDATE client set"
+        update = "UPDATE client set "
         rightClient = " WHERE ssn = '{}'".format(ssn)
         client_attrs = []
         
