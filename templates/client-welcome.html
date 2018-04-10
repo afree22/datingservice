@@ -32,7 +32,7 @@
           {% endfor %}
         </p>
         <p>
-          <input type="submit" value="Sign Up" />
+          <button name="clientSignUp" class="btn" value='login'> Sign up! </button>
         </p>
         </form>
     </section>
@@ -41,16 +41,6 @@
 		<button name="clientlogin" class="btn" value='login'>Already A Member? Login Here!</button>
 	</form>
 	</section>
-
-
-    <section id="TheLine">
-      <h2>The line:</h2>
-      <ol>
-        {% for person in people %}
-          <li>{{person['first_name']}} {{person['last_name']}}</li>
-        {% endfor %}
-      </ol>
-   </section>
-    <img src="resources/looking_forward.jpg" id="BottomImage" />
+    <img src="resources/loveImage.jpg" id="BottomImage" />
   </body>
 </html>

@@ -9,9 +9,9 @@
     </h1>
     <section>
 	<div style="width:100%">
-	<div style="float:left; width:40%; padding-top:20px">
-		<form action = "entry_search">
-		<table style="padding-left:30px">
+	<div style="float:center; width:20%; padding-top:20px">
+		<form action = "match_search">
+		<table id = searchResultsTable>
 		<tr>
 			<td>
 				<p style="color:white; font-family:arial; font-size:125%">Name:</p>
@@ -107,6 +107,30 @@
 				<input name="crime" class="enjoy-input" placeholder="" value = ""/>
 			</td>
 		</tr>
+				<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Child's Name</p>
+			</td>
+			<td>
+				<input name="childName" class="enjoy-input" placeholder="" value = ""/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Child's DOB</p>
+			</td>
+			<td>
+				<input name="childDOB" class="enjoy-input" placeholder="" value = ""/>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<p style="color:white; font-family:arial; font-size:125%">Child's Status</p>
+			</td>
+			<td>
+				<input name="childStatus" class="enjoy-input" placeholder="" value = ""/>
+			</td>
+		</tr>
 	</table>
 	<div class="buttonHolder">
 		<button type="submit" class="btn" id="submit-button">Submit</button>
@@ -114,13 +138,15 @@
 </form>
 </div>
 
-<div style="float:right; width:60%; padding-top:20px">
-<div class="SearchResultsTable">
-    <table>
+<div style="float:left; width:60%; padding-top:20px">
+<div>
+    <table id="SearchResultsTable">
         <tr>
+            <td>SSN</td>
             <td>Name</td>       
             <td>Gender</td>   
             <td>Date of Birth</td>
+            <td>Phone Number</td>
             <td>Eye Color</td>
             <td>Weight</td>
             <td>Height</td> 
@@ -129,13 +155,18 @@
             <td>Date Opened</td> 
             <td>Date Closed</td> 
             <td>Account Status</td>
-            <td>Crime</td>          
+            <td>Crime</td>       
+            <td>Child's Name</td> 
+            <td>Child's Date of Birth</td>
+            <td>Child's Status</td>          
         </tr>
         {% for r in results %}
             <tr>
+                <td>{{ r['ssn'] }}</td>
                 <td>{{ r['name'] }}</td>
                 <td>{{ r['gender'] }}</td>
                 <td>{{ r['dob'] }}</td>
+                <td>{{ r['phone'] }}</td>
                 <td>{{ r['eyecolor'] }}</td>
                 <td>{{ r['weight'] }}</td>
                 <td>{{ r['height'] }}</td>
@@ -145,6 +176,9 @@
                 <td>{{ r['date_close'] }}</td>
                 <td>{{ r['status'] }}</td>
                 <td>{{ r['crime'] }}</td>
+                <td>{{ r['childName'] }}</td>
+                <td>{{ r['childDOB'] }}</td>
+                <td>{{ r['childStatus'] }}</td>
             </tr>
         {% endfor %}
     </table>

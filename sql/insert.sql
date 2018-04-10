@@ -36,3 +36,7 @@ INSERT INTO client_interests(ssn, interest)
 VALUES (045783475, 'tennis'), (045783475, 'cooking'), (045783475, 'piano'), 
 	   (123567823, 'football'), (123567823, '3D printing'), (123567823, 'stamp collecting'),
 	   (758393228, 'cooking'), (758393228, 'painting'), (758393228, 'guitar');
+
+INSERT INTO OtherLogin(username, password, use_type)
+VALUES ('Hannah', 'password1', 'entry level'), ('Hector', 'password2', 'upper level'), 
+	   ('Harper', 'password3', 'specialist');

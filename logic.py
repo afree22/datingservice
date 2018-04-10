@@ -184,6 +184,8 @@ class Database(object):
 
         return CursorIterator(cur)
     
+    
+    
     """ This isn't finished yet"""
     def login_client(self, ssn):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
@@ -212,7 +214,7 @@ class Database(object):
         return result
     
     """ Specialist Update Client """
-    def modify_client(self, ssn, ssn_new, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime):
+    def modify_client(self, ssn, ssn_new, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime, childName, childDOB, childStatus):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         update = "UPDATE client set"
         rightClient = " WHERE ssn = '{}'".format(ssn)
@@ -242,6 +244,14 @@ class Database(object):
             client_attrs.append("date_close = '{}'".format(date_close))
         if status:
             client_attrs.append("status = '{}'".format(status))
+        if crime:
+            client_attrs.append("crime = '{}'".format(crime))
+        if childName:
+            client_attrs.append("childName = '{}'".format(childName))
+        if childDOB:
+            client_attrs.append("childDOB = '{}'".format(childDOB))
+        if childStatus:
+            client_attrs.append("childStatus = '{}'".format(childStatus))
         
         attrs = " , ".join(client_attrs)
         sql = "{}{}{}".format(update, attrs, rightClient)
@@ -254,19 +264,19 @@ class Database(object):
     """ Specialist Delete Client """
     def delete_client(self, ssn):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "DELETE c, cr FROM Client C LEFT JOIN CriminalRecord cr ON c.ssn = cr.ssn"
+        sql = "DELETE c, cr, ch FROM Client C LEFT JOIN CriminalRecord cr ON c.ssn = cr.ssn LEFT JOIN Children ch ON c.ssn = ch.ssn"
         cur.execute(sql,(ssn))
 
     
     """ Specialist Search for Client """
     def fetch_allClients(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        cur.execute("SELECT * FROM ds.Client;")
+        cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn")
         return CursorIterator(cur)
     
-    def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime):
+    def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime, childName, childDOB, childStatus):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn WHERE "
+        select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn  LEFT JOIN Children ON c.ssn = Children.ssn WHERE "
         client_attrs = []
 
         if ssn:
@@ -297,6 +307,14 @@ class Database(object):
             client_attrs.append("status = '{}'".format(status))
         if crime:
             client_attrs.append("crime = '{}'".format(crime))
+        if childName:
+            client_attrs.append("childName = '{}'".format(childName))
+        if childDOB:
+            client_attrs.append("childDOB = '{}'".format(childDOB))
+        if childStatus:
+            client_attrs.append("childStatus = '{}'".format(childStatus))
+
+
         
         # todo look into or querying
         attrs = " AND ".join(client_attrs)
@@ -307,19 +325,18 @@ class Database(object):
         return CursorIterator(cur)
 
 
-
-
+        
 
 
     """ Staff Search for Client """
     def fetch_staffClients(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        cur.execute("SELECT name, gender, dob, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn;")
+        cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn  LEFT JOIN Children ON c.ssn = Children.ssn;")
         return CursorIterator(cur)
     
-    def fetch_staff_match(self, name, gender, dob, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime):
+    def fetch_staff_match(self, name, gender, dob, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime, childName, childDOB, childStatus):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        select = "SELECT name, gender, dob, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn WHERE "
+        select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn  LEFT JOIN Children ON c.ssn = Children.ssn WHERE "
         client_attrs = []
         
         if name:
@@ -346,6 +363,13 @@ class Database(object):
             client_attrs.append("status = '{}'".format(status))
         if crime:
             client_attrs.append("crime = '{}'".format(crime))
+        if childName:
+            client_attrs.append("childName = '{}'".format(childName))
+        if childDOB:
+            client_attrs.append("childDOB = '{}'".format(childDOB))
+        if childStatus:
+            client_attrs.append("childStatus = '{}'".format(childStatus))
+
         
         # todo look into or querying
         attrs = " AND ".join(client_attrs)
