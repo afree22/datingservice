@@ -169,6 +169,7 @@ class Database(object):
 
         # todo double check schema for dates!!!
         sql = 'UPDATE dates set occured = "yes" WHERE (c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)'
+        self.conn.commit()
         result = cur.execute(sql, (c1_ssn, c2_ssn, c2_ssn, c1_ssn))
         
         return result

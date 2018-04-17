@@ -8,22 +8,7 @@
       <img src="resources/logo.png" alt="EugeneNeedsLove.com">
     </h1>
      <section>
-      <!-- <form action="" method="POST">
-        <h2>Your dates</h2>
-        {% for date in dates %}
-          <p>
-            {{date['name']}}
-          </p>
-          <p>
-            {{date['scheduled_date']}}
-          </p>
-          <p>
-            {{date['location']}}
-          </p>
-        {% endfor %}
-          <input type="submit" value="Request!" />
-        </p>
-      </form> -->
+      {% if future_dates %}
       <form action="edit_dates" method="POST">
         <h2>Your requested dates</h2>
         {% for date in future_dates %}
@@ -41,6 +26,7 @@
           <input type="submit" value="Edit!" />
         </p>
       </form>
+      {% endif %}
 
 
       <form action="" method="POST">

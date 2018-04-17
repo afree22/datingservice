@@ -152,6 +152,7 @@ def date_history():
     prev_dates = db.get_prev_dates(ssn)
     future_dates = db.get_future_dates(ssn)
 
+    print(future_dates)
     return render_template('date_feed.html', prev_dates=prev_dates, future_dates=future_dates)
 
 @app.route('/edit_dates', methods=['GET', 'POST'])
@@ -246,8 +247,12 @@ def cli_validate():
        # return render_template('client-login.html')
        return redirect('/client-login')
 
-
-
+@app.route('/logout', methods=['GET'])
+def get_logout():
+    # Clear the user cookie to log them out
+    resp = make_response(redirect('/client-login'))
+    resp.set_cookie('userID', '')
+    return resp
 
 
 
