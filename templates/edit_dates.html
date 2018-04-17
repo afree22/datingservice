@@ -24,6 +24,15 @@
           <input type="submit" value="Edit!" />
         </p>
       </form>
+
+      <form action="date_occurred" method="POST">
+        <p>This date already occurred.
+            <input type="radio" name="occurred">
+        </p>
+        <input type="hidden" name="c1_ssn" value="{{date['c1_ssn']}}"/>
+        <input type="hidden" name="c2_ssn" value="{{date['c2_ssn']}}"/>
+        <input type="submit" value="Submit"/>
+      </form>
     </section>
   </body>
 </html>

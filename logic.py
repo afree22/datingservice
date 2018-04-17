@@ -87,12 +87,14 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "INSERT INTO Interests (interest) VALUES (%s)"
         result = cur.execute(sql, (interest))
+        self.con.commit()
         return result
 
     def add_interest_type(self, interest_type):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "INSERT INTO Categories (category) VALUES (%s)"
         result = cur.execute(sql, (interest_type))
+        self.con.commit()
         return result
 
     def add_client_interest(self, ssn, interest_cat, interest_type=None):
@@ -161,6 +163,15 @@ class Database(object):
         sql = 'SELECT * FROM client, dates where (ssn = c1_ssn OR ssn = c2_ssn) and ssn != %s AND occured IS NULL'
         dates = cur.execute(sql, (user_ssn))
         return CursorIterator(cur)
+
+    def set_date_occurred(self, c1_ssn, c2_ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+
+        # todo double check schema for dates!!!
+        sql = 'UPDATE dates set occured = "yes" WHERE (c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)'
+        result = cur.execute(sql, (c1_ssn, c2_ssn, c2_ssn, c1_ssn))
+        
+        return result
 
     def get_people(self):
         """Fetch a veuw from the database"""

@@ -163,9 +163,22 @@ def edit_req_date():
 
     dates = db.get_dates(user_ssn, date_id, date_date)
     date = [i for i in dates][0]
-    # import pdb; pdb.set_trace()
-    # pass
     return render_template('/edit_dates.html', date=date)
+
+@app.route('/date_occurred', methods=['POST'])
+def date_occurred():
+    """ Update database to show a date has occurred
+    """
+    c1_ssn = request.form['c1_ssn']
+    c2_ssn = request.form['c2_ssn']
+
+    print("here")
+    added = db.set_date_occurred(c1_ssn, c2_ssn)
+    print("now here")
+
+    if added:
+        return redirect('/date_history')
+    return "Error"
 
 @app.route('/client-welcome', methods=['GET'])
 def client_welcome():
