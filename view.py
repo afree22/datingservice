@@ -340,7 +340,7 @@ def add_new_client():
 def specialist_update():
     return render_template('specialist_update.html')
 
-@app.route('/update_client', methods=['POST'])
+@app.route('/update_client', methods=['GET'])
 def update_client():
     ssn = request.args.get('SSN')
     ssn_new = request.args.get('ssn_new')
