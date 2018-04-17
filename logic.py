@@ -168,10 +168,19 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
 
         # todo double check schema for dates!!!
+        # tod make this take an actual date as well
         sql = 'UPDATE dates set occured = "yes" WHERE (c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)'
-        self.conn.commit()
         result = cur.execute(sql, (c1_ssn, c2_ssn, c2_ssn, c1_ssn))
+        self.conn.commit()
         
+        return result
+
+    def set_see_again(self, c1_ssn, c2_ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'UPDATE dates set see_again = "yes" WHERE (c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)'
+        result = cur.execute(sql, (c1_ssn, c2_ssn, c2_ssn, c1_ssn))
+        self.conn.commit()
+
         return result
 
     def get_people(self):

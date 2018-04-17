@@ -29,7 +29,7 @@
       {% endif %}
 
 
-      <form action="" method="POST">
+      <form action="see_again" method="POST">
         <h2>Your past dates</h2>
         {% for date in prev_dates %}
         <!-- <input type="radio" name="edit_prev" value={{date}}> -->
@@ -42,6 +42,13 @@
           <p>
             {{date['location']}}
           </p>
+          {% if not date['see_again'] %}
+          <p>
+            I'm interested in seeing this person again. <input type="radio" name="see_again">
+            <input type="hidden" name="date_info" value="{{date['ssn']}} {{date['scheduled_date']}}">
+            <input type="submit" value="Submit!"/>
+          </p>
+          {% endif %}
         {% endfor %}
           <!-- <input type="submit" value="Edit!" /> -->
         </p>

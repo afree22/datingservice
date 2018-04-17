@@ -152,7 +152,11 @@ def date_history():
     prev_dates = db.get_prev_dates(ssn)
     future_dates = db.get_future_dates(ssn)
 
-    print(future_dates)
+    # do this so that we'll only show the form to edit upcoming dates when
+    # there actually are upcoming dates
+    future_dates = [i for i in future_dates]
+    if len(future_dates) == 0:
+        future_dates = []
     return render_template('date_feed.html', prev_dates=prev_dates, future_dates=future_dates)
 
 @app.route('/edit_dates', methods=['GET', 'POST'])
@@ -170,12 +174,27 @@ def edit_req_date():
 def date_occurred():
     """ Update database to show a date has occurred
     """
+    # todo check this, I think it's okay but can just use cookies as well
     c1_ssn = request.form['c1_ssn']
     c2_ssn = request.form['c2_ssn']
 
-    print("here")
     added = db.set_date_occurred(c1_ssn, c2_ssn)
-    print("now here")
+
+    if added:
+        return redirect('/date_history')
+    return "Error"
+
+@app.route('/see_again', methods=['POST'])
+def log_see_again():
+    """ Update database to show that people want to see e/o again
+    """
+    c1_ssn = request.cookies['userID']
+    date_info = request.form['date_info']
+    print(date_info)
+    c2_ssn = date_info.split()[0]
+    date_date = date_info.split()[1]
+    
+    added = db.set_see_again(c1_ssn, c2_ssn)
 
     if added:
         return redirect('/date_history')
