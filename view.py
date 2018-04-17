@@ -386,6 +386,16 @@ def delete_client():
 def specialist_query():
     return render_template('specialist_query.html')
 
+@app.route('/num_clients_married', methods=['GET'])
+def num_clients_married():
+    results = db.get_num_clients_married()
+    return render_template('num_clients_married.html', results=results)
+
+@app.route('/num_clients_gender', methods=['GET'])
+def num_clients_gender():
+    results = db.get_num_clients_gender()
+    return render_template('num_clients_gender.html', results=results)
+
 
 
 """ Staff Search """

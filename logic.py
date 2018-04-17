@@ -287,6 +287,19 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "DELETE c, cr, ch FROM Client C LEFT JOIN CriminalRecord cr ON c.ssn = cr.ssn LEFT JOIN Children ch ON c.ssn = ch.ssn"
         cur.execute(sql,(ssn))
+        
+    """ Specialist Queries """
+    def get_num_clients_married(self):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT COUNT(*) as married FROM CLIENT C WHERE prior_marriage = 'yes'"
+        cur.execute(sql)
+        return CursorIterator(cur)
+    
+    def get_num_clients_gender(self):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT COUNT(*) as num FROM CLIENT C group by gender"
+        cur.execute(sql)
+        return CursorIterator(cur)
 
     
     """ Specialist Search for Client """
