@@ -11,6 +11,15 @@ import config
 from logic import Database
 
 
+""" 
+fees: if 5 dates don't work out, get registration charge, but don't
+pay for matches if you don't like the person ???
+or is it that you just get a free match if you don't like the person after two dates?
+remember to add option to search by having children or not
+Eugene says the string formatting thing is okay as is
+"""
+
+
 # instanciate application and database object
 app = Flask(__name__)
 db = Database(config)
@@ -320,7 +329,7 @@ def add_new_client():
     name = request.args.get('Name')
     gender = request.args.get('Gender')
     dob = request.args.get('DOB')
-    phone = request.args.get('Phone')
+    phone = request.args.get('phone')
     eyecolor = request.args.get('eyecolor')
     weight = request.args.get('weight')
     height = request.args.get('height')
