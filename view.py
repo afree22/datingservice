@@ -349,7 +349,7 @@ def add_new_client():
 def specialist_update():
     return render_template('specialist_update.html')
 
-@app.route('/update_client', methods=['POST'])
+@app.route('/update_client', methods=['GET'])
 def update_client():
     ssn = request.args.get('SSN')
     ssn_new = request.args.get('ssn_new')
@@ -394,6 +394,16 @@ def delete_client():
 @app.route('/specialist_query', methods=['GET'])
 def specialist_query():
     return render_template('specialist_query.html')
+
+@app.route('/num_clients_married', methods=['GET'])
+def num_clients_married():
+    results = db.get_num_clients_married()
+    return render_template('num_clients_married.html', results=results)
+
+@app.route('/num_clients_gender', methods=['GET'])
+def num_clients_gender():
+    results = db.get_num_clients_gender()
+    return render_template('num_clients_gender.html', results=results)
 
 
 
