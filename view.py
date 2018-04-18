@@ -378,7 +378,7 @@ def specialist_success():
     return render_template('specialist_success.html')
 
 """ Specialist Delete Client """
-@app.route('/specialist_delete', methods=['GET'])
+@app.route('/specialist_delete', methods=['GET', 'POST'])
 def specialist_delete():
     return render_template('specialist_delete.html')
 
