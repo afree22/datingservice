@@ -314,7 +314,7 @@ def send_resources(path):
 def specialist_add():
     return render_template('specialist_add.html')
 
-@app.route('/add_new_client', methods=['POST'])
+@app.route('/add_new_client', methods=['GET'])
 def add_new_client():
     ssn = request.args.get('SSN')
     name = request.args.get('Name')
