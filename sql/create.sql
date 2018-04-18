@@ -27,6 +27,7 @@ ssn INT NOT NULL,
 crime VARCHAR(60),
 PRIMARY KEY(ssn, crime),
 FOREIGN KEY(ssn) REFERENCES Client(ssn)
+ON DELETE CASCADE
 );
 
 CREATE TABLE Children(
@@ -36,6 +37,7 @@ childDOB DATE NOT NULL,
 childStatus VARCHAR(80) NOT NULL,
 PRIMARY KEY(ssn, childName),
 FOREIGN KEY(ssn) REFERENCES Client(ssn)
+ON DELETE CASCADE
 );
 
 CREATE TABLE dates(
@@ -49,6 +51,7 @@ see_again ENUM('yes','no') NULL,
 PRIMARY KEY(c1_ssn, c2_ssn),
 FOREIGN KEY(c1_ssn) REFERENCES Client(ssn),
 FOREIGN KEY(c2_ssn) REFERENCES Client(ssn)
+ON DELETE CASCADE
 );
 
 CREATE TABLE Fees(
@@ -59,6 +62,7 @@ payment_amount INT NOT NULL,
 status CHAR(8) NOT NULL,
 PRIMARY KEY(ssn, date_incurred),
 FOREIGN KEY(ssn) REFERENCES Client(ssn)
+ON DELETE CASCADE
 );
 
 CREATE TABLE OtherLogin(
@@ -71,13 +75,15 @@ PRIMARY KEY(username)
 CREATE TABLE interest_category(
 interest VARCHAR(30) NOT NULL,
 category VARCHAR(60) NOT NULL,
-PRIMARY KEY(interest));
+PRIMARY KEY(interest)
+);
 
 CREATE TABLE client_interests(
 ssn INT NOT NULL,
 interest VARCHAR(30) NOT NULL,
 PRIMARY KEY(ssn, interest),
 FOREIGN KEY(ssn) REFERENCES Client(ssn),
-FOREIGN KEY(interest) REFERENCES interest_category(interest));
+FOREIGN KEY(interest) REFERENCES interest_category(interest)
+ON DELETE CASCADE);
 
 

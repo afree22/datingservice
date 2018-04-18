@@ -1,11 +1,3 @@
-INSERT INTO categories(category)
-VALUES ('sports'), ('music'), ('creative arts'), ('collecting');
-
-INSERT INTO interests(interest)
-VALUES ('tennis'), ('piano'), ('football'), ('3D printing'), ('stamp collecting'), 
-		('cooking'), ('reading'), ('flute'), ('guitar'), ('golf'), ('volleyball'), 
-		('coin collecting'), ('knitting'), ('sewing'), ('woodwork'), ('painting');
-
 INSERT INTO interest_category(interest, category)
 VALUES ('tennis', 'sports'), ('piano', 'music'), ('football', 'sports'), ('3D printing', 'creative arts'), 
 ('stamp collecting', 'collecting'), ('flute', 'music'), ('guitar', 'music'), ('golf', 'sports'),

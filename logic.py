@@ -285,8 +285,9 @@ class Database(object):
     """ Specialist Delete Client """
     def delete_client(self, ssn):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "DELETE c, cr, ch FROM Client C LEFT JOIN CriminalRecord cr ON c.ssn = cr.ssn LEFT JOIN Children ch ON c.ssn = ch.ssn"
-        cur.execute(sql,(ssn))
+        sql = "DELETE * FROM CLIENT WHERE ssn = %s"
+        result = cur.execute(sql, (ssn))
+        return result
         
     """ Specialist Queries """
     def get_num_clients_married(self):
