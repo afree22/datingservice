@@ -323,6 +323,10 @@ def send_resources(path):
     return send_from_directory('resources', path)
 
 """ Specialist Modify Client """
+@app.route('/specialist_update_landing', methods=['GET'])
+def specialist_update_landing():
+    return render_template('specialist_update_landing.html')
+
 @app.route('/specialist_update', methods=['GET'])
 def specialist_update():
     return render_template('specialist_update.html')
