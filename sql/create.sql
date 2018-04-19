@@ -1,11 +1,3 @@
-DROP DATABASE IF EXISTS ds;
-CREATE DATABASE ds;
-USE ds;
-
-GRANT ALL ON ds.* TO 'user280'@'localhost' IDENTIFIED BY 'psswrd' WITH GRANT OPTION;
-flush privileges;
-
-
 CREATE TABLE Client(
 ssn INT PRIMARY KEY NOT NULL,
 name VARCHAR(60) DEFAULT ' ',
@@ -81,8 +73,8 @@ CREATE TABLE client_interests(
 ssn INT NOT NULL,
 interest VARCHAR(30) NOT NULL,
 PRIMARY KEY(ssn, interest),
-FOREIGN KEY(ssn) REFERENCES Client(ssn),
-FOREIGN KEY(interest) REFERENCES interest_category(interest)
+FOREIGN KEY(interest) REFERENCES interest_category(interest),
+FOREIGN KEY(ssn) REFERENCES Client(ssn)
 ON DELETE CASCADE);
 
 
