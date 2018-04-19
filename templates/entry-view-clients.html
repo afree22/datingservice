@@ -138,7 +138,7 @@
 		</tr>
 	</table>
 	<div class="buttonHolder">
-		<button type="submit" class="btn" id="submit-button">Submit</button>
+		<button type="submit" class="btn" id="submit-button">Search clients</button>
 	</div>
 </form>
 </div>
@@ -147,7 +147,6 @@
 <div>
     <table id="SearchResultsTable">
         <tr>
-            <td>SSN</td>
             <td>Name</td>       
             <td>Gender</td>   
             <td>Date of Birth</td>
@@ -166,7 +165,6 @@
         </tr>
         {% for r in results %}
             <tr>
-                <td>{{ r['ssn'] }}</td>
                 <td>{{ r['name'] }}</td>
                 <td>{{ r['gender'] }}</td>
                 <td>{{ r['dob'] }}</td>

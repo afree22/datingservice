@@ -11,7 +11,8 @@ VALUES (145783475, 'Jennie', 'female', '1981-07-19', '2028855700', 'green', 120,
 	   (234765283, 'Charles', 'male', '1975-08-09', '3059872634', 'green', 220, 68, 'no', 'female', '2016-08-16', '2016-08-19', 'criminal_closed');
 
 INSERT INTO Children (ssn, childName, ChildDOB, childStatus)
-VALUES(758393228, 'Henry', '2005-05-25', 'shared custody');
+VALUES(758393228, 'Henry', '2005-05-25', 'shared custody'), (758393228, 'James', '2005-05-25', 'shared custody');
+
 		
 INSERT INTO CriminalRecord(ssn, crime)
 VALUES (234765283, 'drug possession');

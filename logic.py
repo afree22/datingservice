@@ -368,9 +368,9 @@ class Database(object):
         cur.execute(sql)
         return CursorIterator(cur)
 
-
-        
-
+    
+    
+    
 
     """ Staff Search for Client """
     def fetch_staffClients(self):

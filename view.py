@@ -78,6 +78,33 @@ def insert_client():
         return redirect('/signup_kids')
     return "Error"
 
+""" Insert Interests """
+@app.route('/interests', methods=['GET'])
+def interests():
+    # this html file is just a placeholder, haven't actually started this yet
+    return render_template('interests.html')
+
+@app.route('/insert_interets', methods=['POST'])
+def insert_interests():
+    interest = request.form['interest']
+    interest_type = request.form['interest_type']
+    ssn = request.form['ssn']
+    if not db.check_interest(interest):
+        db.add_interest(interest)
+        if db.add_interest_type(interest_type):
+            return redirect('/interests')
+        return "Error"
+
+    if not db.check_interest_type(interest_type):
+        if db.add_interest_type(interest_type):
+            return redirect('/interests')
+        return "Error"
+
+    if db.add_client_interest(ssn, interest, interest_type):
+        return redirect('/interests')
+    return "Error"
+
+
 
 """ Specialist Insert Client """
 @app.route('/specialist_signup_client', methods=['GET'])
@@ -108,34 +135,6 @@ def specialist_insert():
         if db.insert_person_(ssn, name, gender, dob, phone, eye_color, weight, height, prev_marraige, interested_in, open_date, None, status):
             return redirect('/signup_kids')
     return redirect('error')
-
-""" Insert Interests """
-@app.route('/interests', methods=['GET'])
-def interests():
-    # this html file is just a placeholder, haven't actually started this yet
-    return render_template('interests.html')
-
-@app.route('/insert_interets', methods=['POST'])
-def insert_interests():
-    interest = request.form['interest']
-    interest_type = request.form['interest_type']
-    ssn = request.form['ssn']
-    if not db.check_interest(interest):
-        db.add_interest(interest)
-        if db.add_interest_type(interest_type):
-            return redirect('/interests')
-        return "Error"
-
-    if not db.check_interest_type(interest_type):
-        if db.add_interest_type(interest_type):
-            return redirect('/interests')
-        return "Error"
-
-    if db.add_client_interest(ssn, interest, interest_type):
-        return redirect('/interests')
-    return "Error"
-
-
 
 
 
@@ -412,7 +411,7 @@ def entry_search():
     childStatus = request.args.get('childStatus')
     
     results = db.fetch_staff_match(name,gender,dob, eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime, childName, childDOB, childStatus)
-    return render_template('entry_results.html', results=results)
+    return render_template('entry-results.html', results=results)
 
 
 
