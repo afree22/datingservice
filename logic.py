@@ -212,11 +212,18 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         return 'SELECT COUNT(ssn) FROM ds.CLient WHERE ssn LIKE "%s";'.format(ssn)
     
-    def login_staff(self, username, password):
+    def entry_login(self, staffID):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        return 'SELECT COUNT(staffID) FROM ds.OtherLogin WHERE staffID LIKE "%s" AND staff_type = "entry level";'.format(staffID)
+
+    def upper_login(self, staffID):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        return 'SELECT COUNT(staffID) FROM ds.OtherLogin WHERE staffID LIKE "%s" AND staff_type = "upper level";'.format(staffID)
     
-    def login_specialist(self, username, password):
+    def specialist_login(self, staffID):
+        print("in specialist function")
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        return 'SELECT COUNT(staffID) FROM ds.OtherLogin WHERE staffID LIKE "%s" AND staff_type = "specialist";'.format(staffID)
     
 
     """ Specialist Insert Client """
@@ -285,7 +292,7 @@ class Database(object):
     """ Specialist Delete Client """
     def delete_client(self, ssn):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "DELETE * FROM CLIENT WHERE ssn = %s"
+        sql = "DELETE FROM CLIENT WHERE ssn = %s"
         result = cur.execute(sql, (ssn))
         return result
         
@@ -349,9 +356,6 @@ class Database(object):
         if childStatus:
             client_attrs.append("childStatus = '{}'".format(childStatus))
 
-
-        
-        # todo look into or querying
         attrs = " AND ".join(client_attrs)
         sql = "{}{}".format(select, attrs)
         print(sql)

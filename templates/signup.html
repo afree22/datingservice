@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Very Good Dating Service</title>
+    <title>Find Love</title>
+    <link rel="stylesheet" href="resources/style.css" />
   </head>
   <body>
     <h1 class="title">
-      <img src="resources/logo.png" alt="EugeneNeedsLove.com">
+      <img src="resources/LoveHeader.jpg" alt="Find love">
     </h1>
      <section>
       <form action="insert_client" method="POST">
@@ -40,15 +41,19 @@
         <p>
           <label for="InterestedIn">Who are you interested in?:</label> <input type="text" name="InterestedIn" id="InterestedIn"/>
         </p>
-          <input type="submit" value="Sign up now!" />
+          <input type="submit" class="btn" value="Sign up now!" />
         </p>
       </form>
     </section>
-
-    <ol>
-        {% for cl in clients %}
-          <li>{{cl['name']}}</li>
-        {% endfor %}
-    </ol>
+    <section>
+     <form form action="client-login">
+		<button name="clientlogin" class="btn" value='login'> Already A Member? Login Here!</button>
+	</form>
+	</section>
+    <section>
+    <form action="staff-login">
+        <button name="login-button" class="btn"> Are you a staff member? Login Here!</button>
+	</form>
+	</section>
   </body>
 </html>

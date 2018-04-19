@@ -5,7 +5,7 @@ VALUES ('tennis', 'sports'), ('piano', 'music'), ('football', 'sports'), ('3D pr
 ('sewing','creative arts'), ('woodwork','creative arts'), ('painting','creative arts');
 
 INSERT INTO Client( ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status)
-VALUES (045783475, 'Jennie', 'female', '1981-07-19', '2028855700', 'green', 120, 64, 'no', 'male', '2017-04-06',NULL, 'active'),
+VALUES (145783475, 'Jennie', 'female', '1981-07-19', '2028855700', 'green', 120, 64, 'no', 'male', '2017-04-06',NULL, 'active'),
 	   (123567823, 'John', 'male', '1980-10-21', '2028978394', 'blue',170, 70, 'no', 'female', '2017-02-25',NULL, 'active'),
 	   (758393228, 'Jill', 'female', '1978-07-19','2029362918', 'brown', 115, 63, 'yes', 'male', '2014-04-19', NULL, 'active'),
 	   (234765283, 'Charles', 'male', '1975-08-09', '3059872634', 'green', 220, 68, 'no', 'female', '2016-08-16', '2016-08-19', 'criminal_closed');
@@ -18,17 +18,17 @@ VALUES (234765283, 'drug possession');
 
 
 INSERT INTO Fees(ssn, date_incurred, fee_type, payment_amount, status)
-VALUES (045783475, '2017-04-06', 'registration fee', 100, 'paid'),
+VALUES (145783475, '2017-04-06', 'registration fee', 100, 'paid'),
 		(123567823, '2017-02-25', 'registration fee', 100, 'paid'),
 		(758393228, '2014-04-19', 'registration fee', 100, 'paid'),
 		(234765283, '2016-08-16', 'registration fee', 100, 'paid');
 
 
 INSERT INTO client_interests(ssn, interest)
-VALUES (045783475, 'tennis'), (045783475, 'cooking'), (045783475, 'piano'), 
+VALUES (145783475, 'tennis'), (145783475, 'cooking'), (145783475, 'piano'), 
 	   (123567823, 'football'), (123567823, '3D printing'), (123567823, 'stamp collecting'),
 	   (758393228, 'cooking'), (758393228, 'painting'), (758393228, 'guitar');
 
-INSERT INTO OtherLogin(username, password, use_type)
-VALUES ('Hannah', 'password1', 'entry level'), ('Hector', 'password2', 'upper level'), 
-	   ('Harper', 'password3', 'specialist');
+INSERT INTO OtherLogin(staffID, staff_type)
+VALUES (1, 'entry level'), (2, 'upper level'), 
+	   (3, 'specialist');

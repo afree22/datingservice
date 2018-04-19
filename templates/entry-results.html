@@ -6,12 +6,11 @@
   </head>
   <body>
     <h1 class="title">
-       <img src="resources/LoveHeader.jpg" alt="Find love">
     </h1>
     <section>
 	<div style="width:100%">
 	<div style="float:center; width:20%; padding-top:20px">
-		<form action = "match_search">
+		<form action = "entry_search">
 		<table id = searchResultsTable>
 		<tr>
 			<td>
@@ -37,7 +36,6 @@
 				<input name="DOB" class="enjoy-input" placeholder="" value = "" />
 			</td>
 		</tr>
-		<tr>
 			<td>
 				<p style="color:white; font-family:arial; font-size:125%">Eye Color:</p>
 			</td>
@@ -109,7 +107,7 @@
 				<input name="crime" class="enjoy-input" placeholder="" value = ""/>
 			</td>
 		</tr>
-		<tr>
+				<tr>
 			<td>
 				<p style="color:white; font-family:arial; font-size:125%">Child's Name</p>
 			</td>
@@ -144,11 +142,9 @@
 <div>
     <table id="SearchResultsTable">
         <tr>
-            <td>SSN</td>
             <td>Name</td>       
             <td>Gender</td>   
             <td>Date of Birth</td>
-            <td>Phone Number</td>
             <td>Eye Color</td>
             <td>Weight</td>
             <td>Height</td> 
@@ -164,11 +160,9 @@
         </tr>
         {% for r in results %}
             <tr>
-                <td>{{ r['ssn'] }}</td>
                 <td>{{ r['name'] }}</td>
                 <td>{{ r['gender'] }}</td>
                 <td>{{ r['dob'] }}</td>
-                <td>{{ r['phone'] }}</td>
                 <td>{{ r['eyecolor'] }}</td>
                 <td>{{ r['weight'] }}</td>
                 <td>{{ r['height'] }}</td>

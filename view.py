@@ -29,22 +29,31 @@ app.host = config.APP_HOST
 app.port = config.APP_PORT
 app.debug = config.APP_DEBUG
 
-
-@app.route('/signup', methods=['GET'])
+""" THIS IS THE MAIN PAGE """
+@app.route('/', methods=['GET'])
 def signup():
-    """ Sign up page
-    """
-    
     clients = db.get_people()
-
     return render_template('signup.html', clients=clients)
 
+""" Sign up client's children """
 @app.route('/signup_kids', methods=['GET'])
 def signup_kids():
-    """ Page for information on client's children
-    """
+    """ Page for information on client's children """
     return render_template('children.html')
 
+@app.route('/insert_child', methods=['POST'])
+def insert_child():
+    name = request.form['name']
+    dob = request.form['dob']
+    status = request.form['status']
+    ssn = request.form['ParentSSN']
+    
+    if db.insert_child_(ssn, name, dob, status):
+        return redirect('/signup_kids')
+    return "Error"
+
+
+""" Insert a client """
 @app.route('/insert_client', methods=['POST'])
 def insert_client():
     """ Take client info from signup and insert into db
@@ -65,6 +74,7 @@ def insert_client():
         return redirect('/signup_kids')
     return "Error"
 
+""" Insert Interests """
 @app.route('/interests', methods=['GET'])
 def interests():
     # this html file is just a placeholder, haven't actually started this yet
@@ -90,22 +100,9 @@ def insert_interests():
         return redirect('/interests')
     return "Error"
 
-@app.route('/insert_child', methods=['POST'])
-def insert_child():
-    name = request.form['name']
-    dob = request.form['dob']
-    status = request.form['status']
-    ssn = request.form['ParentSSN']
 
-    if db.insert_child_(ssn, name, dob, status):
-        return redirect('/signup_kids')
-    return "Error"
 
-@app.route('/', methods=['GET'])
-def index():
-    """Get the main page"""
-    people = db.get_people()
-    return render_template('index.html', people=people)
+
 
 @app.route('/client_search', methods=['GET'])
 def client_search():
@@ -209,49 +206,25 @@ def log_see_again():
         return redirect('/date_history')
     return "Error"
 
-@app.route('/client-welcome', methods=['GET'])
-def client_welcome():
-    return render_template('client-welcome.html')
-
 @app.route('/client-home', methods=['GET'])
 def client_home():
     return render_template('client-page.html')
 
-""" Specialist Login Process """
-@app.route('/specialist-login', methods=['GET'])
-def specialist_login():
-    return render_template('specialist-login.html')
-
-@app.route('/specialist_validation', methods=['GET'])
-def specialist_validate():
-    #username = request.form['username']
-    #password = request.form['password']
-    return render_template('specialist-welcome.html')
-
-""" Entry Staff Login Process """
-@app.route('/entry_login', methods=['GET'])
-def entry_login():
-    return render_template('entry_login.html')
-
-@app.route('/entry_validate', methods=['GET'])
-def entry_validate():
-    #username = request.form['username']
-    #password = request.form['password']
-    return redirect('entry_view_clients')
 
 """ Other Staff Login Process """
-@app.route('/staff_login', methods=['GET'])
+@app.route('/staff-login', methods=['GET'])
 def staff_login():
-    return render_template('staff_login.html')
+    return render_template('staff-login.html')
 
-@app.route('/staff_validate', methods=['GET'])
+@app.route('/staff_validate', methods=['POST','GET'])
 def staff_validate():
-    username = request.form['username']
-    password = request.form['password']
-    if db.login_staff(username, password):
-        resp = make_response(redirect('/all_clients'))
-        resp.set_cookie('userID', str(username))
-        return resp
+    staffID = request.form['staffID']
+    if db.entry_login(staffID) == 1:
+        return redirect('entry_view_clients')
+    elif db.upper_login(staffID) :
+        return redirect('all_clients')
+    elif db.specialist_login(staffID):
+        return redirect('specialist-welcome')
     else:
         return redirect('/staff_login')
 
@@ -285,12 +258,7 @@ def get_logout():
 
 
 
-
-
-@app.route('/staff-welcome', methods=['GET'])
-def staff_welcome():
-    return render_template('staff-welcome.html')
-
+""" Landing page for specialists with options """
 @app.route('/specialist-welcome', methods=['GET'])
 def specialist_welcome():
     return render_template('specialist-welcome.html')
@@ -382,9 +350,9 @@ def specialist_success():
 def specialist_delete():
     return render_template('specialist_delete.html')
 
-@app.route('/delete_client', methods=['POST'])
+@app.route('/delete_client', methods=['GET', 'POST'])
 def delete_client():
-    ssn = request.args.get('ssn')
+    ssn = int(request.args.get('SSN'))
     if db.delete_client(ssn):
          return redirect('specialist_success')
     else:
@@ -407,15 +375,14 @@ def num_clients_gender():
 
 
 
-""" Staff Search """
+""" Entry Level  Search """
 @app.route('/entry_view_clients', methods=['GET'])
 def entry_view_clients():
     results = db.fetch_staffClients()
-    return render_template('entry_view_clients.html', results=results)
+    return render_template('entry-view-clients.html', results=results)
 
 @app.route('/entry_search', methods=['GET'])
 def entry_search():
-    ssn = request.args.get('SSN')
     name = request.args.get('Name')
     gender = request.args.get('Gender')
     dob = request.args.get('DOB')
@@ -435,6 +402,7 @@ def entry_search():
     
     results = db.fetch_staff_match(name,gender,dob, eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime, childName, childDOB, childStatus)
     return render_template('entry_results.html', results=results)
+
 
 
 """Client Match Search Results"""

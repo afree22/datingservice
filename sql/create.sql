@@ -66,10 +66,9 @@ ON DELETE CASCADE
 );
 
 CREATE TABLE OtherLogin(
-username VARCHAR(15) NOT NULL,
-password VARCHAR(15) NOT NULL,
-use_type ENUM('specialist','entry level', 'upper level') NOT NULL,
-PRIMARY KEY(username)
+staffID INT NOT NULL,
+staff_type ENUM('specialist','entry level', 'upper level') NOT NULL,
+PRIMARY KEY(staffID)
 );
 
 CREATE TABLE interest_category(
