@@ -210,20 +210,26 @@ class Database(object):
     """ This isn't finished yet"""
     def login_client(self, ssn):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        return 'SELECT COUNT(ssn) FROM ds.CLient WHERE ssn LIKE "%s";'.format(ssn)
+        result = cur.execute('SELECT COUNT(ssn) FROM ds.CLient WHERE ssn LIKE "%s";'.format(ssn))
+        self.conn.commit()
+        return result
+    
     
     def entry_login(self, staffID):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        return 'SELECT COUNT(staffID) FROM ds.OtherLogin WHERE staffID LIKE "%s" AND staff_type = "entry level";'.format(staffID)
+        result = cur.execute( 'SELECT COUNT(staffID) FROM ds.OtherLogin WHERE staffID LIKE "%s" AND staff_type = "entry level";'.format(staffID))
+        return result
 
     def upper_login(self, staffID):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        return 'SELECT COUNT(staffID) FROM ds.OtherLogin WHERE staffID LIKE "%s" AND staff_type = "upper level";'.format(staffID)
+        result = cur.execute('SELECT COUNT(staffID) FROM ds.OtherLogin WHERE staffID LIKE "%s" AND staff_type = "upper level";'.format(staffID))
+        return result
     
     def specialist_login(self, staffID):
         print("in specialist function")
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        return 'SELECT COUNT(staffID) FROM ds.OtherLogin WHERE staffID LIKE "%s" AND staff_type = "specialist";'.format(staffID)
+        result = cur.execute('SELECT COUNT(staffID) FROM ds.OtherLogin WHERE staffID LIKE "%s" AND staff_type = "specialist";'.format(staffID))
+        return result
     
 
     """ Specialist Insert Client """
@@ -308,7 +314,6 @@ class Database(object):
         sql = "SELECT COUNT(*) as num FROM CLIENT C group by gender"
         cur.execute(sql)
         return CursorIterator(cur)
-
     
     """ Specialist Search for Client """
     def fetch_allClients(self):

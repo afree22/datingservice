@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Find Love</title>
+    <link rel="stylesheet" href="resources/style.css" />
+  </head>
+  <body>
+    <h1 class="title">
+      <img src="resources/LoveHeader.jpg" alt="Find love">
+    </h1>
+     <section>
+      <form action="specialist_insert" method="POST">
+        <h2>Insert a Client</h2>
+        <p>
+          <label for="ssn">SSN:</label> <input type="number" name="ssn" id="ssn" min="0" max="9999999999" value="" />
+        </p>
+        <p>
+          <label for="name">Name:</label> <input type="text" name="name" id="Name" />
+        </p>
+        <p>
+          <label for="phone">Phone Number:</label> <input type="text" name="phone" id="phone" />
+        </p>
+        <p>
+          <label for="dob">DOB:</label> <input type="date" name="dob" id="dob" value="" />
+        </p>
+        <p>
+          <label for="Gender">Gender:</label> <input type="text" name="gender" id="Gender"/>
+        </p>
+        <p>
+          <label for="EyeColor">Eye color:</label> <input type="text" name="EyeColor" id="EyeColor"/>
+        </p>
+        <p>
+          <label for="Weight">Weight:</label> <input type="int" name="weight" id="weight"/>
+        </p>
+        <p>
+          <label for="Height">Height:</label> <input type="int" name="height" id="height"/>
+        </p>
+        <p>
+          <label for="PrevMarriage">Have you been married before?:</label> <input type="text" name="PrevMarriage" id="PrevMarriage"/>
+        </p>
+        <p>
+          <label for="InterestedIn">Interested in male or female?</label> <input type="text" name="InterestedIn" id="InterestedIn"/>
+        </p>
+         <p>
+          <label for="open_date">Date Account was opened</label> <input type="date" name="open_date" id="open_date"/>
+        </p>
+        <p>
+          <label for="close_date">Date Account closed (if still open, leave empty) </label> <input type="date" name="close_date" id="close_date"/>
+        </p>
+         <p>
+          <label for="status">Account Status (active, closed)</label> <input type="text" name="status" id="status"/>
+        </p>
+        <p>
+          <input type="submit" class="btn" value="Add the client" />
+        </p>
+      </form>
+    </section>
+  </body>
+</html>

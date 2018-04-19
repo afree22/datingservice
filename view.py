@@ -35,6 +35,10 @@ def signup():
     clients = db.get_people()
     return render_template('signup.html', clients=clients)
 
+@app.route('/error', methods=['GET'])
+def error():
+    return render_template('error.html')
+
 """ Sign up client's children """
 @app.route('/signup_kids', methods=['GET'])
 def signup_kids():
@@ -73,6 +77,37 @@ def insert_client():
     if db.insert_person_(ssn, name, gender, dob, phone, eye_color, weight, height, prev_marraige, interested_in, open_date, None, "active"):
         return redirect('/signup_kids')
     return "Error"
+
+
+""" Specialist Insert Client """
+@app.route('/specialist_signup_client', methods=['GET'])
+def specialist_signup_client():
+    return render_template('specialist-signup-client.html')
+
+@app.route('/specialist_insert', methods=['POST'])
+def specialist_insert():
+    """ Specialists inserts the info into the database """
+    ssn = request.form['ssn']
+    name = request.form['name']
+    phone = request.form['phone']
+    dob = request.form['dob']
+    ssn = request.form['ssn']
+    gender = request.form['gender']
+    eye_color = request.form['EyeColor']
+    weight = request.form['weight']
+    height = request.form['height']
+    prev_marraige = request.form['PrevMarriage']
+    interested_in = request.form['InterestedIn']
+    open_date = request.form['open_date']
+    close_date = request.form['close_date']
+    status = request.form['status']
+    if(close_date):
+        if db.insert_person_(ssn, name, gender, dob, phone, eye_color, weight, height, prev_marraige, interested_in, open_date, close_date, status):
+            return redirect('/signup_kids')
+    else:
+        if db.insert_person_(ssn, name, gender, dob, phone, eye_color, weight, height, prev_marraige, interested_in, open_date, None, status):
+            return redirect('/signup_kids')
+    return redirect('error')
 
 """ Insert Interests """
 @app.route('/interests', methods=['GET'])
@@ -216,17 +251,19 @@ def client_home():
 def staff_login():
     return render_template('staff-login.html')
 
-@app.route('/staff_validate', methods=['POST','GET'])
+@app.route('/staff_validate', methods=['POST'])
 def staff_validate():
     staffID = request.form['staffID']
-    if db.entry_login(staffID) == 1:
+
+    if db.entry_login(staffID):
         return redirect('entry_view_clients')
-    elif db.upper_login(staffID) :
+    elif db.upper_login(staffID):
         return redirect('all_clients')
     elif db.specialist_login(staffID):
         return redirect('specialist-welcome')
     else:
-        return redirect('/staff_login')
+        return redirect('error')
+
 
 """ Client Login Process """
 @app.route('/client-login', methods=['GET'])
@@ -285,32 +322,6 @@ def insert():
 @app.route('/resources/<path:path>')
 def send_resources(path):
     return send_from_directory('resources', path)
-
-""" Specialist Add Client """
-@app.route('/specialist_add', methods=['GET'])
-def specialist_add():
-    return render_template('specialist_add.html')
-
-@app.route('/add_new_client', methods=['GET'])
-def add_new_client():
-    ssn = request.args.get('SSN')
-    name = request.args.get('Name')
-    gender = request.args.get('Gender')
-    dob = request.args.get('DOB')
-    phone = request.args.get('phone')
-    eyecolor = request.args.get('eyecolor')
-    weight = request.args.get('weight')
-    height = request.args.get('height')
-    prior_marriage = request.args.get('prior_marriage')
-    interest = request.args.get('interest')
-    date_open = request.args.get('date_open')
-    date_close = request.args.get('date_close')
-    status = request.args.get('status')
-    crime = request.args.get('crime')
-    db.insert_client(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status)
-    db.insert_crime(ssn,crime)
-    return redirect('specialist_success')
-    return render_template('error.html')
 
 """ Specialist Modify Client """
 @app.route('/specialist_update', methods=['GET'])
