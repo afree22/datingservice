@@ -423,6 +423,8 @@ def entry_search():
 @app.route('/all_clients', methods=['GET'])
 def all_clients():
     results = db.fetch_allClients()
+    # import pdb; pdb.set_trace()
+    # pass
     return render_template('all_clients.html', results=results)
 
 @app.route('/match_search', methods=['GET'])
