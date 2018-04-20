@@ -252,8 +252,12 @@ def staff_login():
 
 @app.route('/staff_validate', methods=['POST'])
 def staff_validate():
-    staffID = request.form['staffID']
-
+    staffID = int(request.form['staffID'])
+    
+    
+    print(db.entry_login(staffID))
+    print(db.upper_login(staffID))
+    print(db.specialist_login(staffID))
     if db.entry_login(staffID):
         return redirect('entry_view_clients')
     elif db.upper_login(staffID):
