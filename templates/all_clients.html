@@ -195,28 +195,16 @@
                 <td>{{ r['date_close'] }}</td>
                 <td>{{ r['status'] }}</td>
                 <td>{{ r['crime'] }}</td>
-                <td> {% for r2 in results %}
-                	{% if r['ssn'] == r2['ssn'] %}
-                	{{r2['childName']}}
-                	{% endif %}
-                	{% endfor %}
-                 <!-- {{ r['childName'] }} -->
+                <td> 
+                 {{ r['childName'] }}
              	</td>
                 <td>
-                <!-- {{ r['childDOB'] }} -->
-                {% for r2 in results %}
-                	{% if r['ssn'] == r2['ssn'] %}
-                	{{r2['childDob']}}
-                	{% endif %}
-                	{% endfor %}
+                {{ r['childDOB'] }}
+                
             	</td>
                 <td>
-                <!-- {{ r['childStatus'] }} -->
-           	 	{% for r2 in results %}
-                	{% if r['ssn'] == r2['ssn'] %}
-                	{{r2['childStatus']}}
-                	{% endif %}
-                	{% endfor %}</td>
+                {{ r['childStatus'] }}
+           	 	</td>
             </tr>
         {% endfor %}
     </table>

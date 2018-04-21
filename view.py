@@ -5,6 +5,7 @@
 # third party modules
 from flask import (Flask, render_template, request, send_from_directory, redirect, make_response)
 import datetime
+from collections import defaultdict
 
 # project modules
 import config
@@ -426,10 +427,32 @@ def entry_search():
 """Client Match Search Results"""
 @app.route('/all_clients', methods=['GET'])
 def all_clients():
-    results = db.fetch_allClients()
-    # import pdb; pdb.set_trace()
-    # pass
-    return render_template('all_clients.html', results=results)
+    results = [i for i in db.fetch_allClients()]
+
+    clients_grouped = {i['ssn']: {'childName': [], 'childDOB': [], 'childStatus': []} for i in results}
+    for client in results:
+        ssn = client['ssn']
+        if client.get('childName'):
+            clients_grouped[ssn]['childName'].append(client['childName'])
+            clients_grouped[ssn]['childDOB'].append(client['childDOB'])
+            clients_grouped[ssn]['childStatus'].append(client['childStatus'])
+        for attr in client:
+            if attr in ('childName', 'childStatus', 'childDOB'):
+                continue
+            clients_grouped[ssn][attr] = client[attr]
+
+    for client in clients_grouped.values():
+        if client['childName']:
+            client['childName'] = ', '.join(client['childName'])
+            client['childDOB'] = ', '.join([d.strftime('%m/%d/%Y') for d in client['childDOB']])
+            client['childStatus'] = ', '.join(client['childStatus'])
+        else:
+            client['childName'] = 'N/A'
+            client['childDOB'] = 'N/A'
+            client['childStatus'] = 'N/A'
+
+    return render_template('all_clients.html', results=clients_grouped.values())
+    # return render_template('all_clients.html', results=results)
 
 @app.route('/match_search', methods=['GET'])
 def match_search():
