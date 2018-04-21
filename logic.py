@@ -82,27 +82,56 @@ class Database(object):
 
         self.conn.commit()
         return result
-
+    
+    def add_interest(self, ssn, interest):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "INSERT INTO client_interests (ssn, interest) VALUES (%s, %s)"
+        result = cur.execute(sql,(ssn, interest))
+        self.conn.commit()
+        return result
+    
+    def check_interest_exists(self, interest, interest_type):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT COUNT(interest) as c FROM interest_category WHERE interest = %s"
+        cur.execute(sql, (interest))
+        d = list(CursorIterator(cur))[0]
+        return [ d[k] for k in d][0] == 1
+    
+    def add_interest_type(self, interest, interest_type):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "INSERT INTO interest_category (interest, category) VALUES (%s, %s)"
+        result = cur.execute(sql, (interest, interest_type))
+        self.conn.commit()
+        return result
+    
+    
+    """
     def add_interest(self, interest):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "INSERT INTO Interests (interest) VALUES (%s)"
         result = cur.execute(sql, (interest))
         self.con.commit()
         return result
-
     def add_interest_type(self, interest_type):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "INSERT INTO Categories (category) VALUES (%s)"
         result = cur.execute(sql, (interest_type))
         self.con.commit()
-        return result
+        return result"""
 
     def add_client_interest(self, ssn, interest_cat, interest_type=None):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "INSERT INTO client_interests (ssn, interest) VALUES (%s, %s)"
         result = cur.execute(sql, (ssn, interest_cat))
         return result
-
+    
+    def delete_interest(self, ssn, interest):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "DELETE FROM client_interests WHERE ssn = %s AND interest = %s"
+        result = cur.execute(sql, (ssn, interest))
+        self.conn.commit()
+        return result
+    """
     def check_interest(self, interest):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "SELECT * FROM interests WHERE interest = %s"
@@ -115,7 +144,7 @@ class Database(object):
         sql = "SELECT * FROM types WHERE type = %s"
         result = cur.execute(sql, (interest_type))
         # todo check how this works with error handling
-        return result
+        return result"""
 
     def insert_child_(self, ssn, name, dob, status):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
