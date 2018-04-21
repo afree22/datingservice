@@ -9,166 +9,59 @@
        <img src="resources/LoveHeader.jpg" alt="Find love">
     </h1>
     <section>
-	<div style="width:100%">
-	<form action = "update_client">
-	<div style="float:left; width:40%; padding-top:20px">
-		<table style="padding-left:30px">
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Current SSN</p>
-			</td>
-			<td>
-				<input name="SSN" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">New SSN</p>
-			</td>
-			<td>
-				<input name="ssn_new" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Name:</p>
-			</td>
-			<td>
-				<input name="Name" class="enjoy-input" placeholder="" value = "" />
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Gender:</p>
-			</td>
-			<td>
-				<input name="Gender" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Date of Birth:</p>
-			</td>
-			<td>
-				<input name="DOB" class="enjoy-input" placeholder="" value = "" />
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Phone Number:</p>
-			</td>
-			<td>
-				<input name="phone" class="enjoy-input" placeholder="" value = "" />
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Eye Color:</p>
-			</td>
-			<td>
-				<input name="eyecolor" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Weight:</p>
-			</td>
-			<td>
-				<input name="weight" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Height:</p>
-			</td>
-			<td>
-				<input name="height" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Prior Marriage? (yes/no):</p>
-			</td>
-			<td>
-				<input name="prior_marriage" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Interested in Males or Females?:</p>
-			</td>
-			<td>
-				<input name="prior_marriage" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Date Account Opened:</p>
-			</td>
-			<td>
-				<input name="date-open" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Date Account Closed:</p>
-			</td>
-			<td>
-				<input name="date_close" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Account Status:</p>
-			</td>
-			<td>
-				<input name="status" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Crime:</p>
-			</td>
-			<td>
-				<input name="crime" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-				<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Child's Name</p>
-			</td>
-			<td>
-				<input name="childName" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Child's DOB</p>
-			</td>
-			<td>
-				<input name="childDOB" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Child's Status</p>
-			</td>
-			<td>
-				<input name="childStatus" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-	</table>
-	<div>
-		<button type="submit" class="btn" id="submit-button">Update Client</button>
-	</div>
-</div>
-</form>
-	<div>
+	 <form action="update_client" method="POST">
+        <h2>Update Client information</h2>
+        <p>
+          <label for="SSN">Current SSN</label> <input type="number" name="SSN" id="SSN" />
+        </p>
+        <p>
+        </p>
+        <p>
+          <label for="ssn_new">Updated SSN:</label> <input type="number" name="ssn_new" id="ssn_new" />
+        </p>
+        <p>
+          <label for="specific">Updated Name:</label> <input type="text" name="specific" id="specific" />
+        </p>
+      	<p>
+          <label for="Gender">Updated Gender:</label> <input type="text" name="Gender" id="Gender" />
+        </p>
+    	<p>
+          <label for="DOB">Updated Date of Birth:</label> <input type="date" name="DOB" id="DOB" />
+        </p>
+        <p>
+          <label for="phone">Updated Phone Number:</label> <input type="number" name="phone" id="phone" />
+        </p>
+        <p>
+          <label for="eyecolor">Updated Eye Color:</label> <input type="text" name="eyecolor" id="eyecolor" />
+        </p>
+        <p>
+          <label for="weight">Updated Weight:</label> <input type="number" name="weight" id="weight" />
+        </p>
+        <p>
+          <label for="height">Updated Height:</label> <input type="number" name="height" id="height" />
+        </p>
+        <p>
+          <label for="prior_marriage">Updated Prior Marriage Status (yes/no):</label> <input type="text" name="prior_marriage" id="prior_marriage" />
+        </p>
+        <p>
+          <label for="interest">Updated Interest in Males or Females:</label> <input type="text" name="interest" id="interest" />
+        </p>
+        <p>
+          <label for="date_open">Updated Date Account Opened:</label> <input type="date" name="date_open" id="date_open" />
+        </p>
+        <p>
+          <label for="date_close">Updated Date Account Closed:</label> <input type="date" name="date_close" id="date_close" />
+        </p>
+        <p>
+          <label for="status">Updated Date Account Status:</label> <input type="date" name="status" id="status" />
+        </p>
+        <p>
+          <input type="submit" class="btn" value="Sumbit!" />
+        </p>
+      </form>
 		<form action="specialist_update_landing">
 			<button id="specialist-query" class="btn">Go Back</button>
 		</form>
-	</div>
-
 </div>
 </section>
 </body>

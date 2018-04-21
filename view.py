@@ -322,75 +322,16 @@ def insert():
 def send_resources(path):
     return send_from_directory('resources', path)
 
-""" Specialist Modify Client """
+""" Specialist Update Client """
 @app.route('/specialist_update_landing', methods=['GET'])
 def specialist_update_landing():
     return render_template('specialist_update_landing.html')
 
+""" Specalist Update Client Information """
 @app.route('/specialist_update', methods=['GET'])
 def specialist_update():
     return render_template('specialist_update.html')
 
-@app.route('/specialist_add_interests', methods=['GET'])
-def specialist_add_interests():
-    # this html file is just a placeholder, haven't actually started this yet
-    return render_template('specialist_add_interests.html')
-
-@app.route('/insert_specialist_interests', methods=['POST'])
-def insert_specialist_interests():
-    interest = request.form['interest']
-    interest_type = request.form['interest_type']
-    ssn = request.form['ssn']
-    db.add_interest(ssn,interest)
-    if db.check_interest_exists(interest,interest_type):
-        return redirect('specialist_success')
-    elif db.add_interest_type(interest,interest_type):
-        return redirect('specialist_success')
-    return redirect('error')
-
-@app.route('/specialist_delete_interests', methods=['GET'])
-def specialist_delete_interests():
-    return render_template('specialist_delete_interests.html')
-
-@app.route('/delete_specialist_interests', methods=['POST'])
-def delete_specialist_interests():
-    interest = request.form['interest']
-    ssn = int(request.form['ssn'])
-    if db.delete_interest(ssn, interest):
-        return redirect('/specialist_success')
-    return redirect('error')
-
-@app.route('/specialist_add_children', methods=['GET'])
-def specialist_add_children():
-    """ Page for information on client's children """
-    return render_template('specialist_add_children.html')
-
-@app.route('/insert_specialist_child', methods=['POST'])
-def insert_specialist_child():
-    name = request.form['name']
-    dob = request.form['dob']
-    status = request.form['status']
-    ssn = request.form['ParentSSN']
-    
-    if db.insert_child_(ssn, name, dob, status):
-        return redirect('specialist_success')
-    return "Error"
-
-@app.route('/specialist_delete_children', methods=['GET'])
-def specialist_delete_children():
-    """ Page for information on client's children """
-    return render_template('specialist_delete_children.html')
-
-@app.route('/delete_specialist_child', methods=['POST'])
-def delete_specialist_child():
-    name = request.form['name']
-    ssn = request.form['ParentSSN']
-    
-    if db.delete_child(ssn, name):
-        return redirect('specialist_success')
-    return "Error"
-
-"""
 @app.route('/update_client', methods=['GET'])
 def update_client():
     ssn = request.args.get('SSN')
@@ -407,13 +348,100 @@ def update_client():
     date_open = request.args.get('date_open')
     date_close = request.args.get('date_close')
     status = request.args.get('status')
-    crime = request.args.get('crime')
-    childName = request.args.get('childName')
-    childDOB = request.args.get('childDOB')
-    childStatus = request.args.get('childStatus')
-    if db.modify_client(ssn,ssn_new,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime, childName, childDOB, childStatus):
-         return redirect('specialist_success')
-    return redirect('error')"""
+    if db.modify_client(ssn,ssn_new,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close):
+        return redirect('specialist_success')
+    return redirect('error')
+
+""" Insert Crime and Change Status to criminal_closed """
+@app.route('/specialist_add_crime', methods=['GET'])
+def specialist_add_crime():
+    return render_template('specialist_add_crime.html')
+
+@app.route('/insert_crime', methods=['POST'])
+def insert_crime():
+    ssn = int(request.form['ssn'])
+    crime = request.form['crime']
+    date_close = str(datetime.datetime.now()).split()[0]
+    if db.client_no_crimes(ssn):
+        db.change_client_status(ssn, date_close, "criminal_closed")
+        db.insert_crime(ssn,crime)
+        return redirect('specialist_success')
+    else:
+        db.insert_crime(ssn,crime)
+        return redirect('specialist_success')
+    return redirect('error')
+
+@app.route('/specialist_delete_crime', methods=['GET'])
+def specialist_delete_crime():
+    return render_template('specialist_delete_crime.html')
+
+@app.route('/delete_crime', methods=['POST'])
+def delete_crime():
+    ssn = int(request.form['ssn'])
+    crime = request.form['crime']
+    if db.delete_crime(ssn,crime):
+        if db.client_no_crimes(ssn):
+            db.change_client_status(ssn, None, "active")
+        return redirect('specialist_success')
+    return redirect('error')
+
+""" Specialist Add / Delete client Interests """
+@app.route('/specialist_add_interests', methods=['GET'])
+def specialist_add_interests():
+    return render_template('specialist_add_interests.html')
+
+@app.route('/insert_specialist_interests', methods=['POST'])
+def insert_specialist_interests():
+    interest = request.form['interest']
+    interest_type = request.form['interest_type']
+    ssn = request.form['ssn']
+    db.add_interest(ssn,interest)
+    if db.check_interest_exists(interest,interest_type):
+        return redirect('specialist_success')
+    else:
+        db.add_interest_type(interest,interest_type)
+        return redirect('specialist_success')
+    return redirect('error')
+
+@app.route('/specialist_delete_interests', methods=['GET'])
+def specialist_delete_interests():
+    return render_template('specialist_delete_interests.html')
+
+@app.route('/delete_specialist_interests', methods=['POST'])
+def delete_specialist_interests():
+    interest = request.form['interest']
+    ssn = int(request.form['ssn'])
+    if db.delete_interest(ssn, interest):
+        return redirect('/specialist_success')
+    return redirect('error')
+
+""" Specialist Add / Delete Client Children """
+@app.route('/specialist_add_children', methods=['GET'])
+def specialist_add_children():
+    return render_template('specialist_add_children.html')
+
+@app.route('/insert_specialist_child', methods=['POST'])
+def insert_specialist_child():
+    name = request.form['name']
+    dob = request.form['dob']
+    status = request.form['status']
+    ssn = request.form['ParentSSN']
+    if db.insert_child_(ssn, name, dob, status):
+        return redirect('specialist_success')
+    return "Error"
+
+@app.route('/specialist_delete_children', methods=['GET'])
+def specialist_delete_children():
+    return render_template('specialist_delete_children.html')
+
+@app.route('/delete_specialist_child', methods=['POST'])
+def delete_specialist_child():
+    name = request.form['name']
+    ssn = request.form['ParentSSN']
+    if db.delete_child(ssn, name):
+        return redirect('specialist_success')
+    return "Error"
+
 
 @app.route('/specialist_success', methods=['GET'])
 def specialist_success():

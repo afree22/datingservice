@@ -279,13 +279,37 @@ class Database(object):
     
     def insert_crime(self, ssn, crime):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = 'INSERT INTO CriminalRecord (ssn, crime) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        sql = 'INSERT INTO CriminalRecord (ssn, crime) VALUES (%s,%s)'
         result = cur.execute(sql, (ssn, crime))
         self.conn.commit()
         return result
     
+    def delete_crime(self, ssn, crime):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "DELETE FROM criminalrecord WHERE ssn = %s AND crime = %s"
+        result = cur.execute(sql, (ssn,crime))
+        self.conn.commit()
+        return result
+    
+    
+    
+    def change_client_status(self,ssn,date_close,status):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "UPDATE CLIENT set status = %s, date_close = %s WHERE ssn = %s"
+        result = cur.execute(sql, (status, date_close, ssn))
+        return result
+    
+    def client_no_crimes(self,ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT COUNT(ssn) as c FROM criminalRecord WHERE ssn =%s"
+        cur.execute(sql, (ssn))
+        d = list(CursorIterator(cur))[0]
+        return [ d[k] for k in d][0] == 0
+    
+        
+    
     """ Specialist Update Client """
-    def modify_client(self, ssn, ssn_new, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime, childName, childDOB, childStatus):
+    def modify_client(self, ssn, ssn_new, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         update = "UPDATE client set "
         rightClient = " WHERE ssn = '{}'".format(ssn)
@@ -315,22 +339,15 @@ class Database(object):
             client_attrs.append("date_close = '{}'".format(date_close))
         if status:
             client_attrs.append("status = '{}'".format(status))
-        if crime:
-            client_attrs.append("crime = '{}'".format(crime))
-        if childName:
-            client_attrs.append("childName = '{}'".format(childName))
-        if childDOB:
-            client_attrs.append("childDOB = '{}'".format(childDOB))
-        if childStatus:
-            client_attrs.append("childStatus = '{}'".format(childStatus))
         
         attrs = " , ".join(client_attrs)
         sql = "{}{}{}".format(update, attrs, rightClient)
         print(sql)
                     
         cur.execute(sql)
+        self.conn.commit()
         return CursorIterator(cur)
-            
+    
             
     """ Specialist Delete Client """
     def delete_client(self, ssn):
