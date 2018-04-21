@@ -376,6 +376,20 @@ def insert_specialist_child():
         return redirect('specialist_success')
     return "Error"
 
+@app.route('/specialist_delete_children', methods=['GET'])
+def specialist_delete_children():
+    """ Page for information on client's children """
+    return render_template('specialist_delete_children.html')
+
+@app.route('/delete_specialist_child', methods=['POST'])
+def delete_specialist_child():
+    name = request.form['name']
+    ssn = request.form['ParentSSN']
+    
+    if db.delete_child(ssn, name):
+        return redirect('specialist_success')
+    return "Error"
+
 """
 @app.route('/update_client', methods=['GET'])
 def update_client():

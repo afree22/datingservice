@@ -151,7 +151,13 @@ class Database(object):
         sql = 'INSERT INTO Children (ssn, childName, childDOB, childStatus) VALUES (%s,%s,%s,%s)'
         result = cur.execute(sql, (ssn, name, dob, status))
         self.conn.commit()
-
+        return result
+    
+    def delete_child(self, ssn, name):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "DELETE FROM children WHERE ssn = %s AND childName = %s"
+        result = cur.execute(sql, (ssn, name))
+        self.conn.commit()
         return result
 
     def insert_person(self, firstname, lastname, phone, age):
