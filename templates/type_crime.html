@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head> 
+    <link rel="stylesheet" type="text/css" href="/resources/style.css">
+    <title>Find Love</title>
+  </head>
+  <body>
+    <h1 class="title">
+       <img src="resources/LoveHeader.jpg" alt="Find love">
+    </h1>
+    <section>
+<div style="float: left; padding-top: 10px;">
+	Types of crimes recorded in the database
+    <table>
+            <tr>
+            {%for r in results %}
+                <td>{{r['c']}}</td>
+             {% endfor %}
+            </tr>
+    </table>
+</div>
+		<div>
+			<form action="specialist_query">
+				<button id="specialist-query" class="btn">Go Back</button>
+			</form>
+		</div>
+</section>
+</body>
+</html>

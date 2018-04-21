@@ -369,6 +369,12 @@ class Database(object):
         cur.execute(sql)
         return CursorIterator(cur)
     
+    def get_type_crime(self):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT distinct crime as c from criminalRecord"
+        cur.execute(sql)
+        return CursorIterator(cur)
+    
     """ Specialist Search for Client """
     def fetch_allClients(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)

@@ -475,6 +475,11 @@ def num_clients_gender():
     results = db.get_num_clients_gender()
     return render_template('num_clients_gender.html', results=results)
 
+@app.route('/type_crime', methods=['GET'])
+def type_crime():
+    results = db.get_type_crime()
+    return render_template('type_crime.html', results=results)
+
 
 
 """ Entry Level  Search """
