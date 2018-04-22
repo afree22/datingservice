@@ -84,6 +84,8 @@ class Database(object):
         return result
     
     def add_interest(self, ssn, interest):
+        print("in logic")
+        print(ssn, interest)
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "INSERT INTO client_interests (ssn, interest) VALUES (%s, %s)"
         result = cur.execute(sql,(ssn, interest))
