@@ -74,9 +74,8 @@ class Database(object):
         return CursorIterator(cur)
 
     def insert_date(self, user_ssn, date_ssn, location, date):
-
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "INSERT INTO dates (c1_ssn, c2_ssn, location, scheduled_date, occured, interested, see_again) VALUES (%s, %s, %s, %s, NULL, NULL, NULL)"
+        sql = "INSERT INTO dates (ssn, date_ssn, location, scheduled_date, occurred, interested, see_again) VALUES (%s, %s, %s, %s, NULL, NULL, NULL)"
         result = cur.execute(
             sql, (int(user_ssn), int(date_ssn), location, date))
 
@@ -84,8 +83,6 @@ class Database(object):
         return result
     
     def add_interest(self, ssn, interest):
-        print("in logic")
-        print(ssn, interest)
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "INSERT INTO client_interests (ssn, interest) VALUES (%s, %s)"
         result = cur.execute(sql,(ssn, interest))
@@ -179,7 +176,7 @@ class Database(object):
         # dates = cur.execute(sql, (user_ssn))
 
         # sql = "SELECT * FROM dates WHERE scheduled_date = '%s' AND ((c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s))"
-        sql = "SELECT * FROM dates WHERE scheduled_date = '{}' AND (c1_ssn = {} AND c2_ssn = {}) OR (c1_ssn = {} AND c2_ssn = {})".format(date_date, user_ssn, date_ssn, date_ssn, user_ssn)
+        sql = "SELECT * FROM dates WHERE scheduled_date = '{}' AND (ssn = {} AND date_ssn = {}) OR (ssn = {} AND date_ssn = {})".format(date_date, user_ssn, date_ssn, date_ssn, user_ssn)
         # result = cur.execute(
         #     sql, (date_date, user_ssn, date_ssn, date_ssn, user_ssn))
         result = cur.execute(sql)
@@ -189,7 +186,7 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         # i think this works, only want to get the name of the people who
         # aren't the current user
-        sql = 'SELECT * FROM client, dates where (ssn = c1_ssn OR ssn = c2_ssn) and ssn != %s AND occured IS NOT NULL'
+        sql = 'select * from client, dates where (client.ssn = dates.ssn) and client.ssn = %s and occurred is not null'
         dates = cur.execute(sql, (user_ssn))
         return CursorIterator(cur)
 
@@ -197,7 +194,9 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         # i think this works, only want to get the name of the people who
         # aren't the current user
-        sql = 'SELECT * FROM client, dates where (ssn = c1_ssn OR ssn = c2_ssn) and ssn != %s AND occured IS NULL'
+        # sql = 'SELECT * FROM client, dates where (client.ssn = dates.ssn OR client.ssn = dates.date_ssn) and client.ssn != %s AND occurred IS NULL'
+        # sql = 'SELECT * FROM client, dates where (client.ssn = dates.ssn OR client.ssn = dates.date_ssn) and client.ssn != %s AND occurred IS NULL'
+        sql = 'select client.ssn, date_ssn, client.name, location, scheduled_date from client, dates where (client.ssn = dates.ssn) and client.ssn = %s and occurred is null'
         dates = cur.execute(sql, (user_ssn))
         return CursorIterator(cur)
 
@@ -206,7 +205,7 @@ class Database(object):
 
         # todo double check schema for dates!!!
         # tod make this take an actual date as well
-        sql = 'UPDATE dates set occured = "yes" WHERE (c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)'
+        sql = 'UPDATE dates set occurred = "yes" WHERE (c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)'
         result = cur.execute(sql, (c1_ssn, c2_ssn, c2_ssn, c1_ssn))
         self.conn.commit()
         
@@ -219,6 +218,12 @@ class Database(object):
         self.conn.commit()
 
         return result
+
+    def get_client_by_ssn(self, ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'SELECT * FROM client where ssn = %s'
+        cur.execute(sql, (ssn))
+        return CursorIterator(cur)
 
     def get_people(self):
         """Fetch a veuw from the database"""

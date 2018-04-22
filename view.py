@@ -195,9 +195,20 @@ def date_history():
     prev_dates = db.get_prev_dates(ssn)
     future_dates = db.get_future_dates(ssn)
 
+    # todo check if there's a smarter way to do this
+    future_dates = [i for i in future_dates]
+    for date in future_dates:
+        date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
+
+    print(future_dates)
+    prev_dates = [i for i in prev_dates]
+    for date in prev_dates:
+        date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
+
+    print(prev_dates)
+
     # do this so that we'll only show the form to edit upcoming dates when
     # there actually are upcoming dates
-    future_dates = [i for i in future_dates]
     if len(future_dates) == 0:
         future_dates = []
     return render_template('date_feed.html', prev_dates=prev_dates, future_dates=future_dates)
