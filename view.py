@@ -480,6 +480,10 @@ def type_crime():
     results = db.get_type_crime()
     return render_template('type_crime.html', results=results)
 
+@app.route('/num_dates_gender', methods=['GET'])
+def num_dates_gender():
+    results = db.get_num_dates_gender()
+    return render_template('num_dates_gender.html', results=results)
 
 
 """ Entry Level  Search """
@@ -498,7 +502,7 @@ def entry_search():
     weight = request.args.get('weight')
     height = request.args.get('height')
     prior_marriage = request.args.get('prior_marriage')
-    interest = request.args.get('interest')
+    interest_in = request.args.get('interest_in')
     date_open = request.args.get('date_open')
     date_close = request.args.get('date_close')
     status = request.args.get('status')
@@ -507,7 +511,20 @@ def entry_search():
     childDOB = request.args.get('childDOB')
     childStatus = request.args.get('childStatus')
     
-    results = db.fetch_staff_match(name,gender,dob, eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime, childName, childDOB, childStatus)
+    interest = request.args.get('interest')
+    category = request.args.get('category')
+    date_incurred = request.args.get('date_incurred')
+    fee_type = request.args.get('fee_type')
+    payment_amount = request.args.get('payment_amount')
+    fee_status = request.args.get('fee_status')
+    date_ssn = request.args.get('date_ssn')
+    location = request.args.get('location')
+    scheduled_date = request.args.get('scheduled_date')
+    occurred = request.args.get('occurred')
+    interested = request.args.get('interested')
+    see_again = request.args.get('see_again')
+    
+    results = db.fetch_staff_match(name,gender,dob, eyecolor,weight,height,prior_marriage,interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus)
     return render_template('entry-results.html', results=results)
 
 
@@ -548,12 +565,12 @@ def match_search():
     name = request.args.get('Name')
     gender = request.args.get('Gender')
     dob = request.args.get('DOB')
-    phone = request.args.get('Phone')
+    phone = request.args.get('phone')
     eyecolor = request.args.get('eyecolor')
     weight = request.args.get('weight')
     height = request.args.get('height')
-    prior_marriage = request.args.get('prior_marriage')
-    interest = request.args.get('interest')
+    prior_marriage = request.args.get('PrevMarriage')
+    interest_in = request.args.get('interest_in')
     date_open = request.args.get('date_open')
     date_close = request.args.get('date_close')
     status = request.args.get('status')
@@ -561,8 +578,21 @@ def match_search():
     childName = request.args.get('childName')
     childDOB = request.args.get('childDOB')
     childStatus = request.args.get('childStatus')
+    
+    interest = request.args.get('interest')
+    category = request.args.get('category')
+    date_incurred = request.args.get('date_incurred')
+    fee_type = request.args.get('fee_type')
+    payment_amount = request.args.get('payment_amount')
+    fee_status = request.args.get('fee_status')
+    date_ssn = request.args.get('date_ssn')
+    location = request.args.get('location')
+    scheduled_date = request.args.get('scheduled_date')
+    occurred = request.args.get('occurred')
+    interested = request.args.get('interested')
+    see_again = request.args.get('see_again')
 
-    results = db.fetch_potential_match(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close, status, crime, childName, childDOB, childStatus)
+    results = db.fetch_potential_match(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus)
     return render_template('match_results.html', results=results)
 
 if __name__ == '__main__':

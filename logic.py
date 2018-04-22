@@ -375,15 +375,42 @@ class Database(object):
         cur.execute(sql)
         return CursorIterator(cur)
     
+    def get_num_dates_gender(self):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT AVG(count) as c, g FROM ( SELECT COUNT(c.ssn) as count, gender as g FROM Client c Natural Join Dates d group by g) as P group by g "
+        cur.execute(sql)
+        return CursorIterator(cur)
+    
+    def num_dates_exactly_count(self, number):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT c.ssn FROM Client c Natural Join Dates group by c.ssn Having Count(c.ssn) = %s"
+        cur.execute(sql, (number))
+        return CursorIterator(cur)
+    
+    def num_dates_atMost(self, number):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        """ Assuming you want to include people who have had no dates """
+        sql = "SELECT c.ssn FROM Client c Left Join Dates on c.ssn = dates.ssn GROUP BY c.ssn Having Count(c.ssn) <= %s"
+        cur.execute(sql, (number))
+        return CursorIterator(cur)
+    
+    def num_dates_atLeast(self, number):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT c.ssn FROM Client c Natural Join Dates group by c.ssn Having Count(c.ssn) >= %s"
+        cur.execute(sql, (number))
+        return CursorIterator(cur)
+        
+
+    
     """ Specialist Search for Client """
     def fetch_allClients(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn")
+        cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status,CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.ssn")
         return CursorIterator(cur)
     
-    def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime, childName, childDOB, childStatus):
+    def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn  LEFT JOIN Children ON c.ssn = Children.ssn WHERE "
+        select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status,CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.ssn WHERE "
         client_attrs = []
 
         if ssn:
@@ -435,12 +462,12 @@ class Database(object):
     """ Staff Search for Client """
     def fetch_staffClients(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn  LEFT JOIN Children ON c.ssn = Children.ssn;")
+        cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status,CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.ssn;")
         return CursorIterator(cur)
     
-    def fetch_staff_match(self, name, gender, dob, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, crime, childName, childDOB, childStatus):
+    def fetch_staff_match(self, name, gender, dob, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn  LEFT JOIN Children ON c.ssn = Children.ssn WHERE "
+        select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status,CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.ssn WHERE "
         client_attrs = []
         
         if name:
@@ -457,8 +484,8 @@ class Database(object):
             client_attrs.append("height = {}".format(height))
         if prior_marriage:
             client_attrs.append("prior_marriage = '{}'".format(prior_marriage))
-        if interest:
-            client_attrs.append("interest = '{}'".format(interest))
+        if interest_in:
+            client_attrs.append("interest_in = '{}'".format(interest_in))
         if date_open:
             client_attrs.append("date_open = '{}'".format(date_open))
         if date_close:

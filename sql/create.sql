@@ -8,7 +8,7 @@ eyecolor CHAR(15) NOT NULL,
 weight INT NOT NULL,
 height INT NOT NULL,
 prior_marriage ENUM('yes','no') NOT NULL,
-interest ENUM('male', 'female') NOT NULL,
+interest_in ENUM('male', 'female') NOT NULL,
 date_open DATE NOT NULL,
 date_close DATE NULL,
 status VARCHAR(120) NOT NULL
@@ -33,25 +33,24 @@ ON DELETE CASCADE
 );
 
 CREATE TABLE dates(
-c1_ssn INT NOT NULL,
-c2_ssn INT NOT NULL,
+ssn INT NOT NULL,
+date_ssn INT NOT NULL,
 location VARCHAR(40) NOT NULL,
 scheduled_date DATE NOT NULL,
-occured ENUM('yes','no') NULL,
+occurred ENUM('yes','no') NULL,
 interested ENUM('yes','no') NULL,
 see_again ENUM('yes','no') NULL,
-PRIMARY KEY(c1_ssn, c2_ssn),
-FOREIGN KEY(c1_ssn) REFERENCES Client(ssn),
-FOREIGN KEY(c2_ssn) REFERENCES Client(ssn)
+PRIMARY KEY(ssn, scheduled_date),
+FOREIGN KEY(ssn) REFERENCES Client(ssn)
 ON DELETE CASCADE
 );
 
 CREATE TABLE Fees(
 ssn INT NOT NULL,
 date_incurred DATE NOT NULL,
-fee_type CHAR(30) NOT NULL,
+fee_type ENUM('match fee','registration fee') NOT NULL,
 payment_amount INT NOT NULL,
-status CHAR(8) NOT NULL,
+fee_status ENUM('paid','overdue','unpaid') NOT NULL,
 PRIMARY KEY(ssn, date_incurred),
 FOREIGN KEY(ssn) REFERENCES Client(ssn)
 ON DELETE CASCADE
