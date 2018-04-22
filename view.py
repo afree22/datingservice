@@ -85,19 +85,20 @@ def interests():
     # this html file is just a placeholder, haven't actually started this yet
     return render_template('interests.html')
 
-@app.route('/insert_interets', methods=['POST'])
+@app.route('/insert_interests', methods=['POST'])
 def insert_interests():
-    interest = request.form['interest']
-    interest_type = request.form['interest_type']
+    print(request.form)
+    interest = request.form['category']
+    interest_type = request.form['specific']
     ssn = request.form['ssn']
-    if not db.check_interest(interest):
-        db.add_interest(interest)
-        if db.add_interest_type(interest_type):
+    if not db.check_interest_exists(interest, interest_type):
+        db.add_interest(ssn, interest_type)
+        if db.add_interest_type(interest, interest_type):
             return redirect('/interests')
         return "Error"
 
-    if not db.check_interest_type(interest_type):
-        if db.add_interest_type(interest_type):
+    if not db.check_interest_exists(interest, interest_type):
+        if db.add_interest_type(interest, interest_type):
             return redirect('/interests')
         return "Error"
 
