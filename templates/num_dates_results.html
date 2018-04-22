@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head> 
+    <link rel="stylesheet" type="text/css" href="/resources/style.css">
+    <title>Find Love</title>
+  </head>
+  <body>
+    <h1 class="title">
+       <img src="resources/LoveHeader.jpg" alt="Find love">
+    </h1>
+    <section>
+<div style="float: left; padding-top: 10px;">
+	Client List
+    <table>
+    <tr>
+            <td> SSN <td>
+            <td>Name</td>       
+            <td>Gender</td>   
+            <td>Date of Birth</td>
+            <td>Phone Number </td>
+            <td>Eye Color</td>
+            <td>Weight</td>
+            <td>Height</td> 
+            <td>Prior Marriage?</td> 
+            <td>Interested in Males or Females?</td> 
+            <td>Date Opened</td> 
+            <td>Date Closed</td> 
+            <td>Account Status</td>
+         </tr>
+      {%for r in results %}
+            <tr>
+                <td>{{r['s']}}</td>
+                <td>{{r['name']}}</td>
+                <td>{{r['gender']}}</td>
+                <td>{{r['dob']}}</td>
+                <td>{{r['phone']}}</td>
+                <td>{{r['eyecolor']}}</td>
+                <td>{{r['weight']}}</td>
+                <td>{{r['height']}}</td>
+                <td>{{r['prior_marriage']}}</td>
+                <td>{{r['interest_in']}}</td>
+                <td>{{r['date_open']}}</td>
+                <td>{{r['date_close']}}</td>
+                <td>{{r['status']}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+		<div>
+			<form action="specialist_query">
+				<button id="specialist-query" class="btn">Go Back</button>
+			</form>
+		</div>
+</section>
+</body>
+</html>

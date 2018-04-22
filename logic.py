@@ -377,26 +377,26 @@ class Database(object):
     
     def get_num_dates_gender(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT AVG(count) as c, g FROM ( SELECT COUNT(c.ssn) as count, gender as g FROM Client c Natural Join Dates d group by g) as P group by g "
+        sql = "SELECT AVG(count) as c, g FROM ( SELECT COUNT(c.ssn) as count, gender as g FROM Client c Left Join Dates d on c.ssn = d.ssn group by g) as P group by g "
         cur.execute(sql)
         return CursorIterator(cur)
     
-    def num_dates_exactly_count(self, number):
+    def num_dates_exactly(self, number):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT c.ssn FROM Client c Natural Join Dates group by c.ssn Having Count(c.ssn) = %s"
+        sql = "SELECT c.ssn as s, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status FROM Client c Natural Join Dates group by c.ssn Having Count(c.ssn) = %s"
         cur.execute(sql, (number))
         return CursorIterator(cur)
     
     def num_dates_atMost(self, number):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         """ Assuming you want to include people who have had no dates """
-        sql = "SELECT c.ssn FROM Client c Left Join Dates on c.ssn = dates.ssn GROUP BY c.ssn Having Count(c.ssn) <= %s"
+        sql = "SELECT c.ssn as s, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status FROM Client c Left Join Dates on c.ssn = dates.ssn GROUP BY c.ssn Having Count(c.ssn) <= %s"
         cur.execute(sql, (number))
         return CursorIterator(cur)
     
     def num_dates_atLeast(self, number):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT c.ssn FROM Client c Natural Join Dates group by c.ssn Having Count(c.ssn) >= %s"
+        sql = "SELECT c.ssn as s, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status FROM Client c Natural Join Dates group by c.ssn Having Count(c.ssn) >= %s"
         cur.execute(sql, (number))
         return CursorIterator(cur)
         

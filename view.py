@@ -485,6 +485,38 @@ def num_dates_gender():
     results = db.get_num_dates_gender()
     return render_template('num_dates_gender.html', results=results)
 
+@app.route('/num_dates', methods=['GET'])
+def num_dates():
+    return render_template('num_dates.html')
+
+
+@app.route('/num_dates_search', methods=['GET'])
+def num_dates_search():
+    comparision = request.args.get('comparision')
+    number = int(request.args.get('number'))
+    
+    
+    s1 = 'exactly'
+    s2 = 'at least'
+    s3 = 'at most'
+    
+    print(comparision)
+    print(s1)
+    if comparision == s1:
+        results = db.num_dates_exactly(number)
+        return render_template('num_dates_results.html', results=results)
+    elif comparision == s2:
+        results = db.num_dates_atLeast(number)
+        return render_template('num_dates_results.html', results=results)
+    elif comparision == s3:
+        results = db.num_dates_atMost(number)
+        return render_template('num_dates_results.html', results=results)
+    else:
+        return redirect('error')
+
+
+
+
 
 """ Entry Level  Search """
 @app.route('/entry_view_clients', methods=['GET'])
