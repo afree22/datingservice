@@ -200,12 +200,9 @@ def date_history():
     for date in future_dates:
         date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
 
-    print(future_dates)
     prev_dates = [i for i in prev_dates]
     for date in prev_dates:
         date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
-
-    print(prev_dates)
 
     # do this so that we'll only show the form to edit upcoming dates when
     # there actually are upcoming dates
@@ -220,7 +217,11 @@ def edit_req_date():
     date_date = date_info.split()[1]
     user_ssn = request.cookies['userID']
 
+    print(user_ssn)
+    print("date info " + str(date_info))
+
     dates = db.get_dates(user_ssn, date_id, date_date)
+    print(dates)
     date = [i for i in dates][0]
     return render_template('/edit_dates.html', date=date)
 
@@ -229,10 +230,11 @@ def date_occurred():
     """ Update database to show a date has occurred
     """
     # todo check this, I think it's okay but can just use cookies as well
-    c1_ssn = request.form['c1_ssn']
-    c2_ssn = request.form['c2_ssn']
+    user_ssn = request.form['ssn']
+    # c2_ssn = request.form['c2_ssn']
+    date_date = request.form['date_date']
 
-    added = db.set_date_occurred(c1_ssn, c2_ssn)
+    added = db.set_date_occurred(user_ssn, date_date)
 
     if added:
         return redirect('/date_history')
@@ -253,6 +255,15 @@ def log_see_again():
     if added:
         return redirect('/date_history')
     return "Error"
+
+@app.route('/update_date', methods=['POST'])
+def log_date_update():
+    new_date = request.form['new_date']
+    new_location = request.form['new_location']
+    user_ssn = request.form['c1_ssn']
+    date_ssn = request.form['c2_ssn']
+
+
 
 @app.route('/client-home', methods=['GET'])
 def client_home():

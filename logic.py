@@ -175,6 +175,8 @@ class Database(object):
         # sql = 'SELECT * FROM client, dates where (ssn = c1_ssn or ssn = c2_ssn) and ssn != %s'
         # dates = cur.execute(sql, (user_ssn))
 
+        print(user_ssn, date_ssn, date_date)
+
         # sql = "SELECT * FROM dates WHERE scheduled_date = '%s' AND ((c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s))"
         sql = "SELECT * FROM dates WHERE scheduled_date = '{}' AND (ssn = {} AND date_ssn = {}) OR (ssn = {} AND date_ssn = {})".format(date_date, user_ssn, date_ssn, date_ssn, user_ssn)
         # result = cur.execute(
@@ -200,13 +202,13 @@ class Database(object):
         dates = cur.execute(sql, (user_ssn))
         return CursorIterator(cur)
 
-    def set_date_occurred(self, c1_ssn, c2_ssn):
+    def set_date_occurred(self, ssn, date):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
 
         # todo double check schema for dates!!!
         # tod make this take an actual date as well
-        sql = 'UPDATE dates set occurred = "yes" WHERE (c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)'
-        result = cur.execute(sql, (c1_ssn, c2_ssn, c2_ssn, c1_ssn))
+        sql = 'UPDATE dates set occurred = "yes" WHERE (ssn = %s OR date_ssn = %s) AND (scheduled_date = %s)'
+        result = cur.execute(sql, (ssn, ssn, date))
         self.conn.commit()
         
         return result
@@ -218,6 +220,9 @@ class Database(object):
         self.conn.commit()
 
         return result
+
+    def update_date(self, ssn, orig_date, new_date, new_location):
+        pass
 
     def get_client_by_ssn(self, ssn):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
