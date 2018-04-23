@@ -510,43 +510,17 @@ def delete_client():
 def specialist_query():
     return render_template('specialist_query.html')
 
-@app.route('/num_clients_married', methods=['GET'])
-def num_clients_married():
-    results = db.get_num_clients_married()
-    return render_template('num_clients_married.html', results=results)
-
-@app.route('/num_clients_gender', methods=['GET'])
-def num_clients_gender():
-    results = db.get_num_clients_gender()
-    return render_template('num_clients_gender.html', results=results)
-
-@app.route('/type_crime', methods=['GET'])
-def type_crime():
-    results = db.get_type_crime()
-    return render_template('type_crime.html', results=results)
-
-@app.route('/num_dates_gender', methods=['GET'])
-def num_dates_gender():
-    results = db.get_num_dates_gender()
-    return render_template('num_dates_gender.html', results=results)
-
 @app.route('/num_dates', methods=['GET'])
 def num_dates():
     return render_template('num_dates.html')
-
 
 @app.route('/num_dates_search', methods=['GET'])
 def num_dates_search():
     comparision = request.args.get('comparision')
     number = int(request.args.get('number'))
-    
-    
     s1 = 'exactly'
     s2 = 'at least'
     s3 = 'at most'
-    
-    print(comparision)
-    print(s1)
     if comparision == s1:
         results = db.num_dates_exactly(number)
         return render_template('num_dates_results.html', results=results)
@@ -558,6 +532,50 @@ def num_dates_search():
         return render_template('num_dates_results.html', results=results)
     else:
         return redirect('error')
+
+@app.route('/num_clients_married', methods=['GET'])
+def num_clients_married():
+    results = db.get_num_clients_married()
+    return render_template('num_clients_married.html', results=results)
+
+@app.route('/num_clients_gender', methods=['GET'])
+def num_clients_gender():
+    results = db.get_num_clients_gender()
+    return render_template('num_clients_gender.html', results=results)
+
+@app.route('/num_dates_gender', methods=['GET'])
+def num_dates_gender():
+    results = db.get_num_dates_gender()
+    return render_template('num_dates_gender.html', results=results)
+
+@app.route('/type_crime', methods=['GET'])
+def type_crime():
+    results = db.get_type_crime()
+    return render_template('type_crime.html', results=results)
+
+@app.route('/age_children', methods=['GET'])
+def age_children():
+    currentDate = str(datetime.datetime.now()).split()[0]
+    results = db.get_age_children(currentDate)
+    return render_template('age_children.html', results=results)
+
+@app.route('/outstanding_balance', methods=['GET'])
+def outstanding_balance():
+    results = db.get_outstanding_balance()
+    return render_template('outstanding_balance.html', results=results)
+
+@app.route('/display_interests', methods=['GET'])
+def display_interests():
+    results = db.display_interests()
+    return render_template('display_interests.html', results=results)
+
+
+
+
+
+
+
+
 
 
 

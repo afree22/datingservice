@@ -10,17 +10,18 @@
     </h1>
     <section>
 <div style="float: left; padding-top: 10px;">
-	<h2> Number of male and female clients registered </h2>
+	<h2>List of Clients with Outstanding Account Balance</h2>
     <table>
-        <tr>
-            <td>male</td>
-            <td> female </td>      
-        </tr>
+    		<tr>
+    			 <td> SSN </td>
+   				 <td> Amount Owed </td>
+    		</tr>
+              {%for r in results %}
             <tr>
-            {%for r in results %}
-                <td>{{r['num']}}</td>
-             {% endfor %}
+                <td>{{r['ssn']}}</td>
+                <td>{{r['p']}}</td>
             </tr>
+            {% endfor %}
     </table>
 </div>
 		<div>
