@@ -1,3 +1,11 @@
+DROP DATABASE IF EXISTS ds;
+CREATE DATABASE ds;
+USE ds;
+
+GRANT ALL ON ds.* TO 'user280'@'localhost' IDENTIFIED BY 'psswrd' WITH GRANT OPTION;
+flush privileges;
+
+
 CREATE TABLE Client(
 ssn INT PRIMARY KEY NOT NULL,
 name VARCHAR(60) DEFAULT ' ',

@@ -33,16 +33,23 @@ class Database(object):
     def insert_person_(self, ssn, name, gender, DOB, phone, eye_color, weight,
         height, prior_marriage, interest_in, date_open, date_close, status, interest_cat=None, interest_specific=None):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-
         # also insert into children and interest tables probably
         # check if user already signed up, don't insert if so
-        sql = 'INSERT INTO Client (ssn, name, gender, DOB, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        sql = 'INSERT INTO Client (ssn, name, gender, DOB, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         result = cur.execute(sql, (ssn, name, gender, DOB, phone, eye_color, weight, height, prior_marriage, interest_in, date_open, date_close, status))
-
         # need this to keep changes between local and other
         self.conn.commit()
-
         return result
+    
+    def specialist_insert_person(self, ssn, name, gender, dob, phone, eye_color, weight, height, prior_marriage, interest_in, date_open, date_close, status):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'INSERT INTO Client (ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        result = cur.execute(sql, (ssn, name, gender, dob, phone, eye_color, weight, height, prior_marriage, interest_in, date_open, date_close, status))
+        self.conn.commit()
+        return result
+    
+    
+    
 
     def get_client_matches(self, gender, age, eye_color, weight, height, prev_marriage, interest_cat, interest_type):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
@@ -270,10 +277,10 @@ class Database(object):
     
 
     """ Specialist Insert Client """
-    def insert_client(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status):
+    def insert_client(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = 'INSERT INTO Client (ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
-        result = cur.execute(sql, (ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status))
+        sql = 'INSERT INTO Client (ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        result = cur.execute(sql, (ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status))
         self.conn.commit()
         return result
     
@@ -309,7 +316,7 @@ class Database(object):
         
     
     """ Specialist Update Client """
-    def modify_client(self, ssn, ssn_new, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status):
+    def modify_client(self, ssn, ssn_new, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         update = "UPDATE client set "
         rightClient = " WHERE ssn = '{}'".format(ssn)
@@ -331,8 +338,8 @@ class Database(object):
             client_attrs.append("height = {}".format(height))
         if prior_marriage:
             client_attrs.append("prior_marriage = '{}'".format(prior_marriage))
-        if interest:
-            client_attrs.append("interest = '{}'".format(interest))
+        if interest_in:
+            client_attrs.append("interest_in = '{}'".format(interest_in))
         if date_open:
             client_attrs.append("date_open = '{}'".format(date_open))
         if date_close:
@@ -344,6 +351,27 @@ class Database(object):
         sql = "{}{}{}".format(update, attrs, rightClient)
         print(sql)
                     
+        cur.execute(sql)
+        self.conn.commit()
+        return CursorIterator(cur)
+
+    def update_specialist_child(self, ssn, name, new_name, dob, status):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        update = "UPDATE children set "
+        rightClient = " WHERE ssn = '{}' AND childName = '{}'".format(ssn, name)
+        client_attrs = []
+        
+        if new_name:
+            client_attrs.append("childName = '{}'".format(new_name))
+        if dob:
+            client_attrs.append("childDOB = '{}'".format(dob))
+        if status:
+            client_attrs.append("childStatus = '{}'".format(status))
+        
+        attrs = " , ".join(client_attrs)
+        sql = "{}{}{}".format(update, attrs, rightClient)
+        print(sql)
+        
         cur.execute(sql)
         self.conn.commit()
         return CursorIterator(cur)
