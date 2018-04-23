@@ -271,6 +271,12 @@ class Database(object):
         cur.execute(sql, (ssn))
         return CursorIterator(cur)
 
+    def get_payments(self, ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'SELECT * FROM fees where ssn = %s'
+        cur.execute(sql, (ssn))
+        return CursorIterator(cur)
+
     def get_people(self):
         """Fetch a veuw from the database"""
         cur = self.conn.cursor(pymysql.cursors.DictCursor)

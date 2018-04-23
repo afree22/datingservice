@@ -245,9 +245,6 @@ def date_history():
                 break
 
             date_name = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
-            print("\n\n")
-            print(date_name)
-            print("\n\n")
             second_dates.append({'name': date_name, 'date_ssn': date['date_ssn']})
 
     # do this so that we'll only show the form to edit upcoming dates when
@@ -316,6 +313,12 @@ def log_date_update():
     if db.update_date(user_ssn, date_ssn, orig_date, new_date, new_location):
         return redirect('/date_history')
     return "Error"
+
+@app.route('/payment-history', methods=['GET'])
+def show_payments():
+    user_ssn = request.cookies['userID']
+    payments = [i for i in db.get_payments(user_ssn)]
+    return render_template('payment_history.html', payments=payments)
 
 @app.route('/client-home', methods=['GET'])
 def client_home():
