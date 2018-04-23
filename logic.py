@@ -67,7 +67,7 @@ class Database(object):
 
         # todo look into or querying
         attrs = " AND ".join(client_attrs)
-        sql = "{}{}".format(select, attrs)
+        sql = "{}{} AND status = 'active'".format(select, attrs)
         print(sql)
 
         cur.execute(sql)
@@ -221,7 +221,7 @@ class Database(object):
 
         return result
 
-    def update_date(self, ssn, orig_date, new_date, new_location):
+    def update_date(self, ssn, date_ssn, orig_date, new_date, new_location):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         result1 = 1
         result2 = 1
@@ -232,15 +232,11 @@ class Database(object):
             # res = [i for i in CursorIterator(cur)]
 
             # print([i for i in test_res])
-            print("\n\n\n")
-            print(orig_date)
-            print(new_date)
-            print("\n\n\n")
-            sql = 'UPDATE dates set scheduled_date = %s WHERE scheduled_date = %s AND ssn = %s or date_ssn = %s'
-            result1 = cur.execute(sql, (new_date, orig_date, ssn, ssn))
+            sql = 'UPDATE dates set scheduled_date = %s WHERE scheduled_date = %s AND ((ssn = %s AND date_ssn = %s) OR (ssn = %s AND date_ssn = %s))'
+            result1 = cur.execute(sql, (new_date, orig_date, ssn, date_ssn, date_ssn, ssn))
         if new_location:
-            sql = 'UPDATE dates set location = %s WHERE ssn = %s or date_ssn = %s AND scheduled_date = %s'
-            result2 = cur.execute(sql, (new_location, ssn, ssn, orig_date))
+            sql = 'UPDATE dates set location = %s WHERE ((ssn = %s AND date_ssn = %s) OR (ssn = %s AND date_ssn = %s)) AND scheduled_date = %s'
+            result2 = cur.execute(sql, (new_location, ssn, date_ssn, date_ssn, ssn, orig_date))
         self.conn.commit()
 
         return result1 and result2

@@ -279,7 +279,7 @@ def log_date_update():
     user_ssn = request.form['ssn']
     date_ssn = request.form['date_ssn']
 
-    if db.update_date(user_ssn, orig_date, new_date, new_location):
+    if db.update_date(user_ssn, date_ssn, orig_date, new_date, new_location):
         return redirect('/date_history')
     return "Error"
 
