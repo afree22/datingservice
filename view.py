@@ -720,11 +720,11 @@ def all_clients():
     return render_template('all_clients.html', results=clients_grouped.values())
     # return render_template('all_clients.html', results=results)
 
-@app.route('/match_search', methods=['GET'])
+@app.route('/match_search', methods=['GET','POST'])
 def match_search():
     ssn = request.args.get('SSN')
-    name = request.args.get('Name')
-    gender = request.args.get('Gender')
+    name = request.args.get('name')
+    gender = request.args.get('gender')
     dob = request.args.get('DOB')
     phone = request.args.get('phone')
     eyecolor = request.args.get('eyecolor')
@@ -732,8 +732,8 @@ def match_search():
     height = request.args.get('height')
     prior_marriage = request.args.get('PrevMarriage')
     interest_in = request.args.get('interest_in')
-    date_open = request.args.get('date_open')
-    date_close = request.args.get('date_close')
+    date_open = request.args.get('open_date')
+    date_close = request.args.get('close_date')
     status = request.args.get('status')
     crime = request.args.get('crime')
     childName = request.args.get('childName')
@@ -753,7 +753,8 @@ def match_search():
     interested = request.args.get('interested')
     see_again = request.args.get('see_again')
 
-    results = db.fetch_potential_match(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus)
+    results = db.fetch_potential_match(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus, interest, category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again)
+
     return render_template('match_results.html', results=results)
 
 if __name__ == '__main__':
