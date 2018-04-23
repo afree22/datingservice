@@ -185,7 +185,9 @@ def finalize_date():
     date_ssn = request.form['date_ssn']
 
     if db.insert_date(user_ssn, date_ssn, location, date):
-        return redirect('/client_search')
+        if db.insert_date(date_ssn, user_ssn, location, date):
+            return redirect('/client_search')
+        return "Error"
     return "Error"
 
 @app.route('/date_history', methods=['GET'])
@@ -194,6 +196,7 @@ def date_history():
     # dates = db.get_dates(ssn)
     prev_dates = db.get_prev_dates(ssn)
     future_dates = db.get_future_dates(ssn)
+    print(request.form)
 
     # todo check if there's a smarter way to do this
     future_dates = [i for i in future_dates]
