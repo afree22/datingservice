@@ -229,13 +229,20 @@ def date_history():
         else:
             date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
 
+
+    # need the most recent dates per couple.....
     for date in again_dates:
-        response = [i for i in db.get_other_interested(date['date_ssn'], date['scheduled_date'])][0]
+        # response = [i for i in db.get_other_interested(date['date_ssn'], date['scheduled_date'])][0]
+        print(ssn, date['date_ssn'])
+        response1 = [i for i in db.get_most_recent_date(ssn, int(date['date_ssn']))][0]
+        response2 = [i for i in db.get_most_recent_date(int(date['date_ssn']), ssn)][0]
         
-        print(response)
+        # print(response)
+        print(response1)
+        print(response2)
         already_scheduled = False
         # also check to see if another date has already been scheduled
-        if response['see_again'] == 'yes':
+        if response1['see_again'] == 'yes' and response2 == 'yes':
             for d in db.get_dates_per_couple(ssn, date['date_ssn']):
                 if not d['occurred']:
                     already_scheduled = True
@@ -276,10 +283,10 @@ def date_occurred():
     """
     # todo check this, I think it's okay but can just use cookies as well
     user_ssn = request.form['ssn']
-    # c2_ssn = request.form['c2_ssn']
+    date_ssn = request.form['date_ssn']
     date_date = request.form['date_date']
 
-    added = db.set_date_occurred(user_ssn, date_date)
+    added = db.set_date_occurred(user_ssn, date_ssn, date_date)
 
     if added:
         return redirect('/date_history')
@@ -695,6 +702,9 @@ def all_clients():
             client['category'] = ', '.join(client['category'])
             client['interest'] = ', '.join(client['interest'])
             pass
+        else:
+            client['category'] = 'N/A'
+            client['interest'] = 'N/A'
 
     return render_template('all_clients.html', results=clients_grouped.values())
     # return render_template('all_clients.html', results=results)
