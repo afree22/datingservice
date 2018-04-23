@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Find Love</title>
+    <link rel="stylesheet" href="resources/style.css" />
+  </head>
+  <body>
+    <h1 class="title">
+      <img src="resources/LoveHeader.jpg" alt="Find love">
+    </h1>
+     <section>
+      <form action="update_specialist_child" method="POST">
+        <h2> Update Client's Children</h2>
+        <p>
+          <label for="ssn">SSN:</label> <input type="number" name="ssn" id="ssn" />
+        </p>
+        <p>
+          <label for="name">Child Current Name:</label> <input type="text" name="name" id="name" />
+        </p>
+    	 <p>
+          <label for="new_name">Child Updated Name:</label> <input type="text" name="new_name" id="new_name" />
+        </p>
+        <p>
+          <label for="new_childDOB">Child Updated DOB:</label> <input type="date" name="new_childDOB" id="new_childDOB" />
+        </p>
+        <p>
+          <label for="new_childStatus">Child Updated Status:</label> <input type="text" name="new_childStatus" id="new_childStatus" />
+        </p>
+        <p>
+          <input type="submit" class="btn" value="Sumbit!" />
+        </p>
+      </form>
+      <form action="specialist_update_landing">
+		<button id="specialist-query" class="btn">Go Back</button>
+	</form>
+    </section>
+  </body>
+</html>

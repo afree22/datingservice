@@ -33,16 +33,23 @@ class Database(object):
     def insert_person_(self, ssn, name, gender, DOB, phone, eye_color, weight,
         height, prior_marriage, interest_in, date_open, date_close, status, interest_cat=None, interest_specific=None):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-
         # also insert into children and interest tables probably
         # check if user already signed up, don't insert if so
-        sql = 'INSERT INTO Client (ssn, name, gender, DOB, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        sql = 'INSERT INTO Client (ssn, name, gender, DOB, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         result = cur.execute(sql, (ssn, name, gender, DOB, phone, eye_color, weight, height, prior_marriage, interest_in, date_open, date_close, status))
-
         # need this to keep changes between local and other
         self.conn.commit()
-
         return result
+    
+    def specialist_insert_person(self, ssn, name, gender, dob, phone, eye_color, weight, height, prior_marriage, interest_in, date_open, date_close, status):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'INSERT INTO Client (ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        result = cur.execute(sql, (ssn, name, gender, dob, phone, eye_color, weight, height, prior_marriage, interest_in, date_open, date_close, status))
+        self.conn.commit()
+        return result
+    
+    
+    
 
     def get_client_matches(self, gender, age, eye_color, weight, height, prev_marriage, interest_cat, interest_type):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
@@ -355,10 +362,10 @@ class Database(object):
     
 
     """ Specialist Insert Client """
-    def insert_client(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status):
+    def insert_client(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = 'INSERT INTO Client (ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
-        result = cur.execute(sql, (ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status))
+        sql = 'INSERT INTO Client (ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        result = cur.execute(sql, (ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status))
         self.conn.commit()
         return result
     
@@ -394,7 +401,7 @@ class Database(object):
         
     
     """ Specialist Update Client """
-    def modify_client(self, ssn, ssn_new, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest, date_open, date_close, status):
+    def modify_client(self, ssn, ssn_new, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         update = "UPDATE client set "
         rightClient = " WHERE ssn = '{}'".format(ssn)
@@ -416,8 +423,8 @@ class Database(object):
             client_attrs.append("height = {}".format(height))
         if prior_marriage:
             client_attrs.append("prior_marriage = '{}'".format(prior_marriage))
-        if interest:
-            client_attrs.append("interest = '{}'".format(interest))
+        if interest_in:
+            client_attrs.append("interest_in = '{}'".format(interest_in))
         if date_open:
             client_attrs.append("date_open = '{}'".format(date_open))
         if date_close:
@@ -429,6 +436,27 @@ class Database(object):
         sql = "{}{}{}".format(update, attrs, rightClient)
         print(sql)
                     
+        cur.execute(sql)
+        self.conn.commit()
+        return CursorIterator(cur)
+
+    def update_specialist_child(self, ssn, name, new_name, dob, status):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        update = "UPDATE children set "
+        rightClient = " WHERE ssn = '{}' AND childName = '{}'".format(ssn, name)
+        client_attrs = []
+        
+        if new_name:
+            client_attrs.append("childName = '{}'".format(new_name))
+        if dob:
+            client_attrs.append("childDOB = '{}'".format(dob))
+        if status:
+            client_attrs.append("childStatus = '{}'".format(status))
+        
+        attrs = " , ".join(client_attrs)
+        sql = "{}{}{}".format(update, attrs, rightClient)
+        print(sql)
+        
         cur.execute(sql)
         self.conn.commit()
         return CursorIterator(cur)
@@ -509,10 +537,10 @@ class Database(object):
     """ Specialist Search for Client """
     def fetch_allClients(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status,CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.ssn")
+        cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.ssn")
         return CursorIterator(cur)
     
-    def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus):
+    def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus, interest, category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status,CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.ssn WHERE "
         client_attrs = []
@@ -535,8 +563,8 @@ class Database(object):
             client_attrs.append("height = {}".format(height))
         if prior_marriage:
             client_attrs.append("prior_marriage = '{}'".format(prior_marriage))
-        if interest:
-            client_attrs.append("interest = '{}'".format(interest))
+        if interest_in:
+            client_attrs.append("interest_in = '{}'".format(interest_in))
         if date_open:
             client_attrs.append("date_open = '{}'".format(date_open))
         if date_close:
@@ -551,6 +579,30 @@ class Database(object):
             client_attrs.append("childDOB = '{}'".format(childDOB))
         if childStatus:
             client_attrs.append("childStatus = '{}'".format(childStatus))
+        if interest:
+            client_attrs.append("interest = '{}'".format(interest))
+        if category:
+            client_attrs.append("category = '{}'".format(category))
+        if date_incurred:
+            client_attrs.append("date_incurred = '{}'".format(date_incurred))
+        if fee_type:
+            client_attrs.append("fee_type = '{}'".format(fee_type))
+        if payment_amount:
+            client_attrs.append("paymen_amount = '{}'".format(payment_amount))
+        if fee_status:
+            client_attrs.append("fee_status = '{}'".format(fee_status))
+        if date_ssn:
+            client_attrs.append("date_ssn = '{}'".format(date_ssn))
+        if location:
+            client_attrs.append("location = '{}'".format(location))
+        if scheduled_date:
+            client_attrs.append("scheduled_date = '{}'".format(scheduled_date))
+        if occurred:
+            client_attrs.append("occurred = '{}'".format(occurred))
+        if interested:
+            client_attrs.append("interested = '{}'".format(interested))
+        if see_again:
+            client_attrs.append("see_again = '{}'".format(see_again))
 
         attrs = " AND ".join(client_attrs)
         sql = "{}{}".format(select, attrs)
