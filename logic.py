@@ -224,10 +224,10 @@ class Database(object):
         
         return result
 
-    def set_see_again(self, ssn, date_date):
+    def set_see_again(self, ssn, date_date, value):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = 'UPDATE dates set see_again = "yes" WHERE ssn = %s AND scheduled_date = %s'
-        result = cur.execute(sql, (ssn, date_date))
+        sql = 'UPDATE dates set see_again = %s WHERE ssn = %s AND scheduled_date = %s'
+        result = cur.execute(sql, (value, ssn, date_date))
         self.conn.commit()
 
         return result
@@ -244,11 +244,6 @@ class Database(object):
         result2 = 1
 
         if new_date:
-            # test = 'SELECT * FROM dates WHERE ssn = %s OR date_ssn = %s'
-            # test_res = cur.execute(test, (ssn, ssn))
-            # res = [i for i in CursorIterator(cur)]
-
-            # print([i for i in test_res])
             sql = 'UPDATE dates set scheduled_date = %s WHERE scheduled_date = %s AND ((ssn = %s AND date_ssn = %s) OR (ssn = %s AND date_ssn = %s))'
             result1 = cur.execute(sql, (new_date, orig_date, ssn, date_ssn, date_ssn, ssn))
         if new_location:
