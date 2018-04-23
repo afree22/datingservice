@@ -209,13 +209,13 @@ class Database(object):
         dates = cur.execute(sql, (user_ssn))
         return CursorIterator(cur)
 
-    def set_date_occurred(self, ssn, date):
+    def set_date_occurred(self, ssn, date_ssn, date):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
 
         # todo double check schema for dates!!!
-        # tod make this take an actual date as well
-        sql = 'UPDATE dates set occurred = "yes" WHERE (ssn = %s OR date_ssn = %s) AND (scheduled_date = %s)'
-        result = cur.execute(sql, (ssn, ssn, date))
+        sql = 'UPDATE dates set occurred = "yes" WHERE ((ssn = %s AND date_ssn = %s) OR (ssn = %s AND date_ssn = %s)) AND scheduled_date = %s'
+        print(ssn, date_ssn, date_ssn, ssn, date)
+        result = cur.execute(sql, (ssn, date_ssn, date_ssn, ssn, date))
         self.conn.commit()
         
         return result
@@ -262,6 +262,14 @@ class Database(object):
         dates = cur.execute(sql, (ssn))
         return CursorIterator(cur)
 
+    def get_most_recent_date(self, ssn, date_ssn):
+        """ get the most recent date for any two users
+        """
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'SELECT * FROM dates WHERE ssn = %s AND date_ssn = %s ORDER BY scheduled_date LIMIT 1'
+        date = cur.execute(sql, (ssn, date_ssn))
+        return CursorIterator(cur)
+
     def get_other_interested(self, ssn, date_date):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "select * from dates where ssn = %s and scheduled_date = %s"
@@ -279,6 +287,24 @@ class Database(object):
         sql = 'SELECT * FROM fees where ssn = %s'
         cur.execute(sql, (ssn))
         return CursorIterator(cur)
+
+    def charge_registration_fee(self, ssn):
+        """ charge registration fee
+        """
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "INSERT INTO fees (ssn, date_incurred, fee_type, payment_amount, fee_status) VALUES (%s, NOW(), 'registration fee', 100, 'overdue')"
+        result = cur.execute(sql, (ssn))
+        self.conn.commit()
+        return result
+
+    def charge_match_fee(self, ssn):
+        """ charge a match fee
+        """
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "INSERT INTO fees (ssn, date_incurred, fee_type, payment_amount, fee_status) VALUES (%s, NOW(), 'match fee', 50, 'overdue')"
+        result = cur.execute(sql, (ssn))
+        self.conn.commit()
+        return result
 
     def get_people(self):
         """Fetch a veuw from the database"""
