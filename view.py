@@ -662,16 +662,23 @@ def entry_search():
 @app.route('/all_clients', methods=['GET'])
 def all_clients():
     results = [i for i in db.fetch_allClients()]
+    # print(results)
 
-    clients_grouped = {i['ssn']: {'childName': [], 'childDOB': [], 'childStatus': []} for i in results}
+    clients_grouped = {i['ssn']: {'childName': [], 'childDOB': [], 'childStatus': [], 'interest': [], 'category': []} for i in results}
     for client in results:
         ssn = client['ssn']
         if client.get('childName'):
-            clients_grouped[ssn]['childName'].append(client['childName'])
-            clients_grouped[ssn]['childDOB'].append(client['childDOB'])
-            clients_grouped[ssn]['childStatus'].append(client['childStatus'])
+            print(client['childName'])
+            if client['childName'] not in clients_grouped[ssn]['childName']:
+                clients_grouped[ssn]['childName'].append(client['childName'])
+                clients_grouped[ssn]['childDOB'].append(client['childDOB'])
+                clients_grouped[ssn]['childStatus'].append(client['childStatus'])
+        if client.get('category'):
+            if client['category'] not in clients_grouped[ssn]['category']:
+                clients_grouped[ssn]['category'].append(client['category'])
+                clients_grouped[ssn]['interest'].append(client['interest'])
         for attr in client:
-            if attr in ('childName', 'childStatus', 'childDOB'):
+            if attr in ('childName', 'childStatus', 'childDOB', 'interest', 'category'):
                 continue
             clients_grouped[ssn][attr] = client[attr]
 
@@ -684,6 +691,10 @@ def all_clients():
             client['childName'] = 'N/A'
             client['childDOB'] = 'N/A'
             client['childStatus'] = 'N/A'
+        if client['category']:
+            client['category'] = ', '.join(client['category'])
+            client['interest'] = ', '.join(client['interest'])
+            pass
 
     return render_template('all_clients.html', results=clients_grouped.values())
     # return render_template('all_clients.html', results=results)
