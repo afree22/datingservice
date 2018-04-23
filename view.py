@@ -419,7 +419,7 @@ def insert():
 def send_resources(path):
     return send_from_directory('resources', path)
 
-""" Specalist Update Client Information """
+""" Specialist Update Client Information """
 @app.route('/specialist_update_landing', methods=['GET'])
 def specialist_update_landing():
     return render_template('specialist_update_landing.html')
@@ -462,6 +462,26 @@ def update_specialist_child():
     if db.update_specialist_child(ssn, name, new_name, dob, status):
         return redirect('specialist_success')
     return "Error"
+
+@app.route('/specialist_update_fees', methods=['GET'])
+def specialist_update_fees():
+    return render_template('specialist_update_fees.html')
+
+@app.route('/update_specialist_fees', methods=['POST'])
+def update_specialist_fees():
+    ssn = int(request.form['ssn'])
+    date_incurred = request.form['date_incurred']
+    new_date_incurred = request.form['new_date_incurred']
+    new_fee_type = request.form['new_fee_type']
+    new_payment_amount = int(request.form['new_payment_amount'])
+    new_fee_status = request.form['new_fee_status']
+
+    if db.update_specialist_fees(ssn, date_incurred, new_date_incurred, new_fee_type, new_payment_amount, new_fee_status):
+        return redirect('specialist_success')
+    return "Error"
+
+
+
 
 
 """ Specialist Add Information"""
@@ -522,6 +542,25 @@ def insert_crime():
         return redirect('specialist_success')
     return redirect('error')
 
+
+@app.route('/specialist_add_fees', methods=['GET'])
+def specialist_add_fees():
+    return render_template('specialist_add_fees.html')
+
+@app.route('/insert_fees', methods=['POST'])
+def insert_fees():
+    ssn = int(request.form['ssn'])
+    date_incurred = request.form['date_incurred']
+    fee_type = request.form['fee_type']
+    payment_amount = int(request.form['payment_amount'])
+    fee_status = request.form['fee_status']
+    if db.insert_fees(ssn, date_incurred, fee_type, payment_amount, fee_status):
+        return redirect('specialist_success')
+    return redirect('error')
+
+
+
+
 """ Specialist Delete Information """
 @app.route('/specialist_delete_landing', methods=['GET', 'POST'])
 def specialist_delete_landing():
@@ -576,6 +615,24 @@ def delete_crime():
             db.change_client_status(ssn, None, "active")
         return redirect('specialist_success')
     return redirect('error')
+
+
+@app.route('/specialist_delete_fees', methods=['GET'])
+def specialist_delete_fees():
+    return render_template('specialist_delete_fees.html')
+
+@app.route('/delete_fees', methods=['POST'])
+def delete_fees():
+    ssn = int(request.form['ssn'])
+    date_incurred = request.form['date_incurred']
+    if db.delete_fees(ssn,date_incurred):
+        return redirect('specialist_success')
+    return redirect('error')
+
+
+
+
+
 
 """ Specialist Queries """
 @app.route('/specialist_query', methods=['GET'])

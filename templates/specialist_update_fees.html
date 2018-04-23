@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Find Love</title>
+    <link rel="stylesheet" href="resources/style.css" />
+  </head>
+  <body>
+    <h1 class="title">
+      <img src="resources/LoveHeader.jpg" alt="Find love">
+    </h1>
+     <section>
+      <form action="update_specialist_fees" method="POST">
+        <h2> Update Client's Children</h2>
+        <p>
+          <label for="ssn">SSN:</label> <input type="number" name="ssn" id="ssn" />
+        </p>
+        <p>
+          <label for="date_incurred">Original Date Incurred</label> <input type="date" name="date_incurred" id="date_incurred" />
+        </p>
+        <p></p>
+    	 <p>
+          <label for="new_date_incurred">Updated Date Incurred </label> <input type="date" name="new_date_incurred" id="new_date_incurred" />
+        </p>
+        <p>
+          <label for="new_fee_type">Updated Fee Type: </label> <input type="text" name="new_fee_type" id="new_fee_type" />
+        </p>
+        <p>
+          <label for="new_payment_amount">Updated Payment Amount: </label> <input type="number" name="new_payment_amount" id="new_payment_amount" />
+        </p>
+         <p>
+          <label for="new_fee_status">Updated Fee Status: </label> <input type="text" name="new_fee_status" id="new_fee_status" />
+        </p>
+        <p>
+          <input type="submit" class="btn" value="Sumbit!" />
+        </p>
+      </form>
+      <form action="specialist_update_landing">
+		<button id="specialist-query" class="btn">Go Back</button>
+	</form>
+    </section>
+  </body>
+</html>
