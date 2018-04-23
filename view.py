@@ -190,7 +190,8 @@ def finalize_date():
 
 @app.route('/date_history', methods=['GET'])
 def date_history():
-    ssn = request.cookies['userID']
+    ssn = int(request.cookies['userID'])
+    print(ssn)
     # dates = db.get_dates(ssn)
     prev_dates = db.get_prev_dates(ssn)
     future_dates = db.get_future_dates(ssn)
@@ -198,11 +199,28 @@ def date_history():
     # todo check if there's a smarter way to do this
     future_dates = [i for i in future_dates]
     for date in future_dates:
-        date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
+        user_is_date = False
+        if date['date_ssn'] == ssn:
+            user_is_date = True
+
+        if user_is_date:
+            date['name'] = [i for i in db.get_client_by_ssn(date['dates.ssn'])][0]['name']
+        else:
+            date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
 
     prev_dates = [i for i in prev_dates]
     for date in prev_dates:
-        date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
+        user_is_date = False
+        if date['date_ssn'] == ssn:
+            print("in hereeee")
+            user_is_date = True
+
+        print(date)
+
+        if user_is_date:
+            date['name'] = [i for i in db.get_client_by_ssn(date['dates.ssn'])][0]['name']
+        else:
+            date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
 
     # do this so that we'll only show the form to edit upcoming dates when
     # there actually are upcoming dates
@@ -244,13 +262,14 @@ def date_occurred():
 def log_see_again():
     """ Update database to show that people want to see e/o again
     """
-    c1_ssn = request.cookies['userID']
+    user_ssn = request.cookies['userID']
     date_info = request.form['date_info']
     print(date_info)
-    c2_ssn = date_info.split()[0]
-    date_date = date_info.split()[1]
-    
-    added = db.set_see_again(c1_ssn, c2_ssn)
+    # c2_ssn = date_info.split()[0]
+    # date_date = date_info.split()[1]
+    date_date = request.form['date_info']
+
+    added = db.set_see_again(user_ssn, date_date)
 
     if added:
         return redirect('/date_history')
