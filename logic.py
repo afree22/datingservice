@@ -408,7 +408,13 @@ class Database(object):
     
     def get_outstanding_balance(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT ssn, sum(payment_amount) as p FROM Fees WHERE fee_status != 'paid' GROUP BY ssn"
+        sql = "SELECT ssn, sum(payment_amount) as p FROM Fees WHERE fee_status = 'unpaid' OR fee_status = 'overdue' GROUP BY ssn"
+        cur.execute(sql)
+        return CursorIterator(cur)
+    
+    def display_interests(self):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT distinct(interest) as i FROM Client c LEFT JOIN client_interests on c.ssn = client_interests.ssn WHERE c.status = 'active' AND interest != 'NULL';"
         cur.execute(sql)
         return CursorIterator(cur)
     

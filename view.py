@@ -519,6 +519,13 @@ def outstanding_balance():
     results = db.get_outstanding_balance()
     return render_template('outstanding_balance.html', results=results)
 
+@app.route('/display_interests', methods=['GET'])
+def display_interests():
+    results = db.display_interests()
+    return render_template('display_interests.html', results=results)
+
+
+
 
 
 
