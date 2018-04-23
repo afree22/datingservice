@@ -78,7 +78,7 @@ class Database(object):
 
     def insert_date(self, user_ssn, date_ssn, location, date):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "INSERT INTO dates (ssn, date_ssn, location, scheduled_date, occurred, interested, see_again) VALUES (%s, %s, %s, %s, NULL, NULL, NULL)"
+        sql = "INSERT INTO dates (c1_ssn, c2_ssn, location, scheduled_date, occurred, interested, see_again) VALUES (%s, %s, %s, %s, NULL, NULL, NULL)"
         result = cur.execute(
             sql, (int(user_ssn), int(date_ssn), location, date))
 
@@ -181,7 +181,7 @@ class Database(object):
         print(user_ssn, date_ssn, date_date)
 
         # sql = "SELECT * FROM dates WHERE scheduled_date = '%s' AND ((c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s))"
-        sql = "SELECT * FROM dates WHERE scheduled_date = '{}' AND (ssn = {} AND date_ssn = {}) OR (ssn = {} AND date_ssn = {})".format(date_date, user_ssn, date_ssn, date_ssn, user_ssn)
+        sql = "SELECT * FROM dates WHERE scheduled_date = '{}' AND (c1_ssn = {} AND c2_ssn = {}) OR (c1_ssn = {} AND c2_ssn = {})".format(date_date, user_ssn, date_ssn, date_ssn, user_ssn)
         # result = cur.execute(
         #     sql, (date_date, user_ssn, date_ssn, date_ssn, user_ssn))
         result = cur.execute(sql)
@@ -193,8 +193,8 @@ class Database(object):
         # aren't the current user
         # sql = 'select * from client, dates where (client.ssn = dates.ssn or client.ssn = dates.date_ssn) and client.ssn = %s and occurred is not null'
 
-        sql = 'select * from dates where ssn = %s and occurred is not null'
-        dates = cur.execute(sql, (user_ssn))
+        sql = 'select * from dates where c1_ssn = %s OR c2_ssn = %s and occurred is not null'
+        dates = cur.execute(sql, (user_ssn, user_ssn))
         return CursorIterator(cur)
 
     def get_future_dates(self, user_ssn):
@@ -205,15 +205,15 @@ class Database(object):
         # sql = 'SELECT * FROM client, dates where (client.ssn = dates.ssn OR client.ssn = dates.date_ssn) and client.ssn != %s AND occurred IS NULL'
 
 
-        sql = 'select * from dates where ssn = %s and occurred is null'
-        dates = cur.execute(sql, (user_ssn))
+        sql = 'select * from dates where c1_ssn = %s OR c2_ssn = %s and occurred is null'
+        dates = cur.execute(sql, (user_ssn, user_ssn))
         return CursorIterator(cur)
 
     def set_date_occurred(self, ssn, date_ssn, date):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
 
         # todo double check schema for dates!!!
-        sql = 'UPDATE dates set occurred = "yes" WHERE ((ssn = %s AND date_ssn = %s) OR (ssn = %s AND date_ssn = %s)) AND scheduled_date = %s'
+        sql = 'UPDATE dates set occurred = "yes" WHERE ((c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)) AND scheduled_date = %s'
         print(ssn, date_ssn, date_ssn, ssn, date)
         result = cur.execute(sql, (ssn, date_ssn, date_ssn, ssn, date))
         self.conn.commit()
@@ -222,15 +222,15 @@ class Database(object):
 
     def set_see_again(self, ssn, date_date):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = 'UPDATE dates set see_again = "yes" WHERE ssn = %s AND scheduled_date = %s'
-        result = cur.execute(sql, (ssn, date_date))
+        sql = 'UPDATE dates set see_again = "yes" WHERE c1_ssn = %s OR c2_ssn = %s AND scheduled_date = %s'
+        result = cur.execute(sql, (ssn, ssn, date_date))
         self.conn.commit()
 
         return result
 
     def get_dates_per_couple(self, ssn1, ssn2):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = 'SELECT * from dates where ssn = %s and date_ssn = %s'
+        sql = 'SELECT * from dates where c1_ssn = %s and c2_ssn = %s'
         result = cur.execute(sql, (ssn1, ssn2))
         return CursorIterator(cur)
 
@@ -517,26 +517,27 @@ class Database(object):
     
     def get_num_dates_gender(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT AVG(count) as c, g FROM ( SELECT COUNT(c.ssn) as count, gender as g FROM Client c Left Join Dates d on c.ssn = d.ssn group by g) as P group by g "
+        sql = "SELECT AVG(count) as c, g FROM ( SELECT COUNT(c.ssn) as count, gender as g FROM Client c Left Join Dates d on c.ssn = d.c1_ssn or c.ssn = d.c2_ssn group by g) as P group by g "
         cur.execute(sql)
         return CursorIterator(cur)
     
     def num_dates_exactly(self, number):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT c.ssn as s, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status FROM Client c Natural Join Dates group by c.ssn Having Count(c.ssn) = %s"
+        sql = "SELECT c.ssn as s, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status FROM Client c Left Join Dates on c.ssn = dates.c1_ssn or c.ssn = dates.c2_ssn  group by c.ssn Having Count(c.ssn) = %s"
+    
         cur.execute(sql, (number))
         return CursorIterator(cur)
     
     def num_dates_atMost(self, number):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         """ Assuming you want to include people who have had no dates """
-        sql = "SELECT c.ssn as s, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status FROM Client c Left Join Dates on c.ssn = dates.ssn GROUP BY c.ssn Having Count(c.ssn) <= %s"
+        sql = "SELECT c.ssn as s, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status FROM Client c Left Join Dates on c.ssn = dates.c1_ssn OR c.ssn = dates.c2_ssn GROUP BY c.ssn Having Count(c.ssn) <= %s"
         cur.execute(sql, (number))
         return CursorIterator(cur)
     
     def num_dates_atLeast(self, number):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT c.ssn as s, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status FROM Client c Natural Join Dates group by c.ssn Having Count(c.ssn) >= %s"
+        sql = "SELECT c.ssn as s, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status FROM Client c Left Join Dates on c.ssn = dates.c1_ssn or c.ssn = dates.c2_ssn group by c.ssn Having Count(c.ssn) >= %s"
         cur.execute(sql, (number))
         return CursorIterator(cur)
     
@@ -564,7 +565,7 @@ class Database(object):
     """ Specialist Search for Client """
     def fetch_allClients(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.ssn")
+        cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, c1_ssn, c2_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.c1_ssn or c.ssn = Dates.c2_ssn")
         return CursorIterator(cur)
     
     def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus, interest, category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again):

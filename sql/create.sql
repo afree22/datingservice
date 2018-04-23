@@ -41,15 +41,16 @@ ON DELETE CASCADE
 );
 
 CREATE TABLE dates(
-ssn INT NOT NULL,
-date_ssn INT NOT NULL,
+c1_ssn INT NOT NULL,
+c2_ssn INT NOT NULL,
 location VARCHAR(40) NOT NULL,
 scheduled_date DATE NOT NULL,
 occurred ENUM('yes','no') NULL,
 interested ENUM('yes','no') NULL,
 see_again ENUM('yes','no') NULL,
-PRIMARY KEY(ssn, scheduled_date),
-FOREIGN KEY(ssn) REFERENCES Client(ssn)
+PRIMARY KEY(c1_ssn, c2_ssn, scheduled_date),
+FOREIGN KEY(c1_ssn) REFERENCES Client(ssn),
+FOREIGN KEY(c2_ssn) REFERENCES Client(ssn)
 ON DELETE CASCADE
 );
 
