@@ -188,7 +188,9 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         # i think this works, only want to get the name of the people who
         # aren't the current user
-        sql = 'select * from client, dates where (client.ssn = dates.ssn or client.ssn = dates.date_ssn) and client.ssn = %s and occurred is not null'
+        # sql = 'select * from client, dates where (client.ssn = dates.ssn or client.ssn = dates.date_ssn) and client.ssn = %s and occurred is not null'
+
+        sql = 'select * from dates where ssn = %s and occurred is not null'
         dates = cur.execute(sql, (user_ssn))
         return CursorIterator(cur)
 
@@ -198,7 +200,9 @@ class Database(object):
         # aren't the current user
         # sql = 'SELECT * FROM client, dates where (client.ssn = dates.ssn OR client.ssn = dates.date_ssn) and client.ssn != %s AND occurred IS NULL'
         # sql = 'SELECT * FROM client, dates where (client.ssn = dates.ssn OR client.ssn = dates.date_ssn) and client.ssn != %s AND occurred IS NULL'
-        sql = 'select client.ssn, date_ssn, client.name, location, scheduled_date from client, dates where (client.ssn = dates.ssn or client.ssn = dates.date_ssn) and client.ssn = %s and occurred is null'
+
+
+        sql = 'select * from dates where ssn = %s and occurred is null'
         dates = cur.execute(sql, (user_ssn))
         return CursorIterator(cur)
 

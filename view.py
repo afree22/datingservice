@@ -193,17 +193,20 @@ def finalize_date():
 @app.route('/date_history', methods=['GET'])
 def date_history():
     ssn = int(request.cookies['userID'])
+    print(ssn)
     # dates = db.get_dates(ssn)
     prev_dates = db.get_prev_dates(ssn)
     future_dates = db.get_future_dates(ssn)
-    print(request.form)
 
     # todo check if there's a smarter way to do this
     future_dates = [i for i in future_dates]
+    print(future_dates)
     for date in future_dates:
         user_is_date = False
         if date['date_ssn'] == ssn:
             user_is_date = True
+
+        print(date)
 
         if user_is_date:
             date['name'] = [i for i in db.get_client_by_ssn(date['dates.ssn'])][0]['name']
@@ -211,10 +214,13 @@ def date_history():
             date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
 
     prev_dates = [i for i in prev_dates]
+    print(prev_dates)
     for date in prev_dates:
         user_is_date = False
         if date['date_ssn'] == ssn:
             user_is_date = True
+
+        print(date)
 
         if user_is_date:
             date['name'] = [i for i in db.get_client_by_ssn(date['dates.ssn'])][0]['name']
