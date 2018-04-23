@@ -233,7 +233,17 @@ def date_history():
         response = [i for i in db.get_other_interested(date['date_ssn'], date['scheduled_date'])][0]
         
         print(response)
+        already_scheduled = False
+        # also check to see if another date has already been scheduled
         if response['see_again'] == 'yes':
+            for d in db.get_dates_per_couple(ssn, date['date_ssn']):
+                if not d['occurred']:
+                    already_scheduled = True
+                    break
+
+            if already_scheduled:
+                break
+
             date_name = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
             print("\n\n")
             print(date_name)

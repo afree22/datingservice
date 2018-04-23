@@ -225,6 +225,12 @@ class Database(object):
 
         return result
 
+    def get_dates_per_couple(self, ssn1, ssn2):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'SELECT * from dates where ssn = %s and date_ssn = %s'
+        result = cur.execute(sql, (ssn1, ssn2))
+        return CursorIterator(cur)
+
     def update_date(self, ssn, date_ssn, orig_date, new_date, new_location):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         result1 = 1
