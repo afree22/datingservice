@@ -230,19 +230,27 @@ def date_history():
             date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
 
 
+    # this is probably the dumbest way to do this but oh well
     # need the most recent dates per couple.....
     for date in again_dates:
         # response = [i for i in db.get_other_interested(date['date_ssn'], date['scheduled_date'])][0]
         print(ssn, date['date_ssn'])
         response1 = [i for i in db.get_most_recent_date(ssn, int(date['date_ssn']))][0]
         response2 = [i for i in db.get_most_recent_date(int(date['date_ssn']), ssn)][0]
+
+        if date == response1 or date == response2:
+            continue
         
         # print(response)
+        print("\n\n")
+        print(date == response1)
+        print(date)
         print(response1)
         print(response2)
+        print("\n\n")
         already_scheduled = False
         # also check to see if another date has already been scheduled
-        if response1['see_again'] == 'yes' and response2 == 'yes':
+        if response1['see_again'] == 'yes' and response2['see_again'] == 'yes':
             for d in db.get_dates_per_couple(ssn, date['date_ssn']):
                 if not d['occurred']:
                     already_scheduled = True
