@@ -399,6 +399,19 @@ class Database(object):
         sql = "SELECT c.ssn as s, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status FROM Client c Natural Join Dates group by c.ssn Having Count(c.ssn) >= %s"
         cur.execute(sql, (number))
         return CursorIterator(cur)
+    
+    def get_age_children(self, currentDate):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT AVG(count) as c FROM ( select DATEDIFF(%s, childDOB)/365.25 as count From Children) as P"
+        cur.execute(sql, (currentDate))
+        return CursorIterator(cur)
+    
+    def get_outstanding_balance(self):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT ssn, sum(payment_amount) as p FROM Fees WHERE fee_status != 'paid' GROUP BY ssn"
+        cur.execute(sql)
+        return CursorIterator(cur)
+    
         
 
     
