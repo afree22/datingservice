@@ -15,7 +15,6 @@ class CursorIterator(object):
             elem = self.__cursor.fetchone()
         self.__cursor.close()
 
-
 class Database(object):
     """Database object"""
 
@@ -47,9 +46,6 @@ class Database(object):
         result = cur.execute(sql, (ssn, name, gender, dob, phone, eye_color, weight, height, prior_marriage, interest_in, date_open, date_close, status))
         self.conn.commit()
         return result
-    
-    
-    
 
     def get_client_matches(self, gender, age, eye_color, weight, height, prev_marriage, interest_cat, interest_type):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
@@ -384,33 +380,35 @@ class Database(object):
         if ssn_new:
             client_attrs.append("ssn = '{}'".format(ssn_new))
         if name:
-            client_attrs.append("name = '{}'".format(name))
+            client_attrs.append("name = '{}'".format(self.conn.escape_string(name)))
+            """ Do with all .format string """ 
         if gender:
-            client_attrs.append("gender = '{}'".format(gender))
+            client_attrs.append("gender = '{}'".format(self.conn.escape_string(gender)))
         if dob:
             client_attrs.append("dob = '{}'".format(dob))
         if eyecolor:
-            client_attrs.append("eyecolor = '{}'".format(eyecolor))
+            client_attrs.append("eyecolor = '{}'".format(self.conn.escape_string(eyecolor)))
         if weight:
             client_attrs.append("weight = {}".format(weight))
         if height:
             client_attrs.append("height = {}".format(height))
         if prior_marriage:
-            client_attrs.append("prior_marriage = '{}'".format(prior_marriage))
+            client_attrs.append("prior_marriage = '{}'".format(self.conn.escape_string(prior_marriage)))
         if interest_in:
-            client_attrs.append("interest_in = '{}'".format(interest_in))
+            client_attrs.append("interest_in = '{}'".format(self.conn.escape_string(interest_in)))
         if date_open:
             client_attrs.append("date_open = '{}'".format(date_open))
         if date_close:
             client_attrs.append("date_close = '{}'".format(date_close))
         if status:
-            client_attrs.append("status = '{}'".format(status))
+            client_attrs.append("status = '{}'".format(self.conn.escape_string(status)))
         
         attrs = " , ".join(client_attrs)
         sql = "{}{}{}".format(update, attrs, rightClient)
         print(sql)
                     
         cur.execute(sql)
+        
         self.conn.commit()
         return CursorIterator(cur)
 
@@ -419,22 +417,51 @@ class Database(object):
         update = "UPDATE children set "
         rightClient = " WHERE ssn = '{}' AND childName = '{}'".format(ssn, name)
         client_attrs = []
-        
         if new_name:
-            client_attrs.append("childName = '{}'".format(new_name))
+            client_attrs.append("childName = '{}'".format(self.conn.escape_string(new_name)))
         if dob:
             client_attrs.append("childDOB = '{}'".format(dob))
         if status:
-            client_attrs.append("childStatus = '{}'".format(status))
-        
+            client_attrs.append("childStatus = '{}'".format(self.conn.escape_string(status)))
         attrs = " , ".join(client_attrs)
         sql = "{}{}{}".format(update, attrs, rightClient)
-        print(sql)
-        
         cur.execute(sql)
         self.conn.commit()
         return CursorIterator(cur)
-    
+
+    def update_specialist_fees(self, ssn, date_incurred, new_date_incurred, new_feetype, new_payment_amount, new_fee_status):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        update = "UPDATE Fees set "
+        rightFee = " WHERE ssn = '{}' AND date_incurred = '{}'".format(ssn, date_incurred)
+        client_attrs = []
+        if new_date_incurred:
+            client_attrs.append("date_incurred = '{}'".format(new_date_incurred))
+        if new_feetype:
+            client_attrs.append("fee_type = '{}'".format(new_feetype))
+        if new_payment_amount:
+            client_attrs.append("payment_amount = '{}'".format(new_payment_amount))
+        if new_fee_status:
+            client_attrs.append("fee_status = '{}'".format(self.conn.escape_string(new_fee_status)))
+        attrs = " , ".join(client_attrs)
+        sql = "{}{}{}".format(update, attrs, rightFee)
+        cur.execute(sql)
+        self.conn.commit()
+        return CursorIterator(cur)
+
+    def insert_fees(self, ssn, date_incurred, fee_type, payment_amount, fee_status):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'INSERT INTO FEES (ssn, date_incurred, fee_type, payment_amount, fee_status) VALUES (%s,%s,%s,%s,%s)'
+        result = cur.execute(sql, (ssn, date_incurred, fee_type, payment_amount, fee_status))
+        self.conn.commit()
+        return result
+
+    def delete_fees(self, ssn, date_incurred):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "DELETE FROM Fees WHERE ssn = %s AND date_incurred = %s"
+        result = cur.execute(sql, (ssn, date_incurred))
+        self.conn.commit()
+        return result
+
             
     """ Specialist Delete Client """
     def delete_client(self, ssn):
@@ -522,61 +549,61 @@ class Database(object):
         if ssn:
             client_attrs.append("ssn = '{}'".format(ssn))
         if name:
-            client_attrs.append("name = '{}'".format(name))
+            client_attrs.append("name = '{}'".format(self.conn.escape_string(name)))
         if gender:
-            client_attrs.append("gender = '{}'".format(gender))
+            client_attrs.append("gender = '{}'".format(self.conn.escape_string(gender)))
         if dob:
             client_attrs.append("dob = '{}'".format(dob))
         if phone:
             client_attrs.append("phone = '{}'".format(phone))
         if eyecolor:
-            client_attrs.append("eyecolor = '{}'".format(eyecolor))
+            client_attrs.append("eyecolor = '{}'".format(self.conn.escape_string(eyecolor)))
         if weight:
             client_attrs.append("weight = {}".format(weight))
         if height:
             client_attrs.append("height = {}".format(height))
         if prior_marriage:
-            client_attrs.append("prior_marriage = '{}'".format(prior_marriage))
+            client_attrs.append("prior_marriage = '{}'".format(self.conn.escape_string(prior_marriage)))
         if interest_in:
-            client_attrs.append("interest_in = '{}'".format(interest_in))
+            client_attrs.append("interest_in = '{}'".format(self.conn.escape_string(interest_in)))
         if date_open:
             client_attrs.append("date_open = '{}'".format(date_open))
         if date_close:
             client_attrs.append("date_close = '{}'".format(date_close))
         if status:
-            client_attrs.append("status = '{}'".format(status))
+            client_attrs.append("status = '{}'".format(self.conn.escape_string(status)))
         if crime:
-            client_attrs.append("crime = '{}'".format(crime))
+            client_attrs.append("crime = '{}'".format(self.conn.escape_string(crime)))
         if childName:
-            client_attrs.append("childName = '{}'".format(childName))
+            client_attrs.append("childName = '{}'".format(self.conn.escape_string(childName)))
         if childDOB:
             client_attrs.append("childDOB = '{}'".format(childDOB))
         if childStatus:
-            client_attrs.append("childStatus = '{}'".format(childStatus))
+            client_attrs.append("childStatus = '{}'".format(self.conn.escape_string(childStatus)))
         if interest:
-            client_attrs.append("interest = '{}'".format(interest))
+            client_attrs.append("interest = '{}'".format(self.conn.escape_string(interest)))
         if category:
-            client_attrs.append("category = '{}'".format(category))
+            client_attrs.append("category = '{}'".format(self.conn.escape_string(category)))
         if date_incurred:
             client_attrs.append("date_incurred = '{}'".format(date_incurred))
         if fee_type:
-            client_attrs.append("fee_type = '{}'".format(fee_type))
+            client_attrs.append("fee_type = '{}'".format(self.conn.escape_string(fee_type)))
         if payment_amount:
             client_attrs.append("paymen_amount = '{}'".format(payment_amount))
         if fee_status:
-            client_attrs.append("fee_status = '{}'".format(fee_status))
+            client_attrs.append("fee_status = '{}'".format(self.conn.escape_string(fee_status)))
         if date_ssn:
             client_attrs.append("date_ssn = '{}'".format(date_ssn))
         if location:
-            client_attrs.append("location = '{}'".format(location))
+            client_attrs.append("location = '{}'".format(self.conn.escape_string(location)))
         if scheduled_date:
             client_attrs.append("scheduled_date = '{}'".format(scheduled_date))
         if occurred:
-            client_attrs.append("occurred = '{}'".format(occurred))
+            client_attrs.append("occurred = '{}'".format(self.conn.escape_string(occurred)))
         if interested:
-            client_attrs.append("interested = '{}'".format(interested))
+            client_attrs.append("interested = '{}'".format(self.conn.escape_string(interested)))
         if see_again:
-            client_attrs.append("see_again = '{}'".format(see_again))
+            client_attrs.append("see_again = '{}'".format(self.conn.escape_string(see_again)))
 
         attrs = " AND ".join(client_attrs)
         sql = "{}{}".format(select, attrs)
@@ -601,41 +628,40 @@ class Database(object):
         client_attrs = []
         
         if name:
-            client_attrs.append("name = '{}'".format(name))
+            client_attrs.append("name = '{}'".format(self.conn.escape_string(name)))
         if gender:
-            client_attrs.append("gender = '{}'".format(gender))
+            client_attrs.append("gender = '{}'".format(self.conn.escape_string(gender)))
         if dob:
             client_attrs.append("dob = '{}'".format(dob))
         if eyecolor:
-            client_attrs.append("eyecolor = '{}'".format(eyecolor))
+            client_attrs.append("eyecolor = '{}'".format(self.conn.escape_string(eyecolor)))
         if weight:
             client_attrs.append("weight = {}".format(weight))
         if height:
             client_attrs.append("height = {}".format(height))
         if prior_marriage:
-            client_attrs.append("prior_marriage = '{}'".format(prior_marriage))
+            client_attrs.append("prior_marriage = '{}'".format(self.conn.escape_string(prior_marriage)))
         if interest_in:
-            client_attrs.append("interest_in = '{}'".format(interest_in))
+            client_attrs.append("interest_in = '{}'".format(self.conn.escape_string(interest_in)))
         if date_open:
             client_attrs.append("date_open = '{}'".format(date_open))
         if date_close:
             client_attrs.append("date_close = '{}'".format(date_close))
         if status:
-            client_attrs.append("status = '{}'".format(status))
+            client_attrs.append("status = '{}'".format(self.conn.escape_string(status)))
         if crime:
-            client_attrs.append("crime = '{}'".format(crime))
+            client_attrs.append("crime = '{}'".format(self.conn.escape_string(crime)))
         if childName:
-            client_attrs.append("childName = '{}'".format(childName))
+            client_attrs.append("childName = '{}'".format(self.conn.escape_string(childName)))
         if childDOB:
             client_attrs.append("childDOB = '{}'".format(childDOB))
         if childStatus:
-            client_attrs.append("childStatus = '{}'".format(childStatus))
+            client_attrs.append("childStatus = '{}'".format(self.conn.escape_string(childStatus)))
 
-        
-        # todo look into or querying
         attrs = " AND ".join(client_attrs)
         sql = "{}{}".format(select, attrs)
         print(sql)
-        
         cur.execute(sql)
         return CursorIterator(cur)
+
+

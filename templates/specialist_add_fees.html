@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Find Love</title>
+    <link rel="stylesheet" href="resources/style.css" />
+  </head>
+  <body>
+    <h1 class="title">
+      <img src="resources/LoveHeader.jpg" alt="Find love">
+    </h1>
+     <section>
+      <form action="insert_fees" method="POST">
+        <h2> Add Fees for a Client </h2>
+        <p>
+          <label for="ssn">SSN:</label> <input type="number" name="ssn" id="ssn" />
+        </p>
+    	 <p>
+          <label for="date_incurred">Date Incurred </label> <input type="date" name="date_incurred" id="date_incurred" />
+        </p>
+        <p>
+          <label for="fee_type">Fee Type: </label> <input type="text" name="fee_type" id="fee_type" />
+        </p>
+        <p>
+          <label for="payment_amount"> Payment Amount: </label> <input type="number" name="payment_amount" id="payment_amount" />
+        </p>
+         <p>
+          <label for="fee_status"> Fee Status: </label> <input type="text" name="fee_status" id="fee_status" />
+        </p>
+        <p>
+          <input type="submit" class="btn" value="Sumbit!" />
+        </p>
+      </form>
+      <form action="specialist_add_landing">
+		<button id="specialist-query" class="btn">Go Back</button>
+	</form>
+    </section>
+  </body>
+</html>

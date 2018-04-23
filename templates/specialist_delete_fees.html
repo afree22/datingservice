@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Find Love</title>
+    <link rel="stylesheet" href="resources/style.css" />
+  </head>
+  <body>
+    <h1 class="title">
+      <img src="resources/LoveHeader.jpg" alt="Find love">
+    </h1>
+     <section>
+      <form action="delete_fees" method="POST">
+        <h2> Delete Fees for a Client </h2>
+        <p>
+          <label for="ssn">SSN:</label> <input type="number" name="ssn" id="ssn" />
+        </p>
+    	 <p>
+          <label for="date_incurred">Date Incurred </label> <input type="date" name="date_incurred" id="date_incurred" />
+        </p>
+        <p>
+          <input type="submit" class="btn" value="Sumbit!" />
+        </p>
+      </form>
+      <form action="specialist_delete_landing">
+		<button id="specialist-query" class="btn">Go Back</button>
+	</form>
+    </section>
+  </body>
+</html>
