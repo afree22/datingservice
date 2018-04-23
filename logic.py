@@ -222,7 +222,28 @@ class Database(object):
         return result
 
     def update_date(self, ssn, orig_date, new_date, new_location):
-        pass
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        result1 = 1
+        result2 = 1
+
+        if new_date:
+            # test = 'SELECT * FROM dates WHERE ssn = %s OR date_ssn = %s'
+            # test_res = cur.execute(test, (ssn, ssn))
+            # res = [i for i in CursorIterator(cur)]
+
+            # print([i for i in test_res])
+            print("\n\n\n")
+            print(orig_date)
+            print(new_date)
+            print("\n\n\n")
+            sql = 'UPDATE dates set scheduled_date = %s WHERE scheduled_date = %s AND ssn = %s or date_ssn = %s'
+            result1 = cur.execute(sql, (new_date, orig_date, ssn, ssn))
+        if new_location:
+            sql = 'UPDATE dates set location = %s WHERE ssn = %s or date_ssn = %s AND scheduled_date = %s'
+            result2 = cur.execute(sql, (new_location, ssn, ssn, orig_date))
+        self.conn.commit()
+
+        return result1 and result2
 
     def get_client_by_ssn(self, ssn):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)

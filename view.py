@@ -191,7 +191,6 @@ def finalize_date():
 @app.route('/date_history', methods=['GET'])
 def date_history():
     ssn = int(request.cookies['userID'])
-    print(ssn)
     # dates = db.get_dates(ssn)
     prev_dates = db.get_prev_dates(ssn)
     future_dates = db.get_future_dates(ssn)
@@ -212,10 +211,7 @@ def date_history():
     for date in prev_dates:
         user_is_date = False
         if date['date_ssn'] == ssn:
-            print("in hereeee")
             user_is_date = True
-
-        print(date)
 
         if user_is_date:
             date['name'] = [i for i in db.get_client_by_ssn(date['dates.ssn'])][0]['name']
@@ -278,11 +274,14 @@ def log_see_again():
 @app.route('/update_date', methods=['POST'])
 def log_date_update():
     new_date = request.form['new_date']
+    orig_date = request.form['date_date']
     new_location = request.form['new_location']
-    user_ssn = request.form['c1_ssn']
-    date_ssn = request.form['c2_ssn']
+    user_ssn = request.form['ssn']
+    date_ssn = request.form['date_ssn']
 
-
+    if db.update_date(user_ssn, orig_date, new_date, new_location):
+        return redirect('/date_history')
+    return "Error"
 
 @app.route('/client-home', methods=['GET'])
 def client_home():
