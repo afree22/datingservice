@@ -74,16 +74,15 @@ class Database(object):
 
         # todo look into or querying
         attrs = " AND ".join(client_attrs)
-        sql = "{}{}".format(select, attrs)
+        sql = "{}{} AND status = 'active'".format(select, attrs)
         print(sql)
 
         cur.execute(sql)
         return CursorIterator(cur)
 
     def insert_date(self, user_ssn, date_ssn, location, date):
-
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "INSERT INTO dates (c1_ssn, c2_ssn, location, scheduled_date, occured, interested, see_again) VALUES (%s, %s, %s, %s, NULL, NULL, NULL)"
+        sql = "INSERT INTO dates (ssn, date_ssn, location, scheduled_date, occurred, interested, see_again) VALUES (%s, %s, %s, %s, NULL, NULL, NULL)"
         result = cur.execute(
             sql, (int(user_ssn), int(date_ssn), location, date))
 
@@ -183,8 +182,10 @@ class Database(object):
         # sql = 'SELECT * FROM client, dates where (ssn = c1_ssn or ssn = c2_ssn) and ssn != %s'
         # dates = cur.execute(sql, (user_ssn))
 
+        print(user_ssn, date_ssn, date_date)
+
         # sql = "SELECT * FROM dates WHERE scheduled_date = '%s' AND ((c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s))"
-        sql = "SELECT * FROM dates WHERE scheduled_date = '{}' AND (c1_ssn = {} AND c2_ssn = {}) OR (c1_ssn = {} AND c2_ssn = {})".format(date_date, user_ssn, date_ssn, date_ssn, user_ssn)
+        sql = "SELECT * FROM dates WHERE scheduled_date = '{}' AND (ssn = {} AND date_ssn = {}) OR (ssn = {} AND date_ssn = {})".format(date_date, user_ssn, date_ssn, date_ssn, user_ssn)
         # result = cur.execute(
         #     sql, (date_date, user_ssn, date_ssn, date_ssn, user_ssn))
         result = cur.execute(sql)
@@ -194,7 +195,9 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         # i think this works, only want to get the name of the people who
         # aren't the current user
-        sql = 'SELECT * FROM client, dates where (ssn = c1_ssn OR ssn = c2_ssn) and ssn != %s AND occured IS NOT NULL'
+        # sql = 'select * from client, dates where (client.ssn = dates.ssn or client.ssn = dates.date_ssn) and client.ssn = %s and occurred is not null'
+
+        sql = 'select * from dates where ssn = %s and occurred is not null'
         dates = cur.execute(sql, (user_ssn))
         return CursorIterator(cur)
 
@@ -202,28 +205,84 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         # i think this works, only want to get the name of the people who
         # aren't the current user
-        sql = 'SELECT * FROM client, dates where (ssn = c1_ssn OR ssn = c2_ssn) and ssn != %s AND occured IS NULL'
+        # sql = 'SELECT * FROM client, dates where (client.ssn = dates.ssn OR client.ssn = dates.date_ssn) and client.ssn != %s AND occurred IS NULL'
+        # sql = 'SELECT * FROM client, dates where (client.ssn = dates.ssn OR client.ssn = dates.date_ssn) and client.ssn != %s AND occurred IS NULL'
+
+
+        sql = 'select * from dates where ssn = %s and occurred is null'
         dates = cur.execute(sql, (user_ssn))
         return CursorIterator(cur)
 
-    def set_date_occurred(self, c1_ssn, c2_ssn):
+    def set_date_occurred(self, ssn, date):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
 
         # todo double check schema for dates!!!
         # tod make this take an actual date as well
-        sql = 'UPDATE dates set occured = "yes" WHERE (c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)'
-        result = cur.execute(sql, (c1_ssn, c2_ssn, c2_ssn, c1_ssn))
+        sql = 'UPDATE dates set occurred = "yes" WHERE (ssn = %s OR date_ssn = %s) AND (scheduled_date = %s)'
+        result = cur.execute(sql, (ssn, ssn, date))
         self.conn.commit()
         
         return result
 
-    def set_see_again(self, c1_ssn, c2_ssn):
+    def set_see_again(self, ssn, date_date):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = 'UPDATE dates set see_again = "yes" WHERE (c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)'
-        result = cur.execute(sql, (c1_ssn, c2_ssn, c2_ssn, c1_ssn))
+        sql = 'UPDATE dates set see_again = "yes" WHERE ssn = %s AND scheduled_date = %s'
+        result = cur.execute(sql, (ssn, date_date))
         self.conn.commit()
 
         return result
+
+    def get_dates_per_couple(self, ssn1, ssn2):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'SELECT * from dates where ssn = %s and date_ssn = %s'
+        result = cur.execute(sql, (ssn1, ssn2))
+        return CursorIterator(cur)
+
+    def update_date(self, ssn, date_ssn, orig_date, new_date, new_location):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        result1 = 1
+        result2 = 1
+
+        if new_date:
+            # test = 'SELECT * FROM dates WHERE ssn = %s OR date_ssn = %s'
+            # test_res = cur.execute(test, (ssn, ssn))
+            # res = [i for i in CursorIterator(cur)]
+
+            # print([i for i in test_res])
+            sql = 'UPDATE dates set scheduled_date = %s WHERE scheduled_date = %s AND ((ssn = %s AND date_ssn = %s) OR (ssn = %s AND date_ssn = %s))'
+            result1 = cur.execute(sql, (new_date, orig_date, ssn, date_ssn, date_ssn, ssn))
+        if new_location:
+            sql = 'UPDATE dates set location = %s WHERE ((ssn = %s AND date_ssn = %s) OR (ssn = %s AND date_ssn = %s)) AND scheduled_date = %s'
+            result2 = cur.execute(sql, (new_location, ssn, date_ssn, date_ssn, ssn, orig_date))
+        self.conn.commit()
+
+        return result1 and result2
+
+    def get_interested_dates(self, ssn):
+        """ Get the dates for the user that the user wants to see again
+        """
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "select * from dates where ssn = %s and see_again = 'yes'"
+        dates = cur.execute(sql, (ssn))
+        return CursorIterator(cur)
+
+    def get_other_interested(self, ssn, date_date):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "select * from dates where ssn = %s and scheduled_date = %s"
+        response = cur.execute(sql, (ssn, date_date))
+        return CursorIterator(cur)
+
+    def get_client_by_ssn(self, ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'SELECT * FROM client where ssn = %s'
+        cur.execute(sql, (ssn))
+        return CursorIterator(cur)
+
+    def get_payments(self, ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'SELECT * FROM fees where ssn = %s'
+        cur.execute(sql, (ssn))
+        return CursorIterator(cur)
 
     def get_people(self):
         """Fetch a veuw from the database"""

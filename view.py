@@ -85,23 +85,25 @@ def interests():
     # this html file is just a placeholder, haven't actually started this yet
     return render_template('interests.html')
 
-@app.route('/insert_interets', methods=['POST'])
+@app.route('/insert_interests', methods=['POST'])
 def insert_interests():
-    interest = request.form['interest']
-    interest_type = request.form['interest_type']
+    interest = request.form['category']
+    interest_type = request.form['specific']
     ssn = request.form['ssn']
-    if not db.check_interest(interest):
-        db.add_interest(interest)
-        if db.add_interest_type(interest_type):
+    if not db.check_interest_exists(interest, interest_type):
+        db.add_interest_type(interest_type, interest)
+        if db.add_interest(ssn, interest_type):
             return redirect('/interests')
         return "Error"
 
-    if not db.check_interest_type(interest_type):
-        if db.add_interest_type(interest_type):
+    if not db.check_interest_exists(interest, interest_type):
+        print("in second if")
+        if db.add_interest_type(interest, interest_type):
             return redirect('/interests')
         return "Error"
 
     if db.add_client_interest(ssn, interest, interest_type):
+        print("in third if")
         return redirect('/interests')
     return "Error"
 
@@ -184,23 +186,76 @@ def finalize_date():
     date_ssn = request.form['date_ssn']
 
     if db.insert_date(user_ssn, date_ssn, location, date):
-        return redirect('/client_search')
+        if db.insert_date(date_ssn, user_ssn, location, date):
+            return redirect('/client_search')
+        return "Error"
     return "Error"
 
 @app.route('/date_history', methods=['GET'])
 def date_history():
-    ssn = request.cookies['userID']
+    ssn = int(request.cookies['userID'])
+    print(ssn)
     # dates = db.get_dates(ssn)
     prev_dates = db.get_prev_dates(ssn)
     future_dates = db.get_future_dates(ssn)
+    again_dates = db.get_interested_dates(ssn)
+    second_dates = []
+
+    # todo check if there's a smarter way to do this
+    future_dates = [i for i in future_dates]
+    # print(future_dates)
+    for date in future_dates:
+        user_is_date = False
+        if date['date_ssn'] == ssn:
+            user_is_date = True
+
+        # print(date)
+
+        if user_is_date:
+            date['name'] = [i for i in db.get_client_by_ssn(date['dates.ssn'])][0]['name']
+        else:
+            date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
+
+    prev_dates = [i for i in prev_dates]
+    # print(prev_dates)
+    for date in prev_dates:
+        user_is_date = False
+        if date['date_ssn'] == ssn:
+            user_is_date = True
+
+        # print(date)
+
+        if user_is_date:
+            date['name'] = [i for i in db.get_client_by_ssn(date['dates.ssn'])][0]['name']
+        else:
+            date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
+
+    for date in again_dates:
+        response = [i for i in db.get_other_interested(date['date_ssn'], date['scheduled_date'])][0]
+        
+        print(response)
+        already_scheduled = False
+        # also check to see if another date has already been scheduled
+        if response['see_again'] == 'yes':
+            for d in db.get_dates_per_couple(ssn, date['date_ssn']):
+                if not d['occurred']:
+                    already_scheduled = True
+                    break
+
+            if already_scheduled:
+                break
+
+            date_name = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
+            second_dates.append({'name': date_name, 'date_ssn': date['date_ssn']})
 
     # do this so that we'll only show the form to edit upcoming dates when
     # there actually are upcoming dates
-    future_dates = [i for i in future_dates]
     if len(future_dates) == 0:
         future_dates = []
-    return render_template('date_feed.html', prev_dates=prev_dates, future_dates=future_dates)
+    return render_template('date_feed.html', prev_dates=prev_dates, future_dates=future_dates, second_dates=second_dates)
 
+
+# i think this isn't used anymore
 @app.route('/edit_dates', methods=['GET', 'POST'])
 def edit_req_date():
     date_info = request.form['edit_req']
@@ -208,7 +263,11 @@ def edit_req_date():
     date_date = date_info.split()[1]
     user_ssn = request.cookies['userID']
 
+    print(user_ssn)
+    print("date info " + str(date_info))
+
     dates = db.get_dates(user_ssn, date_id, date_date)
+    print(dates)
     date = [i for i in dates][0]
     return render_template('/edit_dates.html', date=date)
 
@@ -217,10 +276,11 @@ def date_occurred():
     """ Update database to show a date has occurred
     """
     # todo check this, I think it's okay but can just use cookies as well
-    c1_ssn = request.form['c1_ssn']
-    c2_ssn = request.form['c2_ssn']
+    user_ssn = request.form['ssn']
+    # c2_ssn = request.form['c2_ssn']
+    date_date = request.form['date_date']
 
-    added = db.set_date_occurred(c1_ssn, c2_ssn)
+    added = db.set_date_occurred(user_ssn, date_date)
 
     if added:
         return redirect('/date_history')
@@ -230,17 +290,36 @@ def date_occurred():
 def log_see_again():
     """ Update database to show that people want to see e/o again
     """
-    c1_ssn = request.cookies['userID']
+    user_ssn = request.cookies['userID']
     date_info = request.form['date_info']
     print(date_info)
-    c2_ssn = date_info.split()[0]
-    date_date = date_info.split()[1]
-    
-    added = db.set_see_again(c1_ssn, c2_ssn)
+    # c2_ssn = date_info.split()[0]
+    # date_date = date_info.split()[1]
+    date_date = request.form['date_info']
+
+    added = db.set_see_again(user_ssn, date_date)
 
     if added:
         return redirect('/date_history')
     return "Error"
+
+@app.route('/update_date', methods=['POST'])
+def log_date_update():
+    new_date = request.form['new_date']
+    orig_date = request.form['date_date']
+    new_location = request.form['new_location']
+    user_ssn = request.form['ssn']
+    date_ssn = request.form['date_ssn']
+
+    if db.update_date(user_ssn, date_ssn, orig_date, new_date, new_location):
+        return redirect('/date_history')
+    return "Error"
+
+@app.route('/payment-history', methods=['GET'])
+def show_payments():
+    user_ssn = request.cookies['userID']
+    payments = [i for i in db.get_payments(user_ssn)]
+    return render_template('payment_history.html', payments=payments)
 
 @app.route('/client-home', methods=['GET'])
 def client_home():
@@ -604,16 +683,23 @@ def entry_search():
 @app.route('/all_clients', methods=['GET'])
 def all_clients():
     results = [i for i in db.fetch_allClients()]
+    # print(results)
 
-    clients_grouped = {i['ssn']: {'childName': [], 'childDOB': [], 'childStatus': []} for i in results}
+    clients_grouped = {i['ssn']: {'childName': [], 'childDOB': [], 'childStatus': [], 'interest': [], 'category': []} for i in results}
     for client in results:
         ssn = client['ssn']
         if client.get('childName'):
-            clients_grouped[ssn]['childName'].append(client['childName'])
-            clients_grouped[ssn]['childDOB'].append(client['childDOB'])
-            clients_grouped[ssn]['childStatus'].append(client['childStatus'])
+            print(client['childName'])
+            if client['childName'] not in clients_grouped[ssn]['childName']:
+                clients_grouped[ssn]['childName'].append(client['childName'])
+                clients_grouped[ssn]['childDOB'].append(client['childDOB'])
+                clients_grouped[ssn]['childStatus'].append(client['childStatus'])
+        if client.get('category'):
+            if client['category'] not in clients_grouped[ssn]['category']:
+                clients_grouped[ssn]['category'].append(client['category'])
+                clients_grouped[ssn]['interest'].append(client['interest'])
         for attr in client:
-            if attr in ('childName', 'childStatus', 'childDOB'):
+            if attr in ('childName', 'childStatus', 'childDOB', 'interest', 'category'):
                 continue
             clients_grouped[ssn][attr] = client[attr]
 
@@ -626,6 +712,10 @@ def all_clients():
             client['childName'] = 'N/A'
             client['childDOB'] = 'N/A'
             client['childStatus'] = 'N/A'
+        if client['category']:
+            client['category'] = ', '.join(client['category'])
+            client['interest'] = ', '.join(client['interest'])
+            pass
 
     return render_template('all_clients.html', results=clients_grouped.values())
     # return render_template('all_clients.html', results=results)
