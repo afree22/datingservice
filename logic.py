@@ -219,8 +219,8 @@ class Database(object):
 
     def set_see_again(self, ssn, date_date):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = 'UPDATE dates set see_again = "yes" WHERE (dates.ssn = %s OR dates.date_ssn = %s) AND (scheduled_date = %s)'
-        result = cur.execute(sql, (ssn, ssn, date_date))
+        sql = 'UPDATE dates set see_again = "yes" WHERE ssn = %s AND scheduled_date = %s'
+        result = cur.execute(sql, (ssn, date_date))
         self.conn.commit()
 
         return result
@@ -244,6 +244,20 @@ class Database(object):
         self.conn.commit()
 
         return result1 and result2
+
+    def get_interested_dates(self, ssn):
+        """ Get the dates for the user that the user wants to see again
+        """
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "select * from dates where ssn = %s and see_again = 'yes'"
+        dates = cur.execute(sql, (ssn))
+        return CursorIterator(cur)
+
+    def get_other_interested(self, ssn, date_date):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "select * from dates where ssn = %s and scheduled_date = %s"
+        response = cur.execute(sql, (ssn, date_date))
+        return CursorIterator(cur)
 
     def get_client_by_ssn(self, ssn):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)

@@ -197,16 +197,18 @@ def date_history():
     # dates = db.get_dates(ssn)
     prev_dates = db.get_prev_dates(ssn)
     future_dates = db.get_future_dates(ssn)
+    again_dates = db.get_interested_dates(ssn)
+    second_dates = []
 
     # todo check if there's a smarter way to do this
     future_dates = [i for i in future_dates]
-    print(future_dates)
+    # print(future_dates)
     for date in future_dates:
         user_is_date = False
         if date['date_ssn'] == ssn:
             user_is_date = True
 
-        print(date)
+        # print(date)
 
         if user_is_date:
             date['name'] = [i for i in db.get_client_by_ssn(date['dates.ssn'])][0]['name']
@@ -214,25 +216,38 @@ def date_history():
             date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
 
     prev_dates = [i for i in prev_dates]
-    print(prev_dates)
+    # print(prev_dates)
     for date in prev_dates:
         user_is_date = False
         if date['date_ssn'] == ssn:
             user_is_date = True
 
-        print(date)
+        # print(date)
 
         if user_is_date:
             date['name'] = [i for i in db.get_client_by_ssn(date['dates.ssn'])][0]['name']
         else:
             date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
 
+    for date in again_dates:
+        response = [i for i in db.get_other_interested(date['date_ssn'], date['scheduled_date'])][0]
+        
+        print(response)
+        if response['see_again'] == 'yes':
+            date_name = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
+            print("\n\n")
+            print(date_name)
+            print("\n\n")
+            second_dates.append({'name': date_name, 'date_ssn': date['date_ssn']})
+
     # do this so that we'll only show the form to edit upcoming dates when
     # there actually are upcoming dates
     if len(future_dates) == 0:
         future_dates = []
-    return render_template('date_feed.html', prev_dates=prev_dates, future_dates=future_dates)
+    return render_template('date_feed.html', prev_dates=prev_dates, future_dates=future_dates, second_dates=second_dates)
 
+
+# i think this isn't used anymore
 @app.route('/edit_dates', methods=['GET', 'POST'])
 def edit_req_date():
     date_info = request.form['edit_req']

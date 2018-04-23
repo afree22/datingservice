@@ -28,6 +28,20 @@
       </form>
       {% endif %}
 
+      {% if second_dates %}
+      <form action="make_date" method="POST">
+        <h2>These matches want to see you again! 💕</h2>
+        {% for date in second_dates %}
+        <p>
+          <input type="radio" name="match" value="{{date['date_ssn']}}">
+          {{date['name']}}
+        </p>
+        {% endfor %}
+          <input type="submit" value="Request another date!" />
+        </p>
+      </form>
+      {% endif %}
+
 
       <form action="see_again" method="POST">
         <h2>Your past dates</h2>
