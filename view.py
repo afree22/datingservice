@@ -187,9 +187,16 @@ def finalize_date():
     user_ssn = request.form['user_ssn']
     date_ssn = request.form['date_ssn']
 
-    print(request.form)
     if db.insert_date(user_ssn, date_ssn, location, date):
-        # if db.insert_date(date_ssn, user_ssn, location, date):
+        
+        user_credit = [i for i in db.get_credit(user_ssn)][0]['amount']
+        if user_credit < 50:
+            # also need to charge
+            db.charge_match_fee(user_ssn)
+            db.insert_credit(user_ssn, -50)
+            # print("charge result")
+            # print(res)
+
         return redirect('/client_search')
         # return "Error"
     return "Error"

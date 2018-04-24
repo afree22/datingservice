@@ -303,6 +303,7 @@ class Database(object):
         """ charge a match fee
         """
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        # sql = "INSERT INTO fees (ssn, date_incurred, fee_type, payment_amount, fee_status) VALUES (%s, NOW(), 'match fee', 50, 'overdue')"
         sql = "INSERT INTO fees (ssn, date_incurred, fee_type, payment_amount, fee_status) VALUES (%s, NOW(), 'match fee', 50, 'overdue')"
         result = cur.execute(sql, (ssn))
         self.conn.commit()
@@ -321,12 +322,19 @@ class Database(object):
         result = cur.execute(sql, (ssn, date_incurred))
         return result
 
-    def insert_credit(self, ssn, amount):
+    def insert_credit(self, ssn, value):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "INSERT INTO credit (ssn, amount) VALUES (%s, %s)"
-        result = cur.execute(sql, (ssn, amount))
+        # sql = "INSERT INTO credit (ssn, amount) VALUES (%s, %s)"
+        sql = "UPDATE credit SET amount = amount + %s WHERE ssn = %s"
+        result = cur.execute(sql, (value, ssn))
         self.conn.commit()
         return result
+
+    def get_credit(self, ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT amount FROM credit WHERE ssn = %s"
+        cur.execute(sql, (ssn))
+        return CursorIterator(cur)
 
     def get_people(self):
         """Fetch a veuw from the database"""
