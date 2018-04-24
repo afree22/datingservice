@@ -301,6 +301,15 @@ class Database(object):
         self.conn.commit()
         return result
 
+    def get_five_recent_matches(self, ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT * FROM dates WHERE ssn = %s and occurred = 'yes' ORDER BY scheduled_date"
+        cur.execute(sql, (ssn))
+        return CursorIterator(cur)
+
+    def pay_fee(self, ssn):
+        pass
+
     def get_people(self):
         """Fetch a veuw from the database"""
         cur = self.conn.cursor(pymysql.cursors.DictCursor)

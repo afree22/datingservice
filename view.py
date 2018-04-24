@@ -232,6 +232,8 @@ def date_history():
             date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
 
 
+
+
     # this is probably the dumbest way to do this but oh well
     # need the most recent dates per couple.....
     # for date in again_dates:
@@ -264,6 +266,8 @@ def date_history():
 
     #         date_name = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
     #         second_dates.append({'name': date_name, 'date_ssn': date['date_ssn']})
+
+
 
     # do this so that we'll only show the form to edit upcoming dates when
     # there actually are upcoming dates
