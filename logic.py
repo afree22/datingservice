@@ -589,7 +589,11 @@ class Database(object):
         cur.execute(sql)
         return CursorIterator(cur)
     
-        
+    def average_dates_couple(self):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT AVG (COUNT) as c FROM (SELECT c1_ssn, c2_ssn, COUNT(*) count FROM dates GROUP BY c1_ssn, c2_ssn) as P"
+        cur.execute(sql)
+        return CursorIterator(cur)
 
     
     """ Specialist Search for Client """
@@ -598,9 +602,9 @@ class Database(object):
         cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, c1_ssn, c2_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.c1_ssn or c.ssn = Dates.c2_ssn")
         return CursorIterator(cur)
     
-    def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus, interest, category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again):
+    def fetch_potential_match(self, ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus, interest, category, date_incurred, fee_type, payment_amount, fee_status, location, scheduled_date, occurred, interested, see_again):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status,CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.ssn WHERE "
+        select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.c1_ssn or c.ssn = Dates.c2_ssn WHERE "
         client_attrs = []
 
         if ssn:
@@ -649,8 +653,6 @@ class Database(object):
             client_attrs.append("paymen_amount = '{}'".format(payment_amount))
         if fee_status:
             client_attrs.append("fee_status = '{}'".format(self.conn.escape_string(fee_status)))
-        if date_ssn:
-            client_attrs.append("date_ssn = '{}'".format(date_ssn))
         if location:
             client_attrs.append("location = '{}'".format(self.conn.escape_string(location)))
         if scheduled_date:
@@ -676,12 +678,12 @@ class Database(object):
     """ Staff Search for Client """
     def fetch_staffClients(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status,CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.ssn;")
+        cur.execute("SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.c1_ssn or c.ssn = Dates.c2_ssn;")
         return CursorIterator(cur)
     
     def fetch_staff_match(self, name, gender, dob, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status,CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.ssn WHERE "
+        select = "SELECT c.ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, CriminalRecord.crime, Children.childName, Children.childDOB, Children.childStatus, interest_category.interest, interest_category.category, date_incurred, fee_type, payment_amount, fee_status, location, scheduled_date, occurred, interested, see_again FROM CLient c LEFT JOIN CriminalRecord On c.ssn = CriminalRecord.ssn LEFT JOIN Children ON c.ssn = Children.ssn LEFT JOIN client_interests ON c.ssn = client_interests.ssn Natural Join interest_category LEFT JOIN FEES ON c.ssn = FEES.ssn LEFT JOIN Dates ON c.ssn = Dates.c1_ssn or c.ssn = Dates.c2_ssn WHERE "
         client_attrs = []
         
         if name:
@@ -714,6 +716,28 @@ class Database(object):
             client_attrs.append("childDOB = '{}'".format(childDOB))
         if childStatus:
             client_attrs.append("childStatus = '{}'".format(self.conn.escape_string(childStatus)))
+        if interest:
+            client_attrs.append("interest = '{}'".format(self.conn.escape_string(interest)))
+        if category:
+            client_attrs.append("category = '{}'".format(self.conn.escape_string(category)))
+        if date_incurred:
+            client_attrs.append("date_incurred = '{}'".format(date_incurred))
+        if fee_type:
+            client_attrs.append("fee_type = '{}'".format(self.conn.escape_string(fee_type)))
+        if payment_amount:
+            client_attrs.append("paymen_amount = '{}'".format(payment_amount))
+        if fee_status:
+            client_attrs.append("fee_status = '{}'".format(self.conn.escape_string(fee_status)))
+        if location:
+            client_attrs.append("location = '{}'".format(self.conn.escape_string(location)))
+        if scheduled_date:
+            client_attrs.append("scheduled_date = '{}'".format(scheduled_date))
+        if occurred:
+            client_attrs.append("occurred = '{}'".format(self.conn.escape_string(occurred)))
+        if interested:
+            client_attrs.append("interested = '{}'".format(self.conn.escape_string(interested)))
+        if see_again:
+            client_attrs.append("see_again = '{}'".format(self.conn.escape_string(see_again)))
 
         attrs = " AND ".join(client_attrs)
         sql = "{}{}".format(select, attrs)

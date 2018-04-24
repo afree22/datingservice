@@ -34,7 +34,9 @@ app.debug = config.APP_DEBUG
 @app.route('/', methods=['GET'])
 def signup():
     clients = db.get_people()
-    return render_template('signup.html', clients=clients)
+    if clients:
+        return render_template('signup.html', clients=clients)
+    return render_template('error')
 
 @app.route('/error', methods=['GET'])
 def error():
