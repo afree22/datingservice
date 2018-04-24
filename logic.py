@@ -559,8 +559,11 @@ class Database(object):
         cur.execute(sql)
         return CursorIterator(cur)
     
-        
-
+    def average_dates_couple(self):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT AVG(count) as c FROM ( SELECT count(*) as count, c1_ssn, c2_ssn from dates group by c1_ssn, c2_ssn) as P;"
+        cur.execute(sql)
+        return CursorIterator(cur)
     
     """ Specialist Search for Client """
     def fetch_allClients(self):

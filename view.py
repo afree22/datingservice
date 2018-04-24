@@ -663,56 +663,68 @@ def num_dates_search():
 @app.route('/num_clients_married', methods=['GET'])
 def num_clients_married():
     results = db.get_num_clients_married()
-    return render_template('num_clients_married.html', results=results)
+    if results:
+        return render_template('num_clients_married.html', results=results)
+    return redirect('error')
 
 @app.route('/num_clients_gender', methods=['GET'])
 def num_clients_gender():
     results = db.get_num_clients_gender()
-    return render_template('num_clients_gender.html', results=results)
+    if results:
+        return render_template('num_clients_gender.html', results=results)
+    return redirect('error')
 
 @app.route('/num_dates_gender', methods=['GET'])
 def num_dates_gender():
     results = db.get_num_dates_gender()
-    return render_template('num_dates_gender.html', results=results)
+    if results:
+        return render_template('num_dates_gender.html', results=results)
+    return redirect('error')
 
 @app.route('/type_crime', methods=['GET'])
 def type_crime():
     results = db.get_type_crime()
-    return render_template('type_crime.html', results=results)
+    if results:
+        return render_template('type_crime.html', results=results)
+    return redirect('error')
 
 @app.route('/age_children', methods=['GET'])
 def age_children():
     currentDate = str(datetime.datetime.now()).split()[0]
     results = db.get_age_children(currentDate)
-    return render_template('age_children.html', results=results)
+    if results:
+        return render_template('age_children.html', results=results)
+    return redirect('error')
 
 @app.route('/outstanding_balance', methods=['GET'])
 def outstanding_balance():
     results = db.get_outstanding_balance()
-    return render_template('outstanding_balance.html', results=results)
+    if results:
+        return render_template('outstanding_balance.html', results=results)
+    return redirect('error')
 
 @app.route('/display_interests', methods=['GET'])
 def display_interests():
     results = db.display_interests()
-    return render_template('display_interests.html', results=results)
+    if results:
+        return render_template('display_interests.html', results=results)
+    return redirect('error')
 
-
-
-
-
-
-
-
-
-
-
+@app.route('/average_dates_couple', methods=['GET'])
+def average_dates_couple():
+    results = db.average_dates_couple()
+    if results:
+        return render_template('average_dates_couple.html', results=results)
+    return redirect('error')
 
 
 """ Entry Level  Search """
 @app.route('/entry_view_clients', methods=['GET'])
 def entry_view_clients():
     results = db.fetch_staffClients()
-    return render_template('entry-view-clients.html', results=results)
+    if results:
+        return render_template('entry-view-clients.html', results=results)
+    return redirect('error')
 
 @app.route('/entry_search', methods=['GET'])
 def entry_search():
