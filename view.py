@@ -175,7 +175,8 @@ def make_date():
     # user_ssn = request.form['userssn']
     print(request.form)
     user_ssn = request.cookies['userID']
-    date_ssn = request.form['match']
+    ssns = request.form['match'].split()
+    date_ssn = ssns[0] if int(ssns[0]) != int(user_ssn) else ssns[1]
 
     return render_template('finalize_date.html', user_ssn=user_ssn, date_ssn=date_ssn)
 
@@ -186,10 +187,11 @@ def finalize_date():
     user_ssn = request.form['user_ssn']
     date_ssn = request.form['date_ssn']
 
+    print(request.form)
     if db.insert_date(user_ssn, date_ssn, location, date):
-        if db.insert_date(date_ssn, user_ssn, location, date):
-            return redirect('/client_search')
-        return "Error"
+        # if db.insert_date(date_ssn, user_ssn, location, date):
+        return redirect('/client_search')
+        # return "Error"
     return "Error"
 
 @app.route('/date_history', methods=['GET'])
@@ -200,79 +202,17 @@ def date_history():
     prev_dates = db.get_prev_dates(ssn)
     future_dates = db.get_future_dates(ssn)
     again_dates = db.get_interested_dates(ssn)
-    second_dates = []
+    second_dates = [i for i in again_dates]
 
     # todo check if there's a smarter way to do this
     future_dates = [i for i in future_dates]
-    # print(future_dates)
-    for date in future_dates:
-        user_is_date = False
-        if date['date_ssn'] == ssn:
-            user_is_date = True
-
-        # print(date)
-
-        if user_is_date:
-            date['name'] = [i for i in db.get_client_by_ssn(date['dates.ssn'])][0]['name']
-        else:
-            date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
-
-    prev_dates = [i for i in prev_dates]
-    # print(prev_dates)
-    for date in prev_dates:
-        user_is_date = False
-        if date['date_ssn'] == ssn:
-            user_is_date = True
-
-        # print(date)
-
-        if user_is_date:
-            date['name'] = [i for i in db.get_client_by_ssn(date['dates.ssn'])][0]['name']
-        else:
-            date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
-
-
-
-
-    # this is probably the dumbest way to do this but oh well
-    # need the most recent dates per couple.....
-    # for date in again_dates:
-    #     # response = [i for i in db.get_other_interested(date['date_ssn'], date['scheduled_date'])][0]
-    #     print(ssn, date['date_ssn'])
-    #     response1 = [i for i in db.get_most_recent_date(ssn, int(date['date_ssn']))][0]
-    #     response2 = [i for i in db.get_most_recent_date(int(date['date_ssn']), ssn)][0]
-
-    #     # this doesn't work
-    #     if date == response1 or date == response2:
-    #         continue
-        
-    #     # print(response)
-    #     print("\n\n")
-    #     print(date == response1)
-    #     print(date)
-    #     print(response1)
-    #     print(response2)
-    #     print("\n\n")
-    #     already_scheduled = False
-    #     # also check to see if another date has already been scheduled
-    #     if response1['see_again'] == 'yes' and response2['see_again'] == 'yes':
-    #         for d in db.get_dates_per_couple(ssn, date['date_ssn']):
-    #             if not d['occurred']:
-    #                 already_scheduled = True
-    #                 break
-
-    #         if already_scheduled:
-    #             break
-
-    #         date_name = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
-    #         second_dates.append({'name': date_name, 'date_ssn': date['date_ssn']})
-
-
 
     # do this so that we'll only show the form to edit upcoming dates when
     # there actually are upcoming dates
     if len(future_dates) == 0:
         future_dates = []
+    if len(second_dates) == 0:
+        second_dates = []
     return render_template('date_feed.html', prev_dates=prev_dates, future_dates=future_dates, second_dates=second_dates)
 
 
@@ -314,9 +254,13 @@ def log_see_again():
     user_ssn = request.cookies['userID']
     date_info = request.form['date_info']
     value = 'yes' if request.form.get('see_again') else 'no'
-    # c2_ssn = date_info.split()[0]
-    # date_date = date_info.split()[1]
     date_date = request.form['date_info']
+    date_ssn = request.form['c1_ssn'] if int(request.form['c1_ssn']) != user_ssn else request.form['c2_ssn']
+    print(request.form)
+
+    if value == 'no':
+        # need to check for users getting credit here
+        pass
 
     added = db.set_see_again(user_ssn, date_date, value)
 

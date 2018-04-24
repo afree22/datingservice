@@ -220,18 +220,18 @@ class Database(object):
         
         return result
 
-    def set_see_again(self, ssn, date_date, value):
+    def set_see_again(self, ssn1, ssn2, date_date, value):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = 'UPDATE dates set see_again = "yes" WHERE c1_ssn = %s OR c2_ssn = %s AND scheduled_date = %s'
-        result = cur.execute(sql, (ssn, ssn, date_date))
+        sql = 'UPDATE dates set see_again = %s WHERE ((c1_ssn = %s and c2_ssn = %s) OR (c1_ssn = %s and c2_ssn = %s)) AND scheduled_date = %s'
+        result = cur.execute(sql, (value, ssn1, ssn2, ssn2, ssn1, date_date))
         self.conn.commit()
 
         return result
 
     def get_dates_per_couple(self, ssn1, ssn2):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = 'SELECT * from dates where c1_ssn = %s and c2_ssn = %s'
-        result = cur.execute(sql, (ssn1, ssn2))
+        sql = 'SELECT * from dates where (c1_ssn = %s and c2_ssn = %s) or (c1_ssn = %s and c2_ssn = %s)'
+        result = cur.execute(sql, (ssn1, ssn2, ssn2, ssn1))
         return CursorIterator(cur)
 
     def update_date(self, ssn, date_ssn, orig_date, new_date, new_location):
@@ -240,10 +240,10 @@ class Database(object):
         result2 = 1
 
         if new_date:
-            sql = 'UPDATE dates set scheduled_date = %s WHERE scheduled_date = %s AND ((ssn = %s AND date_ssn = %s) OR (ssn = %s AND date_ssn = %s))'
+            sql = 'UPDATE dates set scheduled_date = %s WHERE scheduled_date = %s AND ((c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s))'
             result1 = cur.execute(sql, (new_date, orig_date, ssn, date_ssn, date_ssn, ssn))
         if new_location:
-            sql = 'UPDATE dates set location = %s WHERE ((ssn = %s AND date_ssn = %s) OR (ssn = %s AND date_ssn = %s)) AND scheduled_date = %s'
+            sql = 'UPDATE dates set location = %s WHERE ((c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)) AND scheduled_date = %s'
             result2 = cur.execute(sql, (new_location, ssn, date_ssn, date_ssn, ssn, orig_date))
         self.conn.commit()
 
@@ -253,8 +253,8 @@ class Database(object):
         """ Get the dates for the user that the user wants to see again
         """
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "select * from dates where ssn = %s and see_again = 'yes'"
-        dates = cur.execute(sql, (ssn))
+        sql = "select * from dates where (c1_ssn = %s or c2_ssn = %s) and see_again = 'yes'"
+        dates = cur.execute(sql, (ssn, ssn))
         return CursorIterator(cur)
 
     def get_most_recent_date(self, ssn, date_ssn):
@@ -263,6 +263,13 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = 'SELECT * FROM dates WHERE ssn = %s AND date_ssn = %s ORDER BY scheduled_date LIMIT 1'
         date = cur.execute(sql, (ssn, date_ssn))
+        return CursorIterator(cur)
+
+    def get_date_count(self, ssn1, ssn2):
+        """Get # of dates couple has successfully completed"""
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT COUNT(*) FROM dates where (c1_ssn = %s and c2_ssn = %) or (c1_ssn = %s and c2_ssn = %s) and see_again = 'yes'"
+        cur.execute(sql, (ssn1, ssn2, ssn2, ssn1))
         return CursorIterator(cur)
 
     def get_other_interested(self, ssn, date_date):
@@ -303,12 +310,15 @@ class Database(object):
 
     def get_five_recent_matches(self, ssn):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT * FROM dates WHERE ssn = %s and occurred = 'yes' ORDER BY scheduled_date"
+        sql = "SELECT * FROM dates WHERE (c1_ssn = %s or c2_ssn = %s) and occurred = 'yes' ORDER BY scheduled_date"
         cur.execute(sql, (ssn))
         return CursorIterator(cur)
 
-    def pay_fee(self, ssn):
-        pass
+    def pay_fee(self, ssn, date_incurred):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "update fees set fee_status = 'paid' where ssn = %s and date_incurred = %s"
+        result = cur.execute(sql, (ssn, date_incurred))
+        return result
 
     def get_people(self):
         """Fetch a veuw from the database"""
@@ -563,11 +573,8 @@ class Database(object):
         cur.execute(sql)
         return CursorIterator(cur)
     
-    def average_dates_couple(self):
-        cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT AVG(count) as c FROM ( SELECT count(*) as count, c1_ssn, c2_ssn from dates group by c1_ssn, c2_ssn) as P;"
-        cur.execute(sql)
-        return CursorIterator(cur)
+        
+
     
     """ Specialist Search for Client """
     def fetch_allClients(self):

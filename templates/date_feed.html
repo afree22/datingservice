@@ -33,7 +33,7 @@
         <h2>These matches want to see you again! 💕</h2>
         {% for date in second_dates %}
         <p>
-          <input type="radio" name="match" value="{{date['date_ssn']}}">
+          <input type="radio" name="match" value="{{date['c1_ssn']}} {{date['c2_ssn']}}">
           {{date['name']}}
         </p>
         {% endfor %}
@@ -61,7 +61,9 @@
             I'm interested in seeing this person again...
             Yes <input type="radio" name="see_again">
             No <input type="radio" name="no_see_again">
-            <input type="hidden" name="date_info" value="{{date['scheduled_date']}}">
+            <input type="hidden" name="date_date" value="{{date['scheduled_date']}}">
+            <input type="hidden" name="ssn1" value="{{date['c1_ssn']}}">
+            <input type="hidden" name="ssn2" value="{{date['c2_ssn']}}">
             <input type="submit" value="Submit!"/>
           </p>
           {% endif %}
