@@ -268,7 +268,7 @@ class Database(object):
     def get_date_count(self, ssn1, ssn2):
         """Get # of dates couple has successfully completed"""
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT COUNT(*) FROM dates where (c1_ssn = %s and c2_ssn = %) or (c1_ssn = %s and c2_ssn = %s) and see_again = 'yes'"
+        sql = "SELECT COUNT(*) FROM dates where (c1_ssn = %s and c2_ssn = %s) or (c1_ssn = %s and c2_ssn = %s) and see_again = 'yes'"
         cur.execute(sql, (ssn1, ssn2, ssn2, ssn1))
         return CursorIterator(cur)
 
@@ -310,14 +310,22 @@ class Database(object):
 
     def get_five_recent_matches(self, ssn):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT * FROM dates WHERE (c1_ssn = %s or c2_ssn = %s) and occurred = 'yes' ORDER BY scheduled_date"
-        cur.execute(sql, (ssn))
+        # sql = "SELECT * FROM dates WHERE (c1_ssn = %s or c2_ssn = %s) and occurred = 'yes' ORDER BY scheduled_date"
+        sql = "select distinct c1_ssn, c2_ssn from dates where c1_ssn = %s or c2_ssn = %s"
+        cur.execute(sql, (ssn, ssn))
         return CursorIterator(cur)
 
     def pay_fee(self, ssn, date_incurred):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "update fees set fee_status = 'paid' where ssn = %s and date_incurred = %s"
         result = cur.execute(sql, (ssn, date_incurred))
+        return result
+
+    def insert_credit(self, ssn, amount):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "INSERT INTO credit (ssn, amount) VALUES (%s, %s)"
+        result = cur.execute(sql, (ssn, amount))
+        self.conn.commit()
         return result
 
     def get_people(self):

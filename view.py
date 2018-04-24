@@ -252,19 +252,45 @@ def log_see_again():
     """ Update database to show that people want to see e/o again
     """
     user_ssn = request.cookies['userID']
-    date_info = request.form['date_info']
+    # date_info = request.form['date_info']
     value = 'yes' if request.form.get('see_again') else 'no'
-    date_date = request.form['date_info']
-    date_ssn = request.form['c1_ssn'] if int(request.form['c1_ssn']) != user_ssn else request.form['c2_ssn']
+    date_date = request.form['date_date']
+    date_ssn = request.form['ssn1'] if int(request.form['ssn1']) != int(user_ssn) else request.form['ssn2']
     print(request.form)
 
     if value == 'no':
         # need to check for users getting credit here
-        pass
+        num_dates = [i for i in db.get_date_count(user_ssn, date_ssn)][0]['COUNT(*)']
+        if int(num_dates) <= 2:
+            # check if this is the fifth date unhappy with
+            # else add regular credit ???
+            # add credit
+            # maybe
+            five_recent = [i for i in db.get_five_recent_matches(user_ssn)]
+
+            if len(five_recent) == 5:
+                if all([i['see_again'] == 'no' for i in five_recent]):
+                    # five straight unhappy dates 
+                    # give free match
+                    # but then need to charge extra registration fee
+                    if db.insert_credit(user_ssn, 50):
+                        return redirect('/date_history')
+                    return "Error adding credit for your five unhappy matches"
+                else:
+                    # just single free match
+                    if db.insert_credit(user_ssn, 50):
+                        return redirect('/date_history')
+                    return "Error adding credit"
+            else:
+                # just single free match
+                if db.insert_credit(user_ssn, 50):
+                    return redirect('/date_history')
+                return "Error adding credit"
 
     added = db.set_see_again(user_ssn, date_date, value)
+    charged = db.charge_match_fee(user_ssn)
 
-    if added:
+    if added and charged:
         return redirect('/date_history')
     return "Error"
 
