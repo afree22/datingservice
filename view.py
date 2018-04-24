@@ -215,9 +215,12 @@ def date_history():
     again_dates = db.get_interested_dates(ssn)
     second_dates = [i for i in again_dates]
 
-    # todo check if there's a smarter way to do this
+    
     future_dates = [i for i in future_dates]
+    print("future dates")
+    print([i for i in future_dates])
 
+    print("prev dates")
     print([i for i in prev_dates])
 
     # do this so that we'll only show the form to edit upcoming dates when
