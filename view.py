@@ -173,6 +173,7 @@ def client_matches():
 @app.route('/make_date', methods=['POST'])
 def make_date():
     # user_ssn = request.form['userssn']
+    print(request.form)
     user_ssn = request.cookies['userID']
     date_ssn = request.form['match']
 
@@ -231,37 +232,42 @@ def date_history():
             date['name'] = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
 
 
+
+
     # this is probably the dumbest way to do this but oh well
     # need the most recent dates per couple.....
-    for date in again_dates:
-        # response = [i for i in db.get_other_interested(date['date_ssn'], date['scheduled_date'])][0]
-        print(ssn, date['date_ssn'])
-        response1 = [i for i in db.get_most_recent_date(ssn, int(date['date_ssn']))][0]
-        response2 = [i for i in db.get_most_recent_date(int(date['date_ssn']), ssn)][0]
+    # for date in again_dates:
+    #     # response = [i for i in db.get_other_interested(date['date_ssn'], date['scheduled_date'])][0]
+    #     print(ssn, date['date_ssn'])
+    #     response1 = [i for i in db.get_most_recent_date(ssn, int(date['date_ssn']))][0]
+    #     response2 = [i for i in db.get_most_recent_date(int(date['date_ssn']), ssn)][0]
 
-        if date == response1 or date == response2:
-            continue
+    #     # this doesn't work
+    #     if date == response1 or date == response2:
+    #         continue
         
-        # print(response)
-        print("\n\n")
-        print(date == response1)
-        print(date)
-        print(response1)
-        print(response2)
-        print("\n\n")
-        already_scheduled = False
-        # also check to see if another date has already been scheduled
-        if response1['see_again'] == 'yes' and response2['see_again'] == 'yes':
-            for d in db.get_dates_per_couple(ssn, date['date_ssn']):
-                if not d['occurred']:
-                    already_scheduled = True
-                    break
+    #     # print(response)
+    #     print("\n\n")
+    #     print(date == response1)
+    #     print(date)
+    #     print(response1)
+    #     print(response2)
+    #     print("\n\n")
+    #     already_scheduled = False
+    #     # also check to see if another date has already been scheduled
+    #     if response1['see_again'] == 'yes' and response2['see_again'] == 'yes':
+    #         for d in db.get_dates_per_couple(ssn, date['date_ssn']):
+    #             if not d['occurred']:
+    #                 already_scheduled = True
+    #                 break
 
-            if already_scheduled:
-                break
+    #         if already_scheduled:
+    #             break
 
-            date_name = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
-            second_dates.append({'name': date_name, 'date_ssn': date['date_ssn']})
+    #         date_name = [i for i in db.get_client_by_ssn(date['date_ssn'])][0]['name']
+    #         second_dates.append({'name': date_name, 'date_ssn': date['date_ssn']})
+
+
 
     # do this so that we'll only show the form to edit upcoming dates when
     # there actually are upcoming dates
@@ -307,12 +313,12 @@ def log_see_again():
     """
     user_ssn = request.cookies['userID']
     date_info = request.form['date_info']
-    print(date_info)
+    value = 'yes' if request.form.get('see_again') else 'no'
     # c2_ssn = date_info.split()[0]
     # date_date = date_info.split()[1]
     date_date = request.form['date_info']
 
-    added = db.set_see_again(user_ssn, date_date)
+    added = db.set_see_again(user_ssn, date_date, value)
 
     if added:
         return redirect('/date_history')
