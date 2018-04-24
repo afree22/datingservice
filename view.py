@@ -195,9 +195,11 @@ def finalize_date():
         if user_credit < 50:
             # also need to charge
             db.charge_match_fee(user_ssn)
-            db.insert_credit(user_ssn, -50)
+            # db.insert_credit(user_ssn, -50)
             # print("charge result")
             # print(res)
+        else:
+            db.insert_credit(user_ssn, -50)
 
         return redirect('/client_search')
         # return "Error"
@@ -207,14 +209,16 @@ def finalize_date():
 def date_history():
     ssn = int(request.cookies['userID'])
     print(ssn)
-    # dates = db.get_dates(ssn)
-    prev_dates = db.get_prev_dates(ssn)
+    # prev_dates = db.get_prev_dates(ssn)
+    prev_dates = [i for i in db.get_prev_dates(ssn)]
     future_dates = db.get_future_dates(ssn)
     again_dates = db.get_interested_dates(ssn)
     second_dates = [i for i in again_dates]
 
     # todo check if there's a smarter way to do this
     future_dates = [i for i in future_dates]
+
+    print([i for i in prev_dates])
 
     # do this so that we'll only show the form to edit upcoming dates when
     # there actually are upcoming dates
