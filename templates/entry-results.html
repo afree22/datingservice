@@ -1,148 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head> 
-    <link rel="stylesheet" type="text/css" href="/resources/style.css">
+  <head>
     <title>Find Love</title>
+    <link rel="stylesheet" href="resources/style.css" />
   </head>
   <body>
     <h1 class="title">
-       <img src="resources/LoveHeader.jpg" alt="Find love">
+      <img src="resources/LoveHeader.jpg" alt="Find love">
     </h1>
-    <h2>
-    Entry staff search page
-    </h2>
-    <section>
-	<div style="width:100%">
-	<div style="float:center; width:20%; padding-top:20px">
-		<form action = "entry_search">
-		<table id = searchResultsTable>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Name:</p>
-			</td>
-			<td>
-				<input name="Name" class="enjoy-input" placeholder="" value = "" />
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Gender:</p>
-			</td>
-			<td>
-				<input name="Gender" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Date of Birth:</p>
-			</td>
-			<td>
-				<input name="DOB" class="enjoy-input" placeholder="" value = "" />
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Eye Color:</p>
-			</td>
-			<td>
-				<input name="eyecolor" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Weight:</p>
-			</td>
-			<td>
-				<input name="weight" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Height:</p>
-			</td>
-			<td>
-				<input name="height" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Prior Marriage? (yes/no):</p>
-			</td>
-			<td>
-				<input name="prior_marriage" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Interested in Males or Females?:</p>
-			</td>
-			<td>
-				<input name="prior_marriage" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Date Account Opened:</p>
-			</td>
-			<td>
-				<input name="date-open" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Date Account Closed:</p>
-			</td>
-			<td>
-				<input name="date_close" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Account Status:</p>
-			</td>
-			<td>
-				<input name="status" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Crime:</p>
-			</td>
-			<td>
-				<input name="crime" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-				<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Child's Name</p>
-			</td>
-			<td>
-				<input name="childName" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Child's DOB</p>
-			</td>
-			<td>
-				<input name="childDOB" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<p style="color:white; font-family:arial; font-size:125%">Child's Status</p>
-			</td>
-			<td>
-				<input name="childStatus" class="enjoy-input" placeholder="" value = ""/>
-			</td>
-		</tr>
-	</table>
-	<div class="buttonHolder">
-		<button type="submit" class="btn" id="submit-button">Search Clients</button>
-	</div>
-</form>
-</div>
-
+     <section>
+      <form action="entry_search" method="POST">
+        <h2>Entry Staff Search Page</h2>
+        <p>
+          <label for="name">Name:</label> <input type="text" name="name" id="name" />
+        </p>
+        <p>
+          <label for="gender"> Gender:</label> <input type="text" name="gender" id="gender"/>
+        </p>
+        <p>
+          <label for="dob">DOB:</label> <input type="date" name="dob" id="dob"/>
+        </p>
+        <p>
+          <label for="eyecolor">Eye color:</label> <input type="text" name="eyecolor" id="eyecolor"/>
+        </p>
+        <p>
+          <label for="weight">Weight:</label> <input type="int" name="weight" id="weight"/>
+        </p>
+        <p>
+          <label for="height">Height:</label> <input type="int" name="height" id="height"/>
+        </p>
+        <p>
+          <label for="PrevMarriage">Have you been married before?:</label> <input type="text" name="PrevMarriage" id="PrevMarriage"/>
+        </p>
+        <p>
+          <label for="interest_in">Interested in male or female?</label> <input type="text" name="interest_in" id="interest_in"/>
+        </p>
+         <p>
+          <label for="open_date">Date Account was opened</label> <input type="date" name="open_date" id="open_date"/>
+        </p>
+        <p>
+          <label for="close_date">Date Account closed </label> <input type="date" name="close_date" id="close_date"/>
+        </p>
+         <p>
+          <label for="status">Account Status (active, closed)</label> <input type="text" name="status" id="status"/>
+        </p>
+         <p>
+          <label for="crime"> Crime </label> <input type="text" name="crime" id="crime"/>
+        </p>
+        <p>
+          <label for="childName"> Child's Name </label> <input type="text" name="childName" id="childName"/>
+        </p>
+        <p>
+          <label for="childDOB"> Child's DOB </label> <input type="date" name="childDOB" id="childDOB"/>
+        </p>
+        <p>
+          <label for="childStatus"> Child's Status </label> <input type="text" name="childStatus" id="childStatus"/>
+        </p>
+        <p>
+          <label for="interest"> Specific Interest </label> <input type="text" name="interest" id="interest"/>
+        </p>
+        <p>
+          <label for="category"> Interest Category </label> <input type="text" name="category" id="category"/>
+        </p>
+       <p>
+          <label for="date_incurred"> Date Fee Incurred </label> <input type="date" name="date_incurred" id="date_incurred"/>
+        </p>
+         <p>
+          <label for="fee_type"> Fee Type </label> <input type="text" name="fee_type" id="fee_type"/>
+        </p>
+        <p>
+          <label for="payment_amount"> Payment Amount </label> <input type="number" name="payment_amount" id="payment_amount"/>
+        </p>
+         <p>
+          <label for="fee_status"> Status of Fee </label> <input type="text" name="fee_status" id="fee_status"/>
+        </p>
+         <p>
+          <label for="location"> Date Location </label> <input type="text" name="location" id="location"/>
+        </p>
+        <p>
+          <label for="scheduled_date"> Date Scheduled </label> <input type="date" name="scheduled_date" id="scheduled_date"/>
+        </p>
+         <p>
+          <label for="occurred"> Did date occur </label> <input type="text" name="occurred" id="occurred"/>
+        </p>
+         <p>
+          <label for="interested"> Interested? </label> <input type="text" name="interested" id="interested"/>
+        </p>
+         <p>
+          <label for="see_again"> Interested to see again? </label> <input type="text" name="see_again" id="see_again"/>
+        </p>
+        <p>
+          <input type="submit" class="btn" value="Search for a Match!!" />
+        </p>
+     </form>      
+     
 <div style="float:left; width:60%; padding-top:20px">
 <div>
     <table id="SearchResultsTable">
@@ -161,7 +112,18 @@
             <td>Crime</td>       
             <td>Child's Name</td> 
             <td>Child's Date of Birth</td>
-            <td>Child's Status</td>          
+            <td>Child's Status</td>   
+            <td>Specific Interest</td>
+            <td>Interest Category</td>
+            <td>Date Fee Incurred</td>
+            <td>Fee Type</td>
+            <td>Payment Amount</td>
+            <td>Status</td>
+            <td>Location of Date</td>
+            <td>Scheduled</td>
+            <td>Occur?</td>
+            <td>Interested?</td>
+            <td>Want to see again?</td>
         </tr>
         {% for r in results %}
             <tr>
@@ -172,7 +134,7 @@
                 <td>{{ r['weight'] }}</td>
                 <td>{{ r['height'] }}</td>
                 <td>{{ r['prior_marriage'] }}</td>
-                <td>{{ r['interest'] }}</td>
+                <td>{{ r['interest_in'] }}</td>
                 <td>{{ r['date_open'] }}</td>
                 <td>{{ r['date_close'] }}</td>
                 <td>{{ r['status'] }}</td>
@@ -180,6 +142,17 @@
                 <td>{{ r['childName'] }}</td>
                 <td>{{ r['childDOB'] }}</td>
                 <td>{{ r['childStatus'] }}</td>
+                <td>{{ r['interest'] }}</td>
+                <td>{{ r['category'] }}</td>
+                <td>{{ r['date_incurred'] }}</td>
+                <td>{{ r['fee_type'] }}</td>
+                <td>{{ r['payment_amount'] }}</td>
+                <td>{{ r['fee_status'] }}</td>
+                <td>{{ r['location'] }}</td>
+                <td>{{ r['scheduled_date'] }}</td>
+                <td>{{ r['occurred'] }}</td>
+                <td>{{ r['interested'] }}</td>
+                <td>{{ r['see_again'] }}</td>
             </tr>
         {% endfor %}
     </table>
