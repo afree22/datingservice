@@ -761,6 +761,9 @@ def entry_search():
 @app.route('/all_clients', methods=['GET'])
 def all_clients():
     results = [i for i in db.fetch_allClients()]
+    for i in results:
+        print(i)
+        print("\n")
     # print(results)
 
     clients_grouped = {i['ssn']: {'childName': [], 'childDOB': [], 'childStatus': [], 'interest': [], 'category': []} for i in results}
