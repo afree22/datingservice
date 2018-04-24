@@ -167,6 +167,8 @@ def client_matches():
         prev_marraige,
         interest,
         interest_type)
+
+    # print([i for i in matches])
     
     return render_template('request_date.html', matches=matches)
 

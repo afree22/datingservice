@@ -49,7 +49,7 @@ class Database(object):
 
     def get_client_matches(self, gender, age, eye_color, weight, height, prev_marriage, interest_cat, interest_type):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        select = "SELECT DISTINCT name, c.ssn FROM client c, client_interests i WHERE c.ssn = i.ssn AND "
+        select = "SELECT DISTINCT name, c.ssn FROM client c left join client_interests i on c.ssn = i.ssn WHERE "
         client_attrs = []
         if gender:
             client_attrs.append("gender = '{}'".format(gender))
