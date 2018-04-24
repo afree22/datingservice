@@ -231,6 +231,7 @@ def date_history():
         future_dates = []
     if len(second_dates) == 0:
         second_dates = []
+    second_dates=[]
     return render_template('date_feed.html', prev_dates=prev_dates, future_dates=future_dates, second_dates=second_dates)
 
 
