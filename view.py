@@ -827,14 +827,13 @@ def match_search():
     fee_type = request.args.get('fee_type')
     payment_amount = request.args.get('payment_amount')
     fee_status = request.args.get('fee_status')
-    date_ssn = request.args.get('date_ssn')
     location = request.args.get('location')
     scheduled_date = request.args.get('scheduled_date')
     occurred = request.args.get('occurred')
     interested = request.args.get('interested')
     see_again = request.args.get('see_again')
 
-    results = db.fetch_potential_match(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus, interest, category, date_incurred, fee_type, payment_amount, fee_status, date_ssn, location, scheduled_date, occurred, interested, see_again)
+    results = db.fetch_potential_match(ssn,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus, interest, category, date_incurred, fee_type, payment_amount, fee_status, location, scheduled_date, occurred, interested, see_again)
 
     return render_template('match_results.html', results=results)
 
