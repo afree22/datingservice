@@ -38,16 +38,11 @@ VALUES (123567823, '2017-02-25', 'registration fee', 100, 'paid'),
 		(443453242, '2018-01-20', 'match fee', 50, 'overdue');
 		
 		
-INSERT INTO Dates(ssn, date_ssn, location, scheduled_date, occurred, interested, see_again)
+INSERT INTO Dates(c1_ssn, c2_ssn, location, scheduled_date, occurred, interested, see_again)
 VALUES (443453242, 101987923, "Curry and Pie", "2016-11-18", "yes", "yes", "yes"),
-	   (101987923, 443453242, "Curry and Pie", "2016-11-18", "yes", "yes", "yes"),
 	   (443453242, 101987923, "Zannchi", "2016-12-02", "yes", "no", "no"),
-	   (101987923, 443453242, "Zannchi", "2016-12-02", "yes", "yes", "yes"),
 	   (443453242, 203948290, "Mai Thai", "2016-12-10", "yes", "no", "no"),
-	   (203948290, 443453242, "Mai Thai", "2016-12-10", "yes", "yes", "no"),
 	   (443453242, 145783475, "Sequoia","2017-04-10", "yes", "yes", "yes"),
-	   (145783475, 443453242, "Sequoia","2017-04-10", "yes", "no", "no"),
-	   (465173892, 443453242, "Pizza Paradiso", "2018-01-28", "yes", "no", "no"),
 	   (443453242, 465173892, "Pizza Paradiso", "2018-01-28", "yes", "yes", "yes");
 	   
 		
