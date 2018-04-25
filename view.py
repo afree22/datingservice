@@ -211,7 +211,7 @@ def finalize_date():
 @app.route('/date_history', methods=['GET'])
 def date_history():
     ssn = int(request.cookies['userID'])
-    print(ssn)
+    # print(ssn)
     # prev_dates = db.get_prev_dates(ssn)
     prev_dates = [i for i in db.get_prev_dates(ssn)]
     future_dates = db.get_future_dates(ssn)
@@ -220,11 +220,11 @@ def date_history():
 
     
     future_dates = [i for i in future_dates]
-    print("future dates")
-    print([i for i in future_dates])
+    # print("future dates")
+    # print([i for i in future_dates])
 
-    print("prev dates")
-    print([i for i in prev_dates])
+    # print("prev dates")
+    # print([i for i in prev_dates])
 
     # do this so that we'll only show the form to edit upcoming dates when
     # there actually are upcoming dates
@@ -281,6 +281,7 @@ def log_see_again():
     value = 'yes' if request.form.get('see_again') else 'no'
     date_date = request.form['date_date']
     date_ssn = request.form['ssn1'] if int(request.form['ssn1']) != int(user_ssn) else request.form['ssn2']
+    print("\n\nin see again")
     print(request.form)
 
     if value == 'no':
@@ -313,7 +314,7 @@ def log_see_again():
                 return "Error adding credit"
 
     print(value)
-    added = db.set_see_again(user_ssn, date_date, value)
+    added = db.set_see_again(user_ssn, date_ssn, date_date, value)
     charged = db.charge_match_fee(user_ssn)
 
     print("addded")
