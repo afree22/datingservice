@@ -798,33 +798,33 @@ def all_clients():
         'crime']
     )
 
-    uniques = set(['interest', 'category', 'childName'])
+    # uniques = set(['interest', 'category', 'childName'])
 
-    clients_grouped = {i['ssn']: [] for i in results}
+    # clients_grouped = {i['ssn']: [] for i in results}
 
-    for client in results:
-        clients_grouped[client['ssn']].append(client)
+    # for client in results:
+    #     clients_grouped[client['ssn']].append(client)
 
-    # print(clients_grouped)
+    # # print(clients_grouped)
 
-    merged = {i['ssn']: {} for i in results}
-    for client in clients_grouped:
-        for attr in attrs:
-            if attr in multi_valued:
-                # import pdb; pdb.set_trace()
-                # pass
-                # todo does order matter???
-                if attr in uniques:
-                    merged[client][attr] = list(set([i[attr] for i in clients_grouped[client]]))
-                else:
-                    merged[client][attr] = [i[attr] for i in clients_grouped[client]]
-            else:
-                # todo remember this should always be at least one long
-                merged[client][attr] = clients_grouped[client][0][attr]
+    # merged = {i['ssn']: {} for i in results}
+    # for client in clients_grouped:
+    #     for attr in attrs:
+    #         if attr in multi_valued:
+    #             # import pdb; pdb.set_trace()
+    #             # pass
+    #             # todo does order matter???
+    #             if attr in uniques:
+    #                 merged[client][attr] = list(set([i[attr] for i in clients_grouped[client]]))
+    #             else:
+    #                 merged[client][attr] = [i[attr] for i in clients_grouped[client]]
+    #         else:
+    #             # todo remember this should always be at least one long
+    #             merged[client][attr] = clients_grouped[client][0][attr]
 
-        pass
+    #     pass
 
-    print(merged)
+    # print(merged)
 
     clients_grouped = {i['ssn']: {
         'childName': [],
@@ -840,7 +840,8 @@ def all_clients():
         'date_ssn': [],
         'fee_type': [],
         'payment_amount': [],
-        'fee_status': []
+        'fee_status': [],
+        'crime': []
     } for i in results}
 
     dates = {}
@@ -861,30 +862,12 @@ def all_clients():
                     clients_grouped[ssn][attr].append(client[attr])
                 # clients_grouped[ssn]['category'].append(client['category'])
                 # clients_grouped[ssn]['interest'].append(client['interest'])
-        # this is bad
         if client.get('location'):
             date_key = (client['c1_ssn'], client['c2_ssn'], client['scheduled_date'])
             dates[date_key] = (client['location'], client['interested'], client['see_again'])
 
-            # if client['location'] not in clients_grouped[ssn]['location']:
-            # clients_grouped[ssn]['scheduled_date'].append(client['scheduled_date'])
-            
-            # client_ssn = client['ssn']
-            # date_ssn = client['c1_ssn'] if client['c1_ssn'] != client_ssn else client['c2_ssn']
-
-            # clients_grouped[ssn]['date_ssn'].append(date_ssn)
-
-            # clients_grouped[ssn]['c1_ssn'].append(client['c1_ssn'])
-            # clients_grouped[ssn]['c2_ssn'].append(client['c2_ssn'])
-
-            # clients_grouped[ssn]['location'].append(client['location'])
-
-            # if client.get('occurred'):
-            #     clients_grouped[ssn]['occurred'].append(client['occurred'])
-            # if client.get('interested'):
-            #     clients_grouped[ssn]['interested'].append(client['interested'])
-            # if client.get('see_again'):
-            #     clients_grouped[ssn]['see_again'].append(client['see_again'])
+        if client.get('crime'):
+            clients_grouped[ssn]['crime'].append(client['crime'])
 
         for attr in client:
             if attr in multi_valued:
