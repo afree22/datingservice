@@ -4,7 +4,6 @@
 
 # third party modules
 from flask import (Flask, render_template, request, send_from_directory, redirect, make_response)
-import datetime
 from collections import defaultdict
 
 # project modules
@@ -773,11 +772,6 @@ def all_clients():
         return render_template('all_clients.html')
 
 
-    child_attrs = set(['childName', 'childDOB', 'childStatus'])
-    interest_attrs = set(['interest', 'category'])
-    date_attrs = set(['scheduled_date', 'location', 'occurred', 'interested', 
-        'see_again', 'date_ssn'])
-
     attrs = [i for i in results[0] if i != 'ssn']
     multi_valued = set(
         ['childName', 
@@ -933,39 +927,35 @@ def all_clients():
     for crime in crimes:
         clients_grouped[crime]['crime'].extend(crimes[crime])
 
-    print(clients_grouped)
-
-    for client in clients_grouped.values():
-        if client['childName']:
-            client['childName'] = ', '.join(client['childName'])
-            client['childDOB'] = ', '.join(client['childDOB'])
-            client['childStatus'] = ', '.join(client['childStatus'])
-        else:
-            client['childName'] = 'N/A'
-            client['childDOB'] = 'N/A'
-            client['childStatus'] = 'N/A'
-        if client['category']:
-            client['category'] = ', '.join(client['category'])
-            client['interest'] = ', '.join(client['interest'])
-        else:
-            client['category'] = 'N/A'
-            client['interest'] = 'N/A'
-        if client['scheduled_date']:
-            client['scheduled_date'] = ', '.join(client['scheduled_date'])
-            client['location'] = ', '.join(client['location'])
-            client['occurred'] = ', '.join(client['occurred'])
-            client['interested'] = ', '.join(client['interested'])
-        else:
-            client['scheduled_date'] = 'N/A'
-            # client['c1_ssn'] = 'N/A'
-            # client['c2_ssn'] = 'N/A'
-            client['date_ssn'] = 'N/A'
-            client['location'] = 'N/A'
-            client['occurred'] = 'N/A'
-            client['interested'] = 'N/A'
-            client['date_ssn'] = 'N/A'
-
-    print(clients_grouped)
+    # for client in clients_grouped.values():
+    #     if client['childName']:
+    #         client['childName'] = ', '.join(client['childName'])
+    #         client['childDOB'] = ', '.join(client['childDOB'])
+    #         client['childStatus'] = ', '.join(client['childStatus'])
+    #     else:
+    #         client['childName'] = 'N/A'
+    #         client['childDOB'] = 'N/A'
+    #         client['childStatus'] = 'N/A'
+    #     if client['category']:
+    #         client['category'] = ', '.join(client['category'])
+    #         client['interest'] = ', '.join(client['interest'])
+    #     else:
+    #         client['category'] = 'N/A'
+    #         client['interest'] = 'N/A'
+    #     if client['scheduled_date']:
+    #         client['scheduled_date'] = ', '.join(client['scheduled_date'])
+    #         client['location'] = ', '.join(client['location'])
+    #         client['occurred'] = ', '.join(client['occurred'])
+    #         client['interested'] = ', '.join(client['interested'])
+    #     else:
+    #         client['scheduled_date'] = 'N/A'
+    #         # client['c1_ssn'] = 'N/A'
+    #         # client['c2_ssn'] = 'N/A'
+    #         client['date_ssn'] = 'N/A'
+    #         client['location'] = 'N/A'
+    #         client['occurred'] = 'N/A'
+    #         client['interested'] = 'N/A'
+    #         client['date_ssn'] = 'N/A'
 
     return render_template('all_clients.html', results=clients_grouped.values())
     # return render_template('all_clients.html', results=results)
