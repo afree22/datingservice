@@ -257,9 +257,11 @@ def date_occurred():
     """ Update database to show a date has occurred
     """
     # todo check this, I think it's okay but can just use cookies as well
-    user_ssn = request.form['ssn']
-    date_ssn = request.form['date_ssn']
+    # user_ssn = request.form['ssn']
+    user_ssn = request.cookies['userID']
+    date_ssn = request.form['date_ssn'] if int(request.form['date_ssn']) != int(user_ssn) else request.form['ssn']
     date_date = request.form['date_date']
+    print(user_ssn, date_ssn, date_date)
 
     added = db.set_date_occurred(user_ssn, date_ssn, date_date)
     print(added)
@@ -308,6 +310,7 @@ def log_see_again():
                     return redirect('/date_history')
                 return "Error adding credit"
 
+    print(value)
     added = db.set_see_again(user_ssn, date_date, value)
     charged = db.charge_match_fee(user_ssn)
 
