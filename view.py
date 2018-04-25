@@ -772,6 +772,12 @@ def all_clients():
     if not results:
         return render_template('all_clients.html')
 
+
+    child_attrs = set(['childName', 'childDOB', 'childStatus'])
+    interest_attrs = set(['interest', 'category'])
+    date_attrs = set(['scheduled_date', 'location', 'occurred', 'interested', 
+        'see_again', 'date_ssn'])
+
     attrs = [i for i in results[0] if i != 'ssn']
     multi_valued = set(
         ['childName', 
@@ -784,7 +790,12 @@ def all_clients():
         'occurred',
         'interested', 
         'see_again', 
-        'date_ssn']
+        'date_ssn',
+        'date_fee_incurred',
+        'fee_type',
+        'payment_amount',
+        'status',
+        'crime']
     )
 
     # clients_grouped = {i['ssn']: {
@@ -813,7 +824,8 @@ def all_clients():
             if attr in multi_valued:
                 # import pdb; pdb.set_trace()
                 # pass
-                merged[client][attr] = [i[attr] for i in clients_grouped[client]]
+                # todo does order matter???
+                merged[client][attr] = list(set([i[attr] for i in clients_grouped[client]]))
             else:
                 # todo remember this should always be at least one long
                 merged[client][attr] = clients_grouped[client][0][attr]
@@ -821,11 +833,6 @@ def all_clients():
         pass
 
     print(merged)
-
-    child_attrs = set(['childName', 'childDOB', 'childStatus'])
-    interest_attrs = set(['interest', 'category'])
-    date_attrs = set(['scheduled_date', 'location', 'occurred', 'interested', 
-        'see_again', 'date_ssn'])
 
     # for client in results:
     #     ssn = client['ssn']
@@ -904,7 +911,7 @@ def all_clients():
     #         client['occurred'] = 'N/A'
     #         client['interested'] = 'N/A'
 
-    return render_template('all_clients.html', results=clients_grouped.values())
+    return render_template('all_clients.html', results=merged.values())
     # return render_template('all_clients.html', results=results)
 
 @app.route('/match_search', methods=['GET','POST'])
