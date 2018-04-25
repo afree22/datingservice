@@ -12,7 +12,7 @@
       <form action="edit_dates" method="POST">
         <h2>Your requested dates</h2>
         {% for date in future_dates %}
-        <input type="radio" name="edit_req" value="{{date['date_ssn']}} {{date['scheduled_date']}}">
+        <input type="radio" name="edit_req" value="{{date['c1_ssn']}} {{date['c2_ssn']}} {{date['scheduled_date']}}">
           <p>
             {{date['name']}}
           </p>

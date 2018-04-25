@@ -210,10 +210,9 @@ class Database(object):
         return CursorIterator(cur)
 
     def set_date_occurred(self, ssn, date_ssn, date):
+        print(date, ssn, date_ssn)
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-
-        # todo double check schema for dates!!!
-        sql = 'UPDATE dates set occurred = "yes" WHERE ((c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)) AND scheduled_date = %s'
+        sql = "UPDATE dates set occurred = 'yes' WHERE ((c1_ssn = %s AND c2_ssn = %s) OR (c1_ssn = %s AND c2_ssn = %s)) AND scheduled_date = %s"
         print(ssn, date_ssn, date_ssn, ssn, date)
         result = cur.execute(sql, (ssn, date_ssn, date_ssn, ssn, date))
         self.conn.commit()
@@ -222,7 +221,7 @@ class Database(object):
 
     def set_see_again(self, ssn1, ssn2, date_date, value):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = 'UPDATE dates set see_again = %s WHERE ((c1_ssn = %s and c2_ssn = %s) OR (c1_ssn = %s and c2_ssn = %s)) AND scheduled_date = %s'
+        sql = "UPDATE dates set see_again = %s WHERE ((c1_ssn = %s and c2_ssn = %s) OR (c1_ssn = %s and c2_ssn = %s)) AND scheduled_date = %s"
         result = cur.execute(sql, (value, ssn1, ssn2, ssn2, ssn1, date_date))
         self.conn.commit()
 

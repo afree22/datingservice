@@ -4,7 +4,6 @@
 
 # third party modules
 from flask import (Flask, render_template, request, send_from_directory, redirect, make_response)
-import datetime
 from collections import defaultdict
 
 # project modules
@@ -231,16 +230,19 @@ def date_history():
         future_dates = []
     if len(second_dates) == 0:
         second_dates = []
+    second_dates=[]
     return render_template('date_feed.html', prev_dates=prev_dates, future_dates=future_dates, second_dates=second_dates)
 
 
 # i think this isn't used anymore
 @app.route('/edit_dates', methods=['GET', 'POST'])
 def edit_req_date():
-    date_info = request.form['edit_req']
-    date_id = date_info.split()[0]
-    date_date = date_info.split()[1]
+    date_info = request.form['edit_req'].split()
+    # date_id = date_info.split()[0]
+    # date_date = date_info.split()[1]
     user_ssn = request.cookies['userID']
+    date_id = date_info[0] if int(date_info[0]) != int(user_ssn) else date_info[1]
+    date_date = date_info[2]
 
     print(user_ssn)
     print("date info " + str(date_info))
@@ -255,11 +257,14 @@ def date_occurred():
     """ Update database to show a date has occurred
     """
     # todo check this, I think it's okay but can just use cookies as well
-    user_ssn = request.form['ssn']
-    date_ssn = request.form['date_ssn']
+    # user_ssn = request.form['ssn']
+    user_ssn = request.cookies['userID']
+    date_ssn = request.form['date_ssn'] if int(request.form['date_ssn']) != int(user_ssn) else request.form['ssn']
     date_date = request.form['date_date']
+    print(user_ssn, date_ssn, date_date)
 
     added = db.set_date_occurred(user_ssn, date_ssn, date_date)
+    print(added)
 
     if added:
         return redirect('/date_history')
@@ -305,8 +310,14 @@ def log_see_again():
                     return redirect('/date_history')
                 return "Error adding credit"
 
+    print(value)
     added = db.set_see_again(user_ssn, date_date, value)
     charged = db.charge_match_fee(user_ssn)
+
+    print("addded")
+    print(added)
+    print("charged")
+    print(charged)
 
     if added and charged:
         return redirect('/date_history')
@@ -762,42 +773,199 @@ def entry_search():
 @app.route('/all_clients', methods=['GET'])
 def all_clients():
     results = [i for i in db.fetch_allClients()]
+    for i in results:
+        print(i)
+        print("\n")
     # print(results)
 
-    clients_grouped = {i['ssn']: {'childName': [], 'childDOB': [], 'childStatus': [], 'interest': [], 'category': []} for i in results}
+    if not results:
+        return render_template('all_clients.html')
+
+
+    attrs = [i for i in results[0] if i != 'ssn']
+    multi_valued = set(
+        ['childName', 
+        'childDOB', 
+        'childStatus', 
+        'interest', 
+        'category',
+        'scheduled_date',
+        'location',
+        'occurred',
+        'interested', 
+        'see_again', 
+        'date_ssn',
+        'date_incurred',
+        'fee_type',
+        'fee_status',
+        'payment_amount',
+        'status',
+        'crime']
+    )
+
+    clients_grouped = {i['ssn']: {
+        'childName': [],
+        'childDOB': [],
+        'childStatus': [],
+        'interest': [],
+        'category': [],
+        'scheduled_date': [],
+        'location': [],
+        'occurred': [],
+        'interested': [],
+        'see_again': [],
+        'date_ssn': [],
+        'fee_type': [],
+        'payment_amount': [],
+        'date_incurred': [],
+        'fee_status': [],
+        'crime': []
+    } for i in results}
+
+    dates = {}
+    children = {}
+    fees = {}
+    crimes = {i['ssn']: [] for i in results}
+    interests = {}
+    joined = {i['ssn']: {} for i in results}
+
     for client in results:
         ssn = client['ssn']
         if client.get('childName'):
-            print(client['childName'])
-            if client['childName'] not in clients_grouped[ssn]['childName']:
-                clients_grouped[ssn]['childName'].append(client['childName'])
-                clients_grouped[ssn]['childDOB'].append(client['childDOB'])
-                clients_grouped[ssn]['childStatus'].append(client['childStatus'])
+            child_key = (ssn, client['childName'])
+            children[child_key] = {'childDOB': client['childDOB'], 'childStatus': client['childStatus']}
+
+
+            # if client['childName'] not in clients_grouped[ssn]['childName']:
+            #     for attr in child_attrs:
+            #         clients_grouped[ssn][attr].append(client[attr])
+                # clients_grouped[ssn]['childName'].append(client['childName'])
+                # clients_grouped[ssn]['childDOB'].append(client['childDOB'])
+                # clients_grouped[ssn]['childStatus'].append(client['childStatus'])
+
+
+
         if client.get('category'):
-            if client['category'] not in clients_grouped[ssn]['category']:
-                clients_grouped[ssn]['category'].append(client['category'])
-                clients_grouped[ssn]['interest'].append(client['interest'])
+            interest_key = (ssn, client['interest'])
+            interests[interest_key] = {'category': client['category']}
+
+
+            # if client['category'] not in clients_grouped[ssn]['category']:
+            #     for attr in interest_attrs:
+            #         clients_grouped[ssn][attr].append(client[attr])
+                    # interest_key = (ssn, client['interest'])
+                    # interests[interest_key] = client['category']
+                    # interests[ssn][attr].append(client[attr])
+                # clients_grouped[ssn]['category'].append(client['category'])
+                # clients_grouped[ssn]['interest'].append(client['interest'])
+
+
+
+        if client.get('location'):
+            date_key = (client['c1_ssn'], client['c2_ssn'], client['scheduled_date'])
+            # dates[date_key] = (client['location'], client['interested'], client['see_again'])
+            dates[date_key] = {'location': client['location'], 'interested': client['interested'], 'see_again': client['see_again']}
+
+
+
+        if client.get('crime'):
+            crimes[ssn].append(client['crime'])
+
+            # clients_grouped[ssn]['crime'].append(client['crime'])
+
+        if client.get('fee_type'):
+            fee_key = (ssn, client['date_incurred'])
+            fees[fee_key] = {
+                'fee_type': client['fee_type'], 
+                'payment_amount': client['payment_amount'],
+                'fee_status': client['fee_status']}
+
+
+            # clients_grouped[ssn]['fee_type'].append(client['fee_type'])
+            # clients_grouped[ssn]['payment_amount'].append(client['payment_amount'])
+            # clients_grouped[ssn]['payment_amount'].append(client['payment_amount'])
+
         for attr in client:
-            if attr in ('childName', 'childStatus', 'childDOB', 'interest', 'category'):
+            if attr in multi_valued:
                 continue
             clients_grouped[ssn][attr] = client[attr]
 
-    for client in clients_grouped.values():
-        if client['childName']:
-            client['childName'] = ', '.join(client['childName'])
-            client['childDOB'] = ', '.join([d.strftime('%m/%d/%Y') for d in client['childDOB']])
-            client['childStatus'] = ', '.join(client['childStatus'])
+    # print(clients_grouped)
+
+    for date in dates:
+        clients_grouped[date[0]]['scheduled_date'].append(date[-1].strftime('%m/%d/%Y'))
+        clients_grouped[date[0]]['date_ssn'].append((date[0], date[1]))
+        clients_grouped[date[0]]['location'].append(dates[date]['location'])
+
+        if dates[date]['interested']:
+            clients_grouped[date[0]]['interested'].append(dates[date]['interested'])
         else:
-            client['childName'] = 'N/A'
-            client['childDOB'] = 'N/A'
-            client['childStatus'] = 'N/A'
-        if client['category']:
-            client['category'] = ', '.join(client['category'])
-            client['interest'] = ', '.join(client['interest'])
-            pass
+            clients_grouped[date[0]]['interested'].append('N/A')
+        if dates[date]['see_again']:
+            clients_grouped[date[0]]['see_again'].append(dates[date]['see_again'])
         else:
-            client['category'] = 'N/A'
-            client['interest'] = 'N/A'
+            clients_grouped[date[0]]['see_again'].append('N/A')
+
+        clients_grouped[date[1]]['scheduled_date'].append(date[-1].strftime('%m/%d/%Y'))
+        clients_grouped[date[1]]['date_ssn'].append((date[0], date[1]))
+        clients_grouped[date[1]]['location'].append(dates[date]['location'])
+
+        if dates[date]['interested']:
+            clients_grouped[date[1]]['interested'].append(dates[date]['interested'])
+        else:
+            clients_grouped[date[1]]['interested'].append('N/A')
+        if dates[date]['see_again']:
+            clients_grouped[date[1]]['see_again'].append(dates[date]['see_again'])
+        else:
+            clients_grouped[date[1]]['see_again'].append('N/A')
+
+    for interest in interests:
+        clients_grouped[interest[0]]['interest'].append(interest[-1])
+        clients_grouped[interest[0]]['category'].append(interests[interest]['category'])
+
+    for fee in fees:
+        clients_grouped[fee[0]]['date_incurred'].append(fee[-1])
+        clients_grouped[fee[0]]['fee_type'].append(fees[fee]['fee_type'])
+        clients_grouped[fee[0]]['payment_amount'].append(fees[fee]['payment_amount'])
+        clients_grouped[fee[0]]['fee_status'].append(fees[fee]['fee_status'])
+
+    for child in children:
+        clients_grouped[child[0]]['childName'].append(child[-1])
+        clients_grouped[child[0]]['childDOB'].append(children[child]['childDOB'].strftime('%m/%d/%Y'))
+        clients_grouped[child[0]]['childStatus'].append(children[child]['childStatus'])
+
+    for crime in crimes:
+        clients_grouped[crime]['crime'].extend(crimes[crime])
+
+    # for client in clients_grouped.values():
+    #     if client['childName']:
+    #         client['childName'] = ', '.join(client['childName'])
+    #         client['childDOB'] = ', '.join(client['childDOB'])
+    #         client['childStatus'] = ', '.join(client['childStatus'])
+    #     else:
+    #         client['childName'] = 'N/A'
+    #         client['childDOB'] = 'N/A'
+    #         client['childStatus'] = 'N/A'
+    #     if client['category']:
+    #         client['category'] = ', '.join(client['category'])
+    #         client['interest'] = ', '.join(client['interest'])
+    #     else:
+    #         client['category'] = 'N/A'
+    #         client['interest'] = 'N/A'
+    #     if client['scheduled_date']:
+    #         client['scheduled_date'] = ', '.join(client['scheduled_date'])
+    #         client['location'] = ', '.join(client['location'])
+    #         client['occurred'] = ', '.join(client['occurred'])
+    #         client['interested'] = ', '.join(client['interested'])
+    #     else:
+    #         client['scheduled_date'] = 'N/A'
+    #         # client['c1_ssn'] = 'N/A'
+    #         # client['c2_ssn'] = 'N/A'
+    #         client['date_ssn'] = 'N/A'
+    #         client['location'] = 'N/A'
+    #         client['occurred'] = 'N/A'
+    #         client['interested'] = 'N/A'
+    #         client['date_ssn'] = 'N/A'
 
     return render_template('all_clients.html', results=clients_grouped.values())
     # return render_template('all_clients.html', results=results)
