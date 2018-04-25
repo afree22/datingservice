@@ -769,63 +769,108 @@ def all_clients():
         print("\n")
     # print(results)
 
-    clients_grouped = {}
-    # clients_grouped = {
-    #     i['ssn']: {'childName': [], 
-    #     'childDOB': [], 
-    #     'childStatus': [], 
-    #     'interest': [], 
+    if not results:
+        return render_template('all_clients.html')
+
+    attrs = [i for i in results[0] if i != 'ssn']
+    multi_valued = set(
+        ['childName', 
+        'childDOB', 
+        'childStatus', 
+        'interest', 
+        'category',
+        'scheduled_date',
+        'location',
+        'occurred',
+        'interested', 
+        'see_again', 
+        'date_ssn']
+    )
+
+    # clients_grouped = {i['ssn']: {
+    #     'childName': [],
+    #     'childDOB': [],
+    #     'childStatus': [],
+    #     'interest': [],
     #     'category': [],
-    #     'date_ssn': [],
-    #     'location': [],
     #     'scheduled_date': [],
+    #     'location': [],
     #     'occurred': [],
     #     'interested': [],
-    #     'see_again': []
+    #     'see_again': [],
+    #     'date_ssn': []
     # } for i in results}
+    clients_grouped = {i['ssn']: [] for i in results}
 
-    # for client in results:
+    for client in results:
+        clients_grouped[client['ssn']].append(client)
 
-    #     pass
+    # print(clients_grouped)
 
-    # child_attrs = set(['childName', 'childDOB', 'childStatus'])
-    # interest_attrs = set(['interest', 'category'])
-    # date_attrs = set(['scheduled_date', 'location', 'occurred', 'interested', 
-    #     'see_again', 'date_ssn'])
+    merged = {i['ssn']: {} for i in results}
+    for client in clients_grouped:
+        for attr in attrs:
+            if attr in multi_valued:
+                # import pdb; pdb.set_trace()
+                # pass
+                merged[client][attr] = [i[attr] for i in clients_grouped[client]]
+            else:
+                # todo remember this should always be at least one long
+                merged[client][attr] = clients_grouped[client][0][attr]
+
+        pass
+
+    print(merged)
+
+    child_attrs = set(['childName', 'childDOB', 'childStatus'])
+    interest_attrs = set(['interest', 'category'])
+    date_attrs = set(['scheduled_date', 'location', 'occurred', 'interested', 
+        'see_again', 'date_ssn'])
 
     # for client in results:
     #     ssn = client['ssn']
     #     if client.get('childName'):
     #         print(client['childName'])
     #         if client['childName'] not in clients_grouped[ssn]['childName']:
-    #             clients_grouped[ssn]['childName'].append(client['childName'])
-    #             clients_grouped[ssn]['childDOB'].append(client['childDOB'])
-    #             clients_grouped[ssn]['childStatus'].append(client['childStatus'])
+    #             for attr in child_attrs:
+    #                 clients_grouped[ssn][attr].append(client[attr])    
+    #             # clients_grouped[ssn]['childName'].append(client['childName'])
+    #             # clients_grouped[ssn]['childDOB'].append(client['childDOB'])
+    #             # clients_grouped[ssn]['childStatus'].append(client['childStatus'])
     #     if client.get('category'):
     #         if client['category'] not in clients_grouped[ssn]['category']:
-    #             clients_grouped[ssn]['category'].append(client['category'])
-    #             clients_grouped[ssn]['interest'].append(client['interest'])
+    #             for attr in interest_attrs:
+    #                 clients_grouped[ssn][attr].append(client[attr])
+    #             # clients_grouped[ssn]['category'].append(client['category'])
+    #             # clients_grouped[ssn]['interest'].append(client['interest'])
     #     # this is bad
     #     if client.get('location'):
-    #         if client['location'] not in clients_grouped[ssn]['location']:
-    #             clients_grouped[ssn]['scheduled_date'].append(client['scheduled_date'])
-                
-    #             client_ssn = client['ssn']
-    #             date_ssn = client['c1_ssn'] if client['c1_ssn'] != client_ssn else client['c2_ssn']
 
-    #             clients_grouped[ssn]['date_ssn'].append(date_ssn)
+    #         # if client['location'] not in clients_grouped[ssn]['location']:
+    #         clients_grouped[ssn]['scheduled_date'].append(client['scheduled_date'])
+            
+    #         client_ssn = client['ssn']
+    #         date_ssn = client['c1_ssn'] if client['c1_ssn'] != client_ssn else client['c2_ssn']
 
-    #             # clients_grouped[ssn]['c1_ssn'].append(client['c1_ssn'])
-    #             # clients_grouped[ssn]['c2_ssn'].append(client['c2_ssn'])
-    #             clients_grouped[ssn]['location'].append(client['location'])
+    #         clients_grouped[ssn]['date_ssn'].append(date_ssn)
+
+    #         # clients_grouped[ssn]['c1_ssn'].append(client['c1_ssn'])
+    #         # clients_grouped[ssn]['c2_ssn'].append(client['c2_ssn'])
+    #         clients_grouped[ssn]['location'].append(client['location'])
+
+    #         if client.get('occurred'):
     #             clients_grouped[ssn]['occurred'].append(client['occurred'])
+    #         if client.get('interested'):
     #             clients_grouped[ssn]['interested'].append(client['interested'])
+    #         if client.get('see_again'):
     #             clients_grouped[ssn]['see_again'].append(client['see_again'])
 
     #     for attr in client:
-    #         if attr in ('childName', 'childStatus', 'childDOB', 'interest', 'category'):
+    #         if attr in multi_valued:
     #             continue
     #         clients_grouped[ssn][attr] = client[attr]
+
+    # print(clients_grouped)
 
     # for client in clients_grouped.values():
     #     if client['childName']:
@@ -843,10 +888,10 @@ def all_clients():
     #         client['category'] = 'N/A'
     #         client['interest'] = 'N/A'
     #     if client['scheduled_date']:
-    #         client['scheduled_date'] = ', '.join(client['scheduled_date'])
+    #         client['scheduled_date'] = ', '.join([d.strftime('%m/%d/%Y') for d in client['scheduled_date']])
     #         # client['c1_ssn'] = ', '.join(client['c1_ssn'])
     #         # client['c2_ssn'] = ', '.join(client['c2_ssn'])
-    #         client['date_ssn'] = ', '.join(client['date_ssn'])
+    #         # client['date_ssn'] = ', '.join([str(i) for i in client['date_ssn']])
     #         client['location'] = ', '.join(client['location'])
     #         client['occurred'] = ', '.join(client['occurred'])
     #         client['interested'] = ', '.join(client['interested'])
@@ -854,7 +899,7 @@ def all_clients():
     #         client['scheduled_date'] = 'N/A'
     #         # client['c1_ssn'] = 'N/A'
     #         # client['c2_ssn'] = 'N/A'
-    #         client['date_ssn'] = 'N/A'
+    #         # client['date_ssn'] = 'N/A'
     #         client['location'] = 'N/A'
     #         client['occurred'] = 'N/A'
     #         client['interested'] = 'N/A'
