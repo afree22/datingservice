@@ -262,6 +262,7 @@ def date_occurred():
     date_date = request.form['date_date']
 
     added = db.set_date_occurred(user_ssn, date_ssn, date_date)
+    print(added)
 
     if added:
         return redirect('/date_history')
@@ -309,6 +310,11 @@ def log_see_again():
 
     added = db.set_see_again(user_ssn, date_date, value)
     charged = db.charge_match_fee(user_ssn)
+
+    print("addded")
+    print(added)
+    print("charged")
+    print(charged)
 
     if added and charged:
         return redirect('/date_history')
