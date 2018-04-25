@@ -820,7 +820,6 @@ def all_clients():
 
     dates = {}
     children = {}
-    # fees = {i['ssn']: defaultdict(list) for i in results}
     fees = {}
     crimes = {i['ssn']: [] for i in results}
     interests = {}
@@ -890,17 +889,31 @@ def all_clients():
     # print(clients_grouped)
 
     for date in dates:
-        clients_grouped[date[0]]['scheduled_date'].append(date[-1])
+        clients_grouped[date[0]]['scheduled_date'].append(date[-1].strftime('%m/%d/%Y'))
         clients_grouped[date[0]]['date_ssn'].append((date[0], date[1]))
         clients_grouped[date[0]]['location'].append(dates[date]['location'])
-        clients_grouped[date[0]]['interested'].append(dates[date]['interested'])
-        clients_grouped[date[0]]['see_again'].append(dates[date]['see_again'])
+
+        if dates[date]['interested']:
+            clients_grouped[date[0]]['interested'].append(dates[date]['interested'])
+        else:
+            clients_grouped[date[0]]['interested'].append('N/A')
+        if dates[date]['see_again']:
+            clients_grouped[date[0]]['see_again'].append(dates[date]['see_again'])
+        else:
+            clients_grouped[date[0]]['see_again'].append('N/A')
 
         clients_grouped[date[1]]['scheduled_date'].append(date[-1].strftime('%m/%d/%Y'))
         clients_grouped[date[1]]['date_ssn'].append((date[0], date[1]))
         clients_grouped[date[1]]['location'].append(dates[date]['location'])
-        clients_grouped[date[1]]['interested'].append(dates[date]['interested'])
-        clients_grouped[date[1]]['see_again'].append(dates[date]['see_again'])
+
+        if dates[date]['interested']:
+            clients_grouped[date[1]]['interested'].append(dates[date]['interested'])
+        else:
+            clients_grouped[date[1]]['interested'].append('N/A')
+        if dates[date]['see_again']:
+            clients_grouped[date[1]]['see_again'].append(dates[date]['see_again'])
+        else:
+            clients_grouped[date[1]]['see_again'].append('N/A')
 
     for interest in interests:
         clients_grouped[interest[0]]['interest'].append(interest[-1])
@@ -938,7 +951,6 @@ def all_clients():
             client['category'] = 'N/A'
             client['interest'] = 'N/A'
         if client['scheduled_date']:
-            print(client['scheduled_date'])
             client['scheduled_date'] = ', '.join(client['scheduled_date'])
             client['location'] = ', '.join(client['location'])
             client['occurred'] = ', '.join(client['occurred'])
