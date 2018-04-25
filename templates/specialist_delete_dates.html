@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Find Love</title>
+    <link rel="stylesheet" href="resources/style.css" />
+  </head>
+  <body>
+    <h1 class="title">
+      <img src="resources/LoveHeader.jpg" alt="Find love">
+    </h1>
+     <section>
+      <form action="delete_dates" method="POST">
+        <h2> Delete Dates for a Client </h2>
+        <p>
+          <label for="c1_ssn">SSN of Client </label> <input type="number" name="c1_ssn" id="c1_ssn" />
+        </p>
+         <p>
+          <label for="c2_ssn">SSN of Date </label> <input type="number" name="c2_ssn" id="c2_ssn" />
+        </p>
+        <p>
+          <label for="scheduled_date">Scheduled Date</label> <input type="date" name="scheduled_date" id="scheduled_date" />
+        </p>
+        <p>
+          <input type="submit" class="btn" value="Sumbit!" />
+        </p>
+      </form>
+      <form action="specialist_delete_landing">
+		<button id="specialist-query" class="btn">Go Back</button>
+	</form>
+    </section>
+  </body>
+</html>

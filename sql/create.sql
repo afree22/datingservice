@@ -49,7 +49,7 @@ occurred ENUM('yes','no') NULL,
 interested ENUM('yes','no') NULL,
 see_again ENUM('yes','no') NULL,
 PRIMARY KEY(c1_ssn, c2_ssn, scheduled_date),
-FOREIGN KEY(c1_ssn) REFERENCES Client(ssn),
+FOREIGN KEY(c1_ssn) REFERENCES Client(ssn) ON DELETE CASCADE,
 FOREIGN KEY(c2_ssn) REFERENCES Client(ssn)
 ON DELETE CASCADE
 );

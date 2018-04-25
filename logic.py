@@ -503,10 +503,43 @@ class Database(object):
         self.conn.commit()
         return CursorIterator(cur)
 
+    def update_specialist_dates(self, c1_ssn, c2_ssn, scheduled_date, updated_date, updated_scheduled_date, location, occurred, interested, see_again):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        update = "UPDATE dates set "
+        rightDate = " WHERE c1_ssn = '{}' AND c2_ssn = '{}' OR c1_ssn = '{}' AND c2_ssn = '{}' AND scheduled_date = '{}'".format(c1_ssn, c2_ssn, c2_ssn, c1_ssn, scheduled_date)
+        client_attrs = []
+        
+        if updated_date:
+            client_attrs.append("c1_ssn = '{}'".format(c1_ssn))
+            client_attrs.append("c2_ssn = '{}'".format(updated_date))
+        if updated_scheduled_date:
+            client_attrs.append("scheduled_date = '{}'".format(updated_scheduled_date))
+        if location:
+            client_attrs.append("location = '{}'".format(self.conn.escape_string(location)))
+        if occurred:
+            client_attrs.append("occurred = '{}'".format(self.conn.escape_string(occurred)))
+        if interested:
+            client_attrs.append("interested = '{}'".format(self.conn.escape_string(interested)))
+        if see_again:
+            client_attrs.append("see_again = '{}'".format(self.conn.escape_string(see_again)))
+
+        attrs = " , ".join(client_attrs)
+        sql = "{}{}{}".format(update, attrs, rightDate)
+        cur.execute(sql)
+        self.conn.commit()
+        return CursorIterator(cur)
+
     def insert_fees(self, ssn, date_incurred, fee_type, payment_amount, fee_status):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = 'INSERT INTO FEES (ssn, date_incurred, fee_type, payment_amount, fee_status) VALUES (%s,%s,%s,%s,%s)'
         result = cur.execute(sql, (ssn, date_incurred, fee_type, payment_amount, fee_status))
+        self.conn.commit()
+        return result
+    
+    def insert_dates(self, c1_ssn, c2_ssn, scheduled_date, location, occurred, interested, see_again):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = 'INSERT INTO dates (c1_ssn, c2_ssn, location, scheduled_date, occurred, interested, see_again) VALUES (%s,%s,%s,%s,%s,%s,%s)'
+        result = cur.execute(sql, (c1_ssn, c2_ssn, location, scheduled_date, occurred, interested, see_again))
         self.conn.commit()
         return result
 
@@ -516,6 +549,13 @@ class Database(object):
         result = cur.execute(sql, (ssn, date_incurred))
         self.conn.commit()
         return result
+    
+    def delete_dates(self, c1_ssn, c2_ssn, scheduled_date):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "DELETE FROM dates WHERE c1_ssn = %s AND c2_ssn = %s OR c2_ssn = %s AND c1_ssn = %s AND scheduled_date = %s"
+        result = cur.execute(sql, (c1_ssn, c2_ssn, c2_ssn, c1_ssn, scheduled_date))
+        self.conn.commit()
+        return result
 
             
     """ Specialist Delete Client """
@@ -523,6 +563,7 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "DELETE FROM CLIENT WHERE ssn = %s"
         result = cur.execute(sql, (ssn))
+        self.conn.commit()
         return result
         
     """ Specialist Queries """
