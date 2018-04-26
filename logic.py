@@ -51,7 +51,9 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         # select = "SELECT DISTINCT name, c.ssn FROM client c left join client_interests i on c.ssn = i.ssn WHERE "
 
-        select = "SELECT distinct client.ssn, client.name from client_interests left join interest_category on interest_category.interest = client_interests.interest left join client on client_interests.ssn = client.ssn left join children on client.ssn = children.ssn WHERE "
+        # select = "SELECT distinct client.ssn, client.name from client_interests left join interest_category on interest_category.interest = client_interests.interest left join client on client_interests.ssn = client.ssn left join children on client.ssn = children.ssn WHERE "
+
+        select = "SELECT DISTINCT client.ssn, client.name from client left join client_interests on client.ssn = client_interests.ssn left join children on children.ssn = client.ssn left join interest_category on interest_category.interest = client_interests.interest WHERE "
 
         client_attrs = []
         if gender:
