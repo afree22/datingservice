@@ -89,4 +89,5 @@ CREATE TABLE credit (
 	ssn INT NOT NULL, 
 	amount INT NOT NULL, 
 	PRIMARY KEY(ssn),
-	FOREIGN KEY(ssn) REFERENCES Client(ssn));
+	FOREIGN KEY(ssn) REFERENCES Client(ssn)
+	ON DELETE CASCADE);
