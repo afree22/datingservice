@@ -49,7 +49,10 @@ class Database(object):
 
     def get_client_matches(self, gender, age, eye_color, weight, height, prev_marriage, interest_cat, interest_type):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        select = "SELECT DISTINCT name, c.ssn FROM client c left join client_interests i on c.ssn = i.ssn WHERE "
+        # select = "SELECT DISTINCT name, c.ssn FROM client c left join client_interests i on c.ssn = i.ssn WHERE "
+
+        select = "SELECT distinct client.ssn, client.name from client_interests left join interest_category on interest_category.interest = client_interests.interest left join client on client_interests.ssn = client.ssn left join children on client.ssn = children.ssn WHERE "
+
         client_attrs = []
         if gender:
             client_attrs.append("gender = '{}'".format(gender))
@@ -65,11 +68,11 @@ class Database(object):
         if prev_marriage:
             client_attrs.append("prior_marriage = '{}'".format(prev_marriage))
         if interest_cat:
-            print(interest_cat)
-            # client_attrs.append("category = '{}'".format(interest_cat))
+            # print(interest_cat)
+            client_attrs.append("category = '{}'".format(interest_cat))
             pass
         if interest_type:
-            client_attrs.append("interest = '{}'".format(interest_type))
+            client_attrs.append("client_interests.interest = '{}'".format(interest_type))
             # print(interest_type)
             pass
         # todo remember interest_type
