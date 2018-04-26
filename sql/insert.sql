@@ -38,7 +38,8 @@ VALUES (123567823, '2017-02-25', 'registration fee', 100, 'paid'),
 		(443453242, '2016-12-10', 'match fee', 50, 'paid'),
 		(443453242, '2017-01-15', 'match fee', 50, 'paid'),
 		(443453242, '2017-04-10', 'match fee', 50, 'unpaid'),
-		(443453242, '2018-01-28', 'match fee', 50, 'unpaid');
+		(443453242, '2018-01-28', 'match fee', 50, 'unpaid'),
+		(101987923, '2018-01-29', 'match fee', 50, 'unpaid');
 
 		
 		
@@ -48,7 +49,8 @@ VALUES (443453242, 101987923, "Curry and Pie", "2016-11-18", "yes", "yes", "yes"
 	   (443453242, 203948290, "Mai Thai", "2016-12-10", "yes", "yes", "yes"),
 	   (443453242, 203948290, "Baked and Wired", "2017-01-15", "yes", "no", "no"),
 	   (443453242, 145783475, "Sequoia","2017-04-10", "yes", "yes", "yes"),
-	   (443453242, 465173892, "Pizza Paradiso", "2018-01-28", "yes", "yes", "yes");
+	   (443453242, 465173892, "Pizza Paradiso", "2018-01-28", "yes", "yes", "yes")
+	   (101987923, 333453243, "Falafel Inc", "2018-01-29", "yes", "no", "no");
 	   
 		
 INSERT INTO interest_category(interest, category)

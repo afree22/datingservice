@@ -80,7 +80,9 @@ def insert_client():
 
     # have to charge registration fee at signup
     if db.insert_person_(ssn, name, gender, dob, phone, eye_color, weight, height, prev_marraige, interested_in, open_date, None, "active") and db.charge_registration_fee(ssn) and db.make_credit_entry(ssn):
-        return redirect('/signup_kids')
+        resp = make_response(redirect('/signup_kids'))
+        resp.set_cookie('userID', ssn)
+        return resp
     return "Error"
 
 """ Insert Interests """
@@ -184,6 +186,13 @@ def make_date():
     ssns = request.form['match'].split()
     date_ssn = ssns[0] if int(ssns[0]) != int(user_ssn) else ssns[1]
 
+    print("\n")
+    print("date ssn")
+    print(date_ssn)
+    print("user ssn")
+    print(user_ssn)
+    print("\n")
+
     return render_template('finalize_date.html', user_ssn=user_ssn, date_ssn=date_ssn)
 
 @app.route('/finalize_date', methods=['POST'])
@@ -225,6 +234,8 @@ def finalize_date():
         # could limit this to the number of matches unsatisfied with
         client_matches = [i for i in db.get_client_dates(user_ssn)]
         num_matches = len(client_matches)
+
+        print("num matches: " + str(num_matches))
 
         if num_matches in range(3):
             # no charge
@@ -418,11 +429,13 @@ def log_date_update():
 def show_payments():
     user_ssn = request.cookies['userID']
     payments = [i for i in db.get_payments(user_ssn)]
+    print(payments)
+    print(user_ssn)
     return render_template('payment_history.html', payments=payments)
 
 @app.route('/client-home', methods=['GET'])
 def client_home():
-    outstanding_payments = db.outstanding_payment(request.cookies['userID'])
+    outstanding_payments = [i for i in db.outstanding_payment(request.cookies['userID'])]
     return render_template('client-page.html', payments=outstanding_payments)
 
 
