@@ -58,6 +58,7 @@ class Database(object):
             client_attrs.append("gender = '{}'".format(gender))
         if age:
             # todo deal with age
+            client_attrs.append("DATEDIFF(NOW(), dob)/365.25 < {} and DATEDIFF(NOW(), dob)/365.25 >= {}".format(str(int(age) + 1), age))
             pass
         if eye_color:
             client_attrs.append("eyecolor = '{}'".format(eye_color))
@@ -75,9 +76,7 @@ class Database(object):
             client_attrs.append("client_interests.interest = '{}'".format(interest_type))
             # print(interest_type)
             pass
-        # todo remember interest_type
 
-        # todo look into or querying
         attrs = " AND ".join(client_attrs)
         sql = "{}{} AND status = 'active'".format(select, attrs)
         print(sql)
