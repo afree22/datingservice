@@ -24,7 +24,7 @@ status VARCHAR(120) NOT NULL
 
 CREATE TABLE CriminalRecord(
 ssn INT NOT NULL,
-crime VARCHAR(60),
+crime VARCHAR(60) NOT NULL,
 PRIMARY KEY(ssn, crime),
 FOREIGN KEY(ssn) REFERENCES Client(ssn)
 ON DELETE CASCADE
@@ -59,7 +59,7 @@ ssn INT NOT NULL,
 date_incurred DATE NOT NULL,
 fee_type ENUM('match fee','registration fee') NOT NULL,
 payment_amount INT NOT NULL,
-fee_status ENUM('paid','overdue','unpaid') NOT NULL,
+fee_status ENUM('paid','unpaid') NOT NULL,
 PRIMARY KEY(ssn, date_incurred),
 FOREIGN KEY(ssn) REFERENCES Client(ssn)
 ON DELETE CASCADE
@@ -83,11 +83,4 @@ interest VARCHAR(30) NOT NULL,
 PRIMARY KEY(ssn, interest),
 FOREIGN KEY(interest) REFERENCES interest_category(interest),
 FOREIGN KEY(ssn) REFERENCES Client(ssn)
-ON DELETE CASCADE);
-
-CREATE TABLE credit (
-	ssn INT NOT NULL, 
-	amount INT NOT NULL, 
-	PRIMARY KEY(ssn),
-	FOREIGN KEY(ssn) REFERENCES Client(ssn)
-	ON DELETE CASCADE);
+ON DELETE CASCADE); 
