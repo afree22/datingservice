@@ -5,6 +5,8 @@
 # third party modules
 from flask import (Flask, render_template, request, send_from_directory, redirect, make_response)
 from collections import defaultdict
+from datetime import datetime
+import datetime
 
 # project modules
 import config
@@ -433,23 +435,23 @@ def specialist_update_landing():
 def specialist_update():
     return render_template('specialist_update.html')
 
-@app.route('/update_client', methods=['GET'])
+@app.route('/update_client', methods=['GET','POST'])
 def update_client():
-    ssn = request.args.get('SSN')
-    ssn_new = request.args.get('ssn_new')
-    name = request.args.get('Name')
-    gender = request.args.get('Gender')
-    dob = request.args.get('DOB')
-    phone = request.args.get('Phone')
-    eyecolor = request.args.get('eyecolor')
-    weight = request.args.get('weight')
-    height = request.args.get('height')
-    prior_marriage = request.args.get('prior_marriage')
-    interest = request.args.get('interest')
-    date_open = request.args.get('date_open')
-    date_close = request.args.get('date_close')
-    status = request.args.get('status')
-    if db.modify_client(ssn,ssn_new,name,gender,dob,phone,eyecolor,weight,height,prior_marriage,interest, date_open, date_close):
+    ssn = request.form.get('SSN')
+    ssn_new = request.form.get('ssn_new')
+    name = request.form.get('name')
+    gender = request.form.get('gender')
+    dob = request.form.get('DOB')
+    phone = request.form.get('phone')
+    eyecolor = request.form.get('eyecolor')
+    weight = request.form.get('weight')
+    height = request.form.get('height')
+    prior_marriage = request.form.get('prior_marriage')
+    interest_in = request.form.get('interest')
+    date_open = request.form.get('date_open')
+    date_close = request.form.get('date_close')
+    status = request.form.get('status')
+    if db.modify_client(ssn, ssn_new, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status):
         return redirect('specialist_success')
     return redirect('error')
 
@@ -486,6 +488,28 @@ def update_specialist_fees():
     return "Error"
 
 
+@app.route('/specialist_update_dates', methods=['GET'])
+def specialist_update_dates():
+    return render_template('specialist_update_dates.html')
+
+@app.route('/update_specialist_dates', methods=['POST'])
+def update_specialist_dates():
+    c1_ssn = int(request.form['c1_ssn'])
+    c2_ssn = int(request.form['c2_ssn'])
+    scheduled_date = request.form['scheduled_date']
+    
+    updated_date = request.form['updated_c2_ssn']
+    updated_scheduled_date = request.form['updated_scheduled_date']
+    location = request.form['location']
+    occurred = request.form['occurred']
+    interested = request.form['interested']
+    see_again = request.form['see_again']
+    
+    if db.update_specialist_dates(c1_ssn, c2_ssn, scheduled_date, updated_date, updated_scheduled_date, location, occurred, interested, see_again):
+        return redirect('specialist_success')
+    return "Error"
+
+
 
 
 
@@ -503,6 +527,25 @@ def insert_specialist_interests():
     interest = request.form['interest']
     interest_type = request.form['interest_type']
     ssn = request.form['ssn']
+
+    if not db.check_interest_exists(interest, interest_type):
+        db.add_interest_type(interest_type, interest)
+        if db.add_interest(ssn, interest_type):
+            return redirect('/specialist_success')
+        return "Error"
+    
+    if not db.check_interest_exists(interest, interest_type):
+        print("in second if")
+        if db.add_interest_type(interest, interest_type):
+            return redirect('/specialist_success')
+        return "Error"
+    
+    if db.add_client_interest(ssn, interest, interest_type):
+        print("in third if")
+        return redirect('/specialist_success')
+    return "Error"
+
+    """
     db.add_interest(ssn,interest)
     if db.check_interest_exists(interest,interest_type):
         return redirect('specialist_success')
@@ -510,6 +553,7 @@ def insert_specialist_interests():
         db.add_interest_type(interest,interest_type)
         return redirect('specialist_success')
     return redirect('error')
+    """
 
 @app.route('/specialist_add_children', methods=['GET'])
 def specialist_add_children():
@@ -563,6 +607,24 @@ def insert_fees():
         return redirect('specialist_success')
     return redirect('error')
 
+@app.route('/specialist_add_dates', methods=['GET'])
+def specialist_add_dates():
+    return render_template('specialist_add_dates.html')
+
+@app.route('/insert_dates', methods=['POST'])
+def insert_dates():
+    c1_ssn = int(request.form['c1_ssn'])
+    c2_ssn = int(request.form['c2_ssn'])
+    location = request.form['location']
+    scheduled_date = request.form['scheduled_date']
+    occurred = request.form['occurred']
+    interested = request.form['interested']
+    see_again = request.form['see_again']
+    
+    if db.insert_dates(c1_ssn, c2_ssn, scheduled_date, location, occurred, interested, see_again):
+        return redirect('specialist_success')
+    return redirect('error')
+
 
 
 
@@ -578,6 +640,7 @@ def specialist_delete():
 @app.route('/delete_client', methods=['GET', 'POST'])
 def delete_client():
     ssn = int(request.args.get('SSN'))
+    
     if db.delete_client(ssn):
          return redirect('specialist_success')
     else:
@@ -631,6 +694,20 @@ def delete_fees():
     ssn = int(request.form['ssn'])
     date_incurred = request.form['date_incurred']
     if db.delete_fees(ssn,date_incurred):
+        return redirect('specialist_success')
+    return redirect('error')
+
+
+@app.route('/specialist_delete_dates', methods=['GET'])
+def specialist_delete_dates():
+    return render_template('specialist_delete_dates.html')
+
+@app.route('/delete_dates', methods=['POST'])
+def delete_dates():
+    c1_ssn = int(request.form['c1_ssn'])
+    c2_ssn = int(request.form['c2_ssn'])
+    scheduled_date = request.form['scheduled_date']
+    if db.delete_dates(c1_ssn, c2_ssn, scheduled_date):
         return redirect('specialist_success')
     return redirect('error')
 
@@ -733,40 +810,41 @@ def entry_view_clients():
         return render_template('entry-view-clients.html', results=results)
     return redirect('error')
 
-@app.route('/entry_search', methods=['GET'])
+@app.route('/entry_search', methods=['GET','POST'])
 def entry_search():
-    name = request.args.get('Name')
-    gender = request.args.get('Gender')
-    dob = request.args.get('DOB')
-    phone = request.args.get('Phone')
-    eyecolor = request.args.get('eyecolor')
-    weight = request.args.get('weight')
-    height = request.args.get('height')
-    prior_marriage = request.args.get('prior_marriage')
-    interest_in = request.args.get('interest_in')
-    date_open = request.args.get('date_open')
-    date_close = request.args.get('date_close')
-    status = request.args.get('status')
-    crime = request.args.get('crime')
-    childName = request.args.get('childName')
-    childDOB = request.args.get('childDOB')
-    childStatus = request.args.get('childStatus')
+    name = request.form.get('name')
+    gender = request.form.get('gender')
+    dob = request.form.get('dob')
+    eyecolor = request.form.get('eyecolor')
+    weight = request.form.get('weight')
+    height = request.form.get('height')
+    prior_marriage = request.form.get('PrevMarriage')
+    interest_in = request.form.get('interest_in')
+    date_open = request.form.get('open_date')
+    date_close = request.form.get('close_date')
+    status = request.form.get('status')
+    crime = request.form.get('crime')
+    childName = request.form.get('childName')
+    childDOB = request.form.get('childDOB')
+    childStatus = request.form.get('childStatus')
     
-    interest = request.args.get('interest')
-    category = request.args.get('category')
-    date_incurred = request.args.get('date_incurred')
-    fee_type = request.args.get('fee_type')
-    payment_amount = request.args.get('payment_amount')
-    fee_status = request.args.get('fee_status')
-    date_ssn = request.args.get('date_ssn')
-    location = request.args.get('location')
-    scheduled_date = request.args.get('scheduled_date')
-    occurred = request.args.get('occurred')
-    interested = request.args.get('interested')
-    see_again = request.args.get('see_again')
+    interest = request.form.get('interest')
+    category = request.form.get('category')
+    date_incurred = request.form.get('date_incurred')
+    fee_type = request.form.get('fee_type')
+    payment_amount = request.form.get('payment_amount')
+    fee_status = request.form.get('fee_status')
+    date_ssn = request.form.get('date_ssn')
+    location = request.form.get('location')
+    scheduled_date = request.form.get('scheduled_date')
+    occurred = request.form.get('occurred')
+    interested = request.form.get('interested')
+    see_again = request.form.get('see_again')
     
-    results = db.fetch_staff_match(name,gender,dob, eyecolor,weight,height,prior_marriage,interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus)
-    return render_template('entry-results.html', results=results)
+    results = db.fetch_staff_match(name, gender, dob, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status, crime, childName, childDOB, childStatus, interest, category, date_incurred, fee_type, payment_amount, fee_status, location, scheduled_date, occurred, interested, see_again)
+    if results:
+        return render_template('entry-results.html', results=results)
+    return render_template('error.html')
 
 
 
@@ -780,7 +858,7 @@ def all_clients():
     # print(results)
 
     if not results:
-        return render_template('all_clients.html')
+        return render_template('error.html')
 
 
     attrs = [i for i in results[0] if i != 'ssn']
@@ -973,10 +1051,10 @@ def all_clients():
 
 @app.route('/match_search', methods=['GET','POST'])
 def match_search():
-    ssn = request.args.get('SSN')
+    ssn = request.args.get('ssn')
     name = request.args.get('name')
     gender = request.args.get('gender')
-    dob = request.args.get('DOB')
+    dob = request.args.get('dob')
     phone = request.args.get('phone')
     eyecolor = request.args.get('eyecolor')
     weight = request.args.get('weight')

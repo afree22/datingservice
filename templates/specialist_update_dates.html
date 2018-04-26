@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Find Love</title>
+    <link rel="stylesheet" href="resources/style.css" />
+  </head>
+  <body>
+    <h1 class="title">
+      <img src="resources/LoveHeader.jpg" alt="Find love">
+    </h1>
+     <section>
+      <form action="update_specialist_dates" method="POST">
+        <h2> Update Dates for a Client </h2>
+        <div>
+        <p>
+          <label for="c1_ssn">SSN of Client </label> <input type="number" name="c1_ssn" id="c1_ssn" />
+        </p>
+         <p>
+          <label for="c2_ssn">Original SSN of Date </label> <input type="number" name="c2_ssn" id="c2_ssn" />
+        </p>
+        <p>
+          <label for="scheduled_date">Original Scheduled Date</label> <input type="date" name="scheduled_date" id="scheduled_date" />
+        </p>
+        </div>
+        <div>
+         <p>
+          <label for="updated_scheduled_date">Updated Scheduled Date</label> <input type="date" name="updated_scheduled_date" id="updated_scheduled_date" />
+        </p>
+        <p>
+          <label for="updated_c2_ssn"> Updated SSN of Date </label> <input type="number" name="updated_c2_ssn" id="updated_c2_ssn" />
+        </p>
+         <p>
+          <label for="location"> Updated Location </label> <input type="text" name="location" id="location" />
+        </p>
+        <p>
+          <label for="occurred"> Update whether or not the date occurred </label> <input type="text" name="occurred" id="occurred" />
+        </p>
+         <p>
+          <label for="interested"> Update whether or not the client is interested </label> <input type="text" name="interested" id="interested" />
+        </p>
+        <p>
+          <label for="see_again"> Update whether interested in seeing again </label> <input type="text" name="see_again" id="see_again" />
+        </p>
+        </div>
+        <p>
+          <input type="submit" class="btn" value="Sumbit!" />
+        </p>
+      </form>
+      <form action="specialist_update_landing">
+		<button id="specialist-query" class="btn">Go Back</button>
+	</form>
+    </section>
+  </body>
+</html>
