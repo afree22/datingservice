@@ -78,7 +78,8 @@ def insert_client():
     interested_in = request.form['InterestedIn']
     open_date = str(datetime.datetime.now()).split()[0]
 
-    if db.insert_person_(ssn, name, gender, dob, phone, eye_color, weight, height, prev_marraige, interested_in, open_date, None, "active"):
+    # have to charge registration fee at signup
+    if db.insert_person_(ssn, name, gender, dob, phone, eye_color, weight, height, prev_marraige, interested_in, open_date, None, "active") and db.charge_registration_fee(ssn) and db.make_credit_entry(ssn):
         return redirect('/signup_kids')
     return "Error"
 
@@ -187,22 +188,94 @@ def make_date():
 
 @app.route('/finalize_date', methods=['POST'])
 def finalize_date():
+
+    # def charge(ssn):
+    #     if num_matches in range(3):
+    #         # no charge
+    #         pass
+        
+    #     elif num_matches in range(3, 5):
+    #         # charge
+    #         db.charge_match_fee(ssn)
+    #         pass
+
+    #     elif num_matches == 6:
+    #         # free match
+    #         pass
+
+    #     elif num_matches == 7:
+    #         # charge registration fee
+    #         db.charge_registration_fee(ssn)
+    #         pass
+
+    #     else:
+    #         # charge match fee
+    #         db.charge_match_fee(ssn)
+    #         pass
+
     date = request.form['date']
     location = request.form['location']
     user_ssn = request.form['user_ssn']
     date_ssn = request.form['date_ssn']
 
     if db.insert_date(user_ssn, date_ssn, location, date):
+
+        # check if 3rd, 5th, 7th
+
+        # could limit this to the number of matches unsatisfied with
+        client_matches = [i for i in db.get_client_dates(user_ssn)]
+        num_matches = len(client_matches)
+
+        if num_matches in range(3):
+            # no charge
+            pass
         
-        user_credit = [i for i in db.get_credit(user_ssn)][0]['amount']
-        if user_credit < 50:
-            # also need to charge
+        elif num_matches in range(3, 5):
+            # charge
             db.charge_match_fee(user_ssn)
-            # db.insert_credit(user_ssn, -50)
-            # print("charge result")
-            # print(res)
+            pass
+
+        elif num_matches == 6:
+            # free match
+            pass
+
+        elif num_matches == 7:
+            # charge registration fee
+            db.charge_registration_fee(user_ssn)
+            pass
+
         else:
-            db.insert_credit(user_ssn, -50)
+            # charge match fee
+            db.charge_match_fee(user_ssn)
+            pass
+
+        # need to do same thing for date
+
+        date_matches = [i for i in db.get_client_dates(date_ssn)]
+        num_matches = len(date_matches)
+
+        if num_matches in range(3):
+            # no charge
+            pass
+        
+        elif num_matches in range(3, 5):
+            # charge
+            db.charge_match_fee(date_ssn)
+            pass
+
+        elif num_matches == 6:
+            # free match
+            pass
+
+        elif num_matches == 7:
+            # charge registration fee
+            db.charge_registration_fee(date_ssn)
+            pass
+
+        else:
+            # charge match fee
+            db.charge_match_fee(date_ssn)
+            pass
 
         return redirect('/client_search')
         # return "Error"
@@ -284,45 +357,47 @@ def log_see_again():
     print("\n\nin see again")
     print(request.form)
 
-    if value == 'no':
-        # need to check for users getting credit here
-        num_dates = [i for i in db.get_date_count(user_ssn, date_ssn)][0]['COUNT(*)']
-        if int(num_dates) <= 2:
-            # check if this is the fifth date unhappy with
-            # else add regular credit ???
-            # add credit
-            # maybe
-            five_recent = [i for i in db.get_five_recent_matches(user_ssn)]
+    # if value == 'no':
+    #     # need to check for users getting credit here
+    #     num_dates = [i for i in db.get_date_count(user_ssn, date_ssn)][0]['COUNT(*)']
+    #     if int(num_dates) <= 2:
+    #         # check if this is the fifth date unhappy with
+    #         # else add regular credit ???
+    #         # add credit
+    #         # maybe
+    #         five_recent_user = [i for i in db.get_five_recent_matches(user_ssn)]
+    #         five_recent_date = [i for i in db.get_five_recent_matches(date_ssn)]
 
-            if len(five_recent) == 5:
-                if all([i['see_again'] == 'no' for i in five_recent]):
-                    # five straight unhappy dates 
-                    # give free match
-                    # but then need to charge extra registration fee
-                    if db.insert_credit(user_ssn, 50):
-                        return redirect('/date_history')
-                    return "Error adding credit for your five unhappy matches"
-                else:
-                    # just single free match
-                    if db.insert_credit(user_ssn, 50):
-                        return redirect('/date_history')
-                    return "Error adding credit"
-            else:
-                # just single free match
-                if db.insert_credit(user_ssn, 50):
-                    return redirect('/date_history')
-                return "Error adding credit"
+    #         if len(five_recent) == 5:
+    #             if all([i['see_again'] == 'no' for i in five_recent]):
+    #                 # five straight unhappy dates 
+    #                 # give free match
+    #                 # but then need to charge extra registration fee
+    #                 if db.insert_credit(user_ssn, 50):
+    #                     return redirect('/date_history')
+    #                 return "Error adding credit for your five unhappy matches"
+    #             else:
+    #                 # just single free match
+    #                 if db.insert_credit(user_ssn, 50):
+    #                     return redirect('/date_history')
+    #                 return "Error adding credit"
+    #         else:
+    #             # just single free match
+    #             if db.insert_credit(user_ssn, 50):
+    #                 return redirect('/date_history')
+    #             return "Error adding credit"
 
     print(value)
     added = db.set_see_again(user_ssn, date_ssn, date_date, value)
-    charged = db.charge_match_fee(user_ssn)
+    # charged = db.charge_match_fee(user_ssn)
 
-    print("addded")
-    print(added)
-    print("charged")
-    print(charged)
+    # print("addded")
+    # print(added)
+    # print("charged")
+    # print(charged)
 
-    if added and charged:
+    # if added and charged:
+    if added:
         return redirect('/date_history')
     return "Error"
 
@@ -331,8 +406,9 @@ def log_date_update():
     new_date = request.form['new_date']
     orig_date = request.form['date_date']
     new_location = request.form['new_location']
-    user_ssn = request.form['ssn']
-    date_ssn = request.form['date_ssn']
+    # user_ssn = request.form['c1_ssn']
+    user_ssn = request.cookies['userID']
+    date_ssn = request.form['c1_ssn'] if int(request.form['c1_ssn']) != int(user_ssn) else request.form['c2_ssn']
 
     if db.update_date(user_ssn, date_ssn, orig_date, new_date, new_location):
         return redirect('/date_history')
@@ -346,7 +422,15 @@ def show_payments():
 
 @app.route('/client-home', methods=['GET'])
 def client_home():
-    return render_template('client-page.html')
+    outstanding_payments = db.outstanding_payment(request.cookies['userID'])
+    return render_template('client-page.html', payments=outstanding_payments)
+
+
+@app.route('/client-logout', methods=['GET'])
+def client_logout():
+    resp = make_response(redirect('/client-login'))
+    resp.set_cookie('userID', '')
+    return resp
 
 
 """ Other Staff Login Process """
@@ -370,6 +454,10 @@ def staff_validate():
 """ Client Login Process """
 @app.route('/client-login', methods=['GET'])
 def client_login():
+
+    if request.cookies.get('userID'):
+        return redirect('/client-home')
+
     return render_template('client-login.html')
 
 @app.route('/cli_validation', methods=['POST'])
