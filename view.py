@@ -426,6 +426,13 @@ def client_home():
     return render_template('client-page.html', payments=outstanding_payments)
 
 
+@app.route('/client-logout', methods=['GET'])
+def client_logout():
+    resp = make_response(redirect('/client-login'))
+    resp.set_cookie('userID', '')
+    return resp
+
+
 """ Other Staff Login Process """
 @app.route('/staff-login', methods=['GET'])
 def staff_login():
