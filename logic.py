@@ -274,7 +274,7 @@ class Database(object):
     def get_client_dates(self, ssn):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "SELECT * FROM dates where c1_ssn = %s or c2_ssn = %s"
-        cur.execute(sql, (ssn))
+        cur.execute(sql, (ssn, ssn))
         return CursorIterator(cur)
 
     def get_other_interested(self, ssn, date_date):
@@ -299,7 +299,7 @@ class Database(object):
         """ charge registration fee
         """
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "INSERT INTO fees (ssn, date_incurred, fee_type, payment_amount, fee_status) VALUES (%s, NOW(), 'registration fee', 100, 'overdue')"
+        sql = "INSERT INTO fees (ssn, date_incurred, fee_type, payment_amount, fee_status) VALUES (%s, NOW(), 'registration fee', 100, 'unpaid')"
         result = cur.execute(sql, (ssn))
         self.conn.commit()
         return result
@@ -309,7 +309,7 @@ class Database(object):
         """
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         # sql = "INSERT INTO fees (ssn, date_incurred, fee_type, payment_amount, fee_status) VALUES (%s, NOW(), 'match fee', 50, 'overdue')"
-        sql = "INSERT INTO fees (ssn, date_incurred, fee_type, payment_amount, fee_status) VALUES (%s, NOW(), 'match fee', 50, 'overdue')"
+        sql = "INSERT INTO fees (ssn, date_incurred, fee_type, payment_amount, fee_status) VALUES (%s, NOW(), 'match fee', 50, 'unpaid')"
         result = cur.execute(sql, (ssn))
         self.conn.commit()
         return result
