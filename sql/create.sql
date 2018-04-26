@@ -83,11 +83,4 @@ interest VARCHAR(30) NOT NULL,
 PRIMARY KEY(ssn, interest),
 FOREIGN KEY(interest) REFERENCES interest_category(interest),
 FOREIGN KEY(ssn) REFERENCES Client(ssn)
-ON DELETE CASCADE);
-
-CREATE TABLE credit (
-	ssn INT NOT NULL, 
-	amount INT NOT NULL, 
-	PRIMARY KEY(ssn),
-	FOREIGN KEY(ssn) REFERENCES Client(ssn)
-	ON DELETE CASCADE);
+ON DELETE CASCADE); 

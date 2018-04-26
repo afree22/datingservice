@@ -776,7 +776,7 @@ class Database(object):
         if childStatus:
             client_attrs.append("childStatus = '{}'".format(self.conn.escape_string(childStatus)))
         if interest:
-            client_attrs.append("interest = '{}'".format(self.conn.escape_string(interest)))
+            client_attrs.append("client_interests.interest = '{}'".format(self.conn.escape_string(interest)))
         if category:
             client_attrs.append("category = '{}'".format(self.conn.escape_string(category)))
         if date_incurred:
