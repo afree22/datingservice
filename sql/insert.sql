@@ -28,20 +28,25 @@ VALUES (123567823, '2017-02-25', 'registration fee', 100, 'paid'),
 		(103456987, '2013-05-23', 'registration fee', 100, 'paid'),
 		(553128394, '2015-09-15', 'registration fee', 100, 'paid'),
 		(333453243, '2017-08-14', 'registration fee', 100, 'paid'),
-		(443453242, '2016-09-02', 'registration fee', 100, 'unpaid'),
+		(443453242, '2016-09-02', 'registration fee', 100, 'paid'),
 		(101987923, '2016-11-16', 'registration fee', 100, 'paid'),
 		(203948290, '2016-12-02', 'registration fee', 100, 'paid'),
 		(465173892, '2018-01-20', 'registration fee', 100, 'unpaid'),
 		(758393228, '2014-04-19', 'registration fee', 100, 'paid'),
 		(145783475, '2017-04-06', 'registration fee', 100, 'paid'),
-		(443453242, '2017-04-10', 'match fee', 50, 'paid'),
-		(443453242, '2018-01-20', 'match fee', 50, 'unpaid');
+		(443453242, '2016-12-10', 'match fee', 50, 'paid'),
+		(443453242, '2017-01-15', 'match fee', 50, 'paid'),
+		(443453242, '2017-04-10', 'match fee', 50, 'unpaid'),
+		(443453242, '2018-01-28', 'match fee', 50, 'unpaid');
+
 		
 		
 INSERT INTO Dates(c1_ssn, c2_ssn, location, scheduled_date, occurred, interested, see_again)
 VALUES (443453242, 101987923, "Curry and Pie", "2016-11-18", "yes", "yes", "yes"),
 	   (443453242, 101987923, "Zannchi", "2016-12-02", "yes", "no", "no"),
-	   (443453242, 203948290, "Mai Thai", "2016-12-10", "yes", "no", "no"),
+	   
+	   (443453242, 203948290, "Mai Thai", "2016-12-10", "yes", "yes", "yes"),
+	   (443453242, 203948290, "Baked and Wired", "2017-01-15", "yes", "no", "no"),
 	   (443453242, 145783475, "Sequoia","2017-04-10", "yes", "yes", "yes"),
 	   (443453242, 465173892, "Pizza Paradiso", "2018-01-28", "yes", "yes", "yes");
 	   
