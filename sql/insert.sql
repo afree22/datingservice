@@ -9,6 +9,7 @@ VALUES (123567823, 'John', 'male','1980-10-21','2028978394','blue', 170, 70, 'no
 	   (203948290, 'Ava', 'female', '1985-12-19', '2158837483', 'blue', 135, 67, 'yes', 'male', '2016-12-02', NULL, 'active'),
 	   (465173892, 'Jerrica', 'female', '1982-04-02', '2059038044', 'blue', 120, 64, 'no', 'male', '2018-01-20', NULL, 'active'),
 	   (758393228, 'Jill', 'female', '1978-07-19','2029362918', 'brown', 115, 63, 'yes', 'male', '2014-04-19', NULL, 'active'),
+	   (102393228, 'Teressa', 'female', '1984-05-13', '2030398473', 'blue', 125, 65, 'no', 'male', '2015-05-07', NULL, 'active'),
 	   (145783475, 'Jennie', 'female', '1981-07-19', '2028855700', 'green', 120, 64, 'no', 'male', '2017-04-06', NULL, 'active');
 
 INSERT INTO Children (ssn, childName, ChildDOB, childStatus)
@@ -44,7 +45,6 @@ VALUES (123567823, '2017-02-25', 'registration fee', 100, 'paid'),
 INSERT INTO Dates(c1_ssn, c2_ssn, location, scheduled_date, occurred, interested, see_again)
 VALUES (443453242, 101987923, "Curry and Pie", "2016-11-18", "yes", "yes", "yes"),
 	   (443453242, 101987923, "Zannchi", "2016-12-02", "yes", "no", "no"),
-	   
 	   (443453242, 203948290, "Mai Thai", "2016-12-10", "yes", "yes", "yes"),
 	   (443453242, 203948290, "Baked and Wired", "2017-01-15", "yes", "no", "no"),
 	   (443453242, 145783475, "Sequoia","2017-04-10", "yes", "yes", "yes"),
