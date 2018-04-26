@@ -632,7 +632,6 @@ class Database(object):
     def get_age_children(self, currentDate):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "SELECT AVG(count) as c FROM ( select DATEDIFF(%s, childDOB)/365.25 as count From Children) as P"
-        SELECT AVG(count) as c FROM ( select DATEDIFF('2018-04-30', childDOB)/365.25 as count From Children) as P
         cur.execute(sql, (currentDate))
         return CursorIterator(cur)
     
