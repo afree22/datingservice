@@ -271,6 +271,12 @@ class Database(object):
         cur.execute(sql, (ssn1, ssn2, ssn2, ssn1))
         return CursorIterator(cur)
 
+    def get_client_dates(self, ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT * FROM dates where c1_ssn = %s or c2_ssn = %s"
+        cur.execute(sql, (ssn))
+        return CursorIterator(cur)
+
     def get_other_interested(self, ssn, date_date):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "select * from dates where ssn = %s and scheduled_date = %s"
@@ -334,6 +340,12 @@ class Database(object):
         sql = "SELECT amount FROM credit WHERE ssn = %s"
         cur.execute(sql, (ssn))
         return CursorIterator(cur)
+
+    def make_credit_entry(self, ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "INSERT INTO credit (ssn, amount) VALUES (%s, 100)"
+        result = cur.execute(sql, (ssn))
+        return result
 
     def get_people(self):
         """Fetch a veuw from the database"""

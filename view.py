@@ -78,7 +78,8 @@ def insert_client():
     interested_in = request.form['InterestedIn']
     open_date = str(datetime.datetime.now()).split()[0]
 
-    if db.insert_person_(ssn, name, gender, dob, phone, eye_color, weight, height, prev_marraige, interested_in, open_date, None, "active"):
+    # have to charge registration fee at signup
+    if db.insert_person_(ssn, name, gender, dob, phone, eye_color, weight, height, prev_marraige, interested_in, open_date, None, "active") and db.charge_registration_fee(ssn) and db.make_credit_entry(ssn):
         return redirect('/signup_kids')
     return "Error"
 
@@ -187,22 +188,94 @@ def make_date():
 
 @app.route('/finalize_date', methods=['POST'])
 def finalize_date():
+
+    # def charge(ssn):
+    #     if num_matches in range(3):
+    #         # no charge
+    #         pass
+        
+    #     elif num_matches in range(3, 5):
+    #         # charge
+    #         db.charge_match_fee(ssn)
+    #         pass
+
+    #     elif num_matches == 6:
+    #         # free match
+    #         pass
+
+    #     elif num_matches == 7:
+    #         # charge registration fee
+    #         db.charge_registration_fee(ssn)
+    #         pass
+
+    #     else:
+    #         # charge match fee
+    #         db.charge_match_fee(ssn)
+    #         pass
+
     date = request.form['date']
     location = request.form['location']
     user_ssn = request.form['user_ssn']
     date_ssn = request.form['date_ssn']
 
     if db.insert_date(user_ssn, date_ssn, location, date):
+
+        # check if 3rd, 5th, 7th
+
+        # could limit this to the number of matches unsatisfied with
+        client_matches = [i for i in db.get_client_dates(user_ssn)]
+        num_matches = len(client_matches)
+
+        if num_matches in range(3):
+            # no charge
+            pass
         
-        # user_credit = [i for i in db.get_credit(user_ssn)][0]['amount']
-        # if user_credit < 50:
-        #     # also need to charge
-        #     db.charge_match_fee(user_ssn)
-        #     # db.insert_credit(user_ssn, -50)
-        #     # print("charge result")
-        #     # print(res)
-        # else:
-        #     db.insert_credit(user_ssn, -50)
+        elif num_matches in range(3, 5):
+            # charge
+            db.charge_match_fee(user_ssn)
+            pass
+
+        elif num_matches == 6:
+            # free match
+            pass
+
+        elif num_matches == 7:
+            # charge registration fee
+            db.charge_registration_fee(user_ssn)
+            pass
+
+        else:
+            # charge match fee
+            db.charge_match_fee(user_ssn)
+            pass
+
+        # need to do same thing for date
+
+        date_matches = [i for i in db.get_client_dates(date_ssn)]
+        num_matches = len(date_matches)
+
+        if num_matches in range(3):
+            # no charge
+            pass
+        
+        elif num_matches in range(3, 5):
+            # charge
+            db.charge_match_fee(date_ssn)
+            pass
+
+        elif num_matches == 6:
+            # free match
+            pass
+
+        elif num_matches == 7:
+            # charge registration fee
+            db.charge_registration_fee(date_ssn)
+            pass
+
+        else:
+            # charge match fee
+            db.charge_match_fee(date_ssn)
+            pass
 
         return redirect('/client_search')
         # return "Error"
@@ -373,6 +446,10 @@ def staff_validate():
 """ Client Login Process """
 @app.route('/client-login', methods=['GET'])
 def client_login():
+
+    if request.cookies.get('userID'):
+        return redirect('/client-home')
+
     return render_template('client-login.html')
 
 @app.route('/cli_validation', methods=['POST'])
