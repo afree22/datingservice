@@ -347,6 +347,12 @@ class Database(object):
         result = cur.execute(sql, (ssn))
         return result
 
+    def outstanding_payment(self, ssn):
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT * FROM fees WHERE fee_status = 'unpaid' AND ssn = %s"
+        cur.execute(sql, (ssn))
+        return CursorIterator(cur)
+
     def get_people(self):
         """Fetch a veuw from the database"""
         cur = self.conn.cursor(pymysql.cursors.DictCursor)

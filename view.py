@@ -422,7 +422,8 @@ def show_payments():
 
 @app.route('/client-home', methods=['GET'])
 def client_home():
-    return render_template('client-page.html')
+    outstanding_payments = db.outstanding_payment(request.cookies['userID'])
+    return render_template('client-page.html', payments=outstanding_payments)
 
 
 """ Other Staff Login Process """
