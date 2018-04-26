@@ -587,7 +587,7 @@ class Database(object):
     
     def get_num_dates_gender(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT AVG(count) as c, g FROM ( SELECT COUNT(c.ssn) as count, gender as g FROM Client c Left Join Dates d on c.ssn = d.c1_ssn or c.ssn = d.c2_ssn group by g) as P group by g "
+        sql = "SELECT AVG(count) as c, g FROM ( SELECT COUNT(c.ssn) as count, gender as g FROM Client c Left Join Dates d on c.ssn = d.c1_ssn or c.ssn = d.c2_ssn group by g) as P group by g"
         cur.execute(sql)
         return CursorIterator(cur)
     
@@ -614,12 +614,13 @@ class Database(object):
     def get_age_children(self, currentDate):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "SELECT AVG(count) as c FROM ( select DATEDIFF(%s, childDOB)/365.25 as count From Children) as P"
+        SELECT AVG(count) as c FROM ( select DATEDIFF('2018-04-30', childDOB)/365.25 as count From Children) as P
         cur.execute(sql, (currentDate))
         return CursorIterator(cur)
     
     def get_outstanding_balance(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT ssn, sum(payment_amount) as p FROM Fees WHERE fee_status = 'unpaid' OR fee_status = 'overdue' GROUP BY ssn"
+        sql = "SELECT ssn, sum(payment_amount) as p FROM Fees WHERE fee_status = 'unpaid' GROUP BY ssn"
         cur.execute(sql)
         return CursorIterator(cur)
     
@@ -682,7 +683,7 @@ class Database(object):
         if childStatus:
             client_attrs.append("childStatus = '{}'".format(self.conn.escape_string(childStatus)))
         if interest:
-            client_attrs.append("interest = '{}'".format(self.conn.escape_string(interest)))
+            client_attrs.append("client_interests.interest = '{}'".format(self.conn.escape_string(interest)))
         if category:
             client_attrs.append("category = '{}'".format(self.conn.escape_string(category)))
         if date_incurred:
