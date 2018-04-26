@@ -16,6 +16,7 @@ VALUES (123567823, 'John', 'male','1980-10-21','2028978394','blue', 170, 70, 'no
 INSERT INTO Children (ssn, childName, ChildDOB, childStatus)
 VALUES(758393228, 'Henry', '2005-05-25', 'shared custody'), 
       (758393228, 'James', '2005-05-25', 'shared custody'),
+      (102393228, 'Sophia', '2011-11-19', 'full custody'),
       (103456987, 'Abbey', '2007-12-18', 'full custody');
 
 		
