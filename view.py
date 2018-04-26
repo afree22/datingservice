@@ -235,6 +235,8 @@ def finalize_date():
         client_matches = [i for i in db.get_client_dates(user_ssn)]
         num_matches = len(client_matches)
 
+        print("num matches: " + str(num_matches))
+
         if num_matches in range(3):
             # no charge
             pass

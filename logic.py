@@ -65,7 +65,13 @@ class Database(object):
         if prev_marriage:
             client_attrs.append("prior_marriage = '{}'".format(prev_marriage))
         if interest_cat:
-            client_attrs.append("interest = '{}'".format(interest_cat))
+            print(interest_cat)
+            # client_attrs.append("category = '{}'".format(interest_cat))
+            pass
+        if interest_type:
+            client_attrs.append("interest = '{}'".format(interest_type))
+            # print(interest_type)
+            pass
         # todo remember interest_type
 
         # todo look into or querying
