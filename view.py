@@ -290,7 +290,8 @@ def log_see_again():
             # else add regular credit ???
             # add credit
             # maybe
-            five_recent = [i for i in db.get_five_recent_matches(user_ssn)]
+            five_recent_user = [i for i in db.get_five_recent_matches(user_ssn)]
+            five_recent_date = [i for i in db.get_five_recent_matches(date_ssn)]
 
             if len(five_recent) == 5:
                 if all([i['see_again'] == 'no' for i in five_recent]):
