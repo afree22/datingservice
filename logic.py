@@ -47,7 +47,7 @@ class Database(object):
         self.conn.commit()
         return result
 
-    def get_client_matches(self, gender, age, eye_color, weight, height, prev_marriage, interest_cat, interest_type):
+    def get_client_matches(self, gender, age, eye_color, weight, height, prev_marriage, interest_cat, interest_type, children):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         # select = "SELECT DISTINCT name, c.ssn FROM client c left join client_interests i on c.ssn = i.ssn WHERE "
 
@@ -78,6 +78,11 @@ class Database(object):
             client_attrs.append("client_interests.interest = '{}'".format(interest_type))
             # print(interest_type)
             pass
+        if children:
+            if children == 'no':
+                client_attrs.append("childName is null")
+            else:
+                client_attrs.append("childName is not null")
 
         attrs = " AND ".join(client_attrs)
         sql = "{}{} AND status = 'active'".format(select, attrs)

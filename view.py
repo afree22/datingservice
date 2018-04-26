@@ -163,6 +163,7 @@ def client_matches():
     prev_marraige = request.form.get('prior_marriage')
     interest = request.form.get('interest')
     interest_type = request.form.get('interest_type')
+    children = request.form.get('children')
     
     matches = db.get_client_matches(
         gender,
@@ -172,7 +173,8 @@ def client_matches():
         height,
         prev_marraige,
         interest,
-        interest_type)
+        interest_type,
+        children)
 
     # print([i for i in matches])
     
