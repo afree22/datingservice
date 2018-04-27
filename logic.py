@@ -621,9 +621,41 @@ class Database(object):
     
     def get_num_dates_gender(self):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT AVG(count) as c, g FROM ( SELECT COUNT(c.ssn) as count, gender as g FROM Client c Left Join Dates d on c.ssn = d.c1_ssn or c.ssn = d.c2_ssn group by g) as P group by g"
+        # sql = "SELECT AVG(count) as c, g FROM ( SELECT COUNT(c.ssn) as count, gender as g FROM Client c Left Join Dates d on c.ssn = d.c1_ssn or c.ssn = d.c2_ssn group by g) as P group by g"
+        # cur.execute(sql)
+        sql = "SELECT * FROM client WHERE gender = 'male'"
         cur.execute(sql)
-        return CursorIterator(cur)
+        males = [i for i in CursorIterator(cur)]
+        # print(males)
+
+        cur = self.conn.cursor(pymysql.cursors.DictCursor)
+
+        sql = "SELECT * FROM client WHERE gender = 'female'"
+        cur.execute(sql)
+        females = [i for i in CursorIterator(cur)]
+        # print(females)
+
+        male_nums = []
+        female_nums = []
+
+        for f in females:
+            cur = self.conn.cursor(pymysql.cursors.DictCursor)
+            sql = "SELECT COUNT(*) FROM dates WHERE c1_ssn = {} OR c2_ssn = {}".format(f['ssn'], f['ssn'])
+            cur.execute(sql)
+            female_nums.append([i for i in CursorIterator(cur)][0]['COUNT(*)'])
+
+        for m in males:
+            cur = self.conn.cursor(pymysql.cursors.DictCursor)
+            sql = "SELECT COUNT(*) FROM dates WHERE c1_ssn = {} OR c2_ssn = {}".format(m['ssn'], m['ssn'])
+            cur.execute(sql)
+            male_nums.append([i for i in CursorIterator(cur)][0]['COUNT(*)'])
+
+        # print("\n\n")
+        # print(male_nums)
+        # print("\n\n")
+
+        # return CursorIterator(cur)
+        return sum(male_nums)/float(len(male_nums)), sum(female_nums)/float(len(female_nums))
     
     def num_dates_exactly(self, number):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)

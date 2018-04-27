@@ -328,15 +328,15 @@ def log_payment():
 
     user_ssn = request.cookies.get('userID')
 
-    print("\n\n\n\n")
+    # print("\n\n\n\n")
 
-    print(request.form)
+    # print(request.form)
 
     for fee in request.form:
         print(fee)
         db.pay_fee(user_ssn, request.form[fee])
 
-    print("\n\n\n\n")
+    # print("\n\n\n\n")
 
     return redirect('/payment-history')
 
@@ -388,46 +388,8 @@ def log_see_again():
     print("\n\nin see again")
     print(request.form)
 
-    # if value == 'no':
-    #     # need to check for users getting credit here
-    #     num_dates = [i for i in db.get_date_count(user_ssn, date_ssn)][0]['COUNT(*)']
-    #     if int(num_dates) <= 2:
-    #         # check if this is the fifth date unhappy with
-    #         # else add regular credit ???
-    #         # add credit
-    #         # maybe
-    #         five_recent_user = [i for i in db.get_five_recent_matches(user_ssn)]
-    #         five_recent_date = [i for i in db.get_five_recent_matches(date_ssn)]
-
-    #         if len(five_recent) == 5:
-    #             if all([i['see_again'] == 'no' for i in five_recent]):
-    #                 # five straight unhappy dates 
-    #                 # give free match
-    #                 # but then need to charge extra registration fee
-    #                 if db.insert_credit(user_ssn, 50):
-    #                     return redirect('/date_history')
-    #                 return "Error adding credit for your five unhappy matches"
-    #             else:
-    #                 # just single free match
-    #                 if db.insert_credit(user_ssn, 50):
-    #                     return redirect('/date_history')
-    #                 return "Error adding credit"
-    #         else:
-    #             # just single free match
-    #             if db.insert_credit(user_ssn, 50):
-    #                 return redirect('/date_history')
-    #             return "Error adding credit"
-
     print(value)
     added = db.set_see_again(user_ssn, date_ssn, date_date, value)
-    # charged = db.charge_match_fee(user_ssn)
-
-    # print("addded")
-    # print(added)
-    # print("charged")
-    # print(charged)
-
-    # if added and charged:
     if added:
         return redirect('/date_history')
     return "Error"
@@ -882,6 +844,7 @@ def num_clients_gender():
 def num_dates_gender():
     results = db.get_num_dates_gender()
     if results:
+        results = {'male': results[0], 'female': results[1]}
         return render_template('num_dates_gender.html', results=results)
     return redirect('error')
 

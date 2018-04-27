@@ -18,8 +18,10 @@
         </tr>
            {%for r in results %}
         <tr>
-                <td>{{r['c']}}</td>
-                <td>{{r['g']}}</td>
+                <!-- <td>{{r['c']}}</td>
+                <td>{{r['g']}}</td> -->
+                <td>{{results[r]}}</td>
+                <td>{{r}}</td>
         </tr>
          {% endfor %}
     </table>
