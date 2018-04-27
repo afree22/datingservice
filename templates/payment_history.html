@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Very Good Dating Service</title>
+  </head>
+  <body>
+    <h1 class="title">
+      <img src="resources/logo.png" alt="EugeneNeedsLove.com">
+    </h1>
+     <section>
+      <h2>Unpaid payments</h2>
+
+      <form action="log_payment" method="POST">
+        {% for pay in payments %}
+          {% if pay['fee_status'] == 'unpaid' %}
+          <input type="radio" name="unpaid_fee" value="{{pay['date_incurred']}}"> {{pay['date_incurred']}}, {{pay['fee_type']}}: {{pay['payment_amount']}}
+          <br>
+          {% endif %}
+        {% endfor %}
+        <br>
+        <input type="submit" value="Pay!" />
+      </form>
+
+      <h2>Paid payments</h2>
+      {% for pay in payments %}
+        {% if pay['fee_status'] == 'paid' %}
+        {{pay['date_incurred']}}, {{pay['fee_type']}}: {{pay['payment_amount']}}
+        <br>
+        {% endif %}
+      {% endfor %}
+    </section>
+  </body>
