@@ -340,6 +340,7 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "update fees set fee_status = 'paid' where ssn = %s and date_incurred = %s"
         result = cur.execute(sql, (ssn, date_incurred))
+        self.conn.commit()
         return result
 
     def insert_credit(self, ssn, value):

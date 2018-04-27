@@ -79,7 +79,7 @@ def insert_client():
     open_date = str(datetime.datetime.now()).split()[0]
 
     # have to charge registration fee at signup
-    if db.insert_person_(ssn, name, gender, dob, phone, eye_color, weight, height, prev_marraige, interested_in, open_date, None, "active") and db.charge_registration_fee(ssn) and db.make_credit_entry(ssn):
+    if db.insert_person_(ssn, name, gender, dob, phone, eye_color, weight, height, prev_marraige, interested_in, open_date, None, "active") and db.charge_registration_fee(ssn):
         resp = make_response(redirect('/signup_kids'))
         resp.set_cookie('userID', ssn)
         return resp
@@ -321,6 +321,24 @@ def date_history():
     second_dates=[]
     return render_template('date_feed.html', prev_dates=prev_dates, future_dates=future_dates, second_dates=second_dates)
 
+@app.route('/log_payment', methods=['POST'])
+def log_payment():
+
+    # print(request.form)
+
+    user_ssn = request.cookies.get('userID')
+
+    print("\n\n\n\n")
+
+    print(request.form)
+
+    for fee in request.form:
+        print(fee)
+        db.pay_fee(user_ssn, request.form[fee])
+
+    print("\n\n\n\n")
+
+    return redirect('/payment-history')
 
 # i think this isn't used anymore
 @app.route('/edit_dates', methods=['GET', 'POST'])
