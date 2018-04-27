@@ -112,6 +112,9 @@ class Database(object):
         sql = "SELECT COUNT(interest) as c FROM interest_category WHERE interest = %s"
         cur.execute(sql, (interest))
         d = list(CursorIterator(cur))[0]
+        print(d)
+        formatt = "SELECT COUNT(interest) as c FROM interest_category WHERE interest = '{}'".format(interest)
+        print(formatt)
         return [ d[k] for k in d][0] == 1
     
     def add_interest_type(self, interest, interest_type):
@@ -236,8 +239,8 @@ class Database(object):
 
     def set_see_again(self, ssn1, ssn2, date_date, value):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        sql = "UPDATE dates set see_again = %s WHERE ((c1_ssn = %s and c2_ssn = %s) OR (c1_ssn = %s and c2_ssn = %s)) AND scheduled_date = %s"
-        result = cur.execute(sql, (value, ssn1, ssn2, ssn2, ssn1, date_date))
+        sql = "UPDATE dates set see_again = %s, interested = %s WHERE ((c1_ssn = %s and c2_ssn = %s) OR (c1_ssn = %s and c2_ssn = %s)) AND scheduled_date = %s"
+        result = cur.execute(sql, (value, value, ssn1, ssn2, ssn2, ssn1, date_date))
         self.conn.commit()
 
         return result

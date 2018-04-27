@@ -96,19 +96,27 @@ def insert_interests():
     interest = request.form['category']
     interest_type = request.form['specific']
     ssn = request.form['ssn']
-    if not db.check_interest_exists(interest, interest_type):
+
+    print("\n\n")
+    print("interest: " + interest + " interest type " + interest_type)
+
+
+
+    if not db.check_interest_exists(interest_type, interest):
+        print("in first if")
         db.add_interest_type(interest_type, interest)
         if db.add_interest(ssn, interest_type):
             return redirect('/interests')
         return "Error"
 
-    if not db.check_interest_exists(interest, interest_type):
-        print("in second if")
-        if db.add_interest_type(interest, interest_type):
-            return redirect('/interests')
-        return "Error"
+    # if not db.check_interest_exists(interest, interest_type):
+    #     print("in second if")
+    #     if db.add_interest_type(interest, interest_type):
+    #         return redirect('/interests')
+    #     return "Error"
 
-    if db.add_client_interest(ssn, interest, interest_type):
+
+    if db.add_client_interest(ssn, interest_type):
         print("in third if")
         return redirect('/interests')
     return "Error"
