@@ -100,21 +100,12 @@ def insert_interests():
     print("\n\n")
     print("interest: " + interest + " interest type " + interest_type)
 
-
-
     if not db.check_interest_exists(interest_type, interest):
         print("in first if")
         db.add_interest_type(interest_type, interest)
         if db.add_interest(ssn, interest_type):
             return redirect('/interests')
         return "Error"
-
-    # if not db.check_interest_exists(interest, interest_type):
-    #     print("in second if")
-    #     if db.add_interest_type(interest, interest_type):
-    #         return redirect('/interests')
-    #     return "Error"
-
 
     if db.add_interest(ssn, interest_type):
         print("in third if")
@@ -625,6 +616,11 @@ def insert_specialist_interests():
         db.add_interest_type(interest_type, interest)
         if db.add_interest(ssn, interest_type):
             return redirect('specialist_success')
+        return "Error"
+    
+    if db.add_interest(ssn, interest_type):
+        print("in third if")
+        return redirect('specialist_success')
     return "Error"
 
 @app.route('/specialist_add_children', methods=['GET'])
