@@ -616,36 +616,16 @@ def specialist_add_interests():
 
 @app.route('/insert_specialist_interests', methods=['POST'])
 def insert_specialist_interests():
-    interest = request.form['interest']
-    interest_type = request.form['interest_type']
+    interest = request.form['category']
+    interest_type = request.form['specific']
     ssn = request.form['ssn']
-
-    if not db.check_interest_exists(interest, interest_type):
+    
+    if not db.check_interest_exists(interest_type, interest):
+        print("in first if")
         db.add_interest_type(interest_type, interest)
         if db.add_interest(ssn, interest_type):
-            return redirect('/specialist_success')
-        return "Error"
-    
-    if not db.check_interest_exists(interest, interest_type):
-        print("in second if")
-        if db.add_interest_type(interest, interest_type):
-            return redirect('/specialist_success')
-        return "Error"
-    
-    if db.add_client_interest(ssn, interest, interest_type):
-        print("in third if")
-        return redirect('/specialist_success')
+            return redirect('specialist_success')
     return "Error"
-
-    """
-    db.add_interest(ssn,interest)
-    if db.check_interest_exists(interest,interest_type):
-        return redirect('specialist_success')
-    else:
-        db.add_interest_type(interest,interest_type)
-        return redirect('specialist_success')
-    return redirect('error')
-    """
 
 @app.route('/specialist_add_children', methods=['GET'])
 def specialist_add_children():
