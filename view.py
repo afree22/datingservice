@@ -139,10 +139,12 @@ def specialist_insert():
     status = request.form['status']
     if(date_close):
         if db.specialist_insert_person(ssn, name, gender, dob, phone, eye_color, weight, height, prior_marriage, interest_in, date_open, date_close, status):
-            return redirect('/specialist_add_landing')
+                db.charge_registration_fee(ssn)
+                return redirect('/specialist_add_landing')
     else:
         if db.specialist_insert_person(ssn, name, gender, dob, phone, eye_color, weight, height, prior_marriage, interest_in, date_open, None, status):
-            return redirect('/specialist_add_landing')
+                db.charge_registration_fee(ssn)
+                return redirect('/specialist_add_landing')
     return redirect('error')
 
 
