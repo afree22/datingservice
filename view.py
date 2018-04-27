@@ -116,10 +116,10 @@ def insert_interests():
     #     return "Error"
 
 
-    # if db.add_client_interest(ssn, interest_type):
-    #     print("in third if")
-    #     return redirect('/interests')
-    # return "Error"
+    if db.add_interest(ssn, interest_type):
+        print("in third if")
+        return redirect('/interests')
+    return "Error"
 
 
 
