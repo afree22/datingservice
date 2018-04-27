@@ -47,14 +47,20 @@ class Database(object):
         self.conn.commit()
         return result
 
-    def get_client_matches(self, gender, age, eye_color, weight, height, prev_marriage, interest_cat, interest_type):
+    def get_client_matches(self, gender, age, eye_color, weight, height, prev_marriage, interest_cat, interest_type, children):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
-        select = "SELECT DISTINCT name, c.ssn FROM client c left join client_interests i on c.ssn = i.ssn WHERE "
+        # select = "SELECT DISTINCT name, c.ssn FROM client c left join client_interests i on c.ssn = i.ssn WHERE "
+
+        # select = "SELECT distinct client.ssn, client.name from client_interests left join interest_category on interest_category.interest = client_interests.interest left join client on client_interests.ssn = client.ssn left join children on client.ssn = children.ssn WHERE "
+
+        select = "SELECT DISTINCT client.ssn, client.name from client left join client_interests on client.ssn = client_interests.ssn left join children on children.ssn = client.ssn left join interest_category on interest_category.interest = client_interests.interest WHERE "
+
         client_attrs = []
         if gender:
             client_attrs.append("gender = '{}'".format(gender))
         if age:
             # todo deal with age
+            client_attrs.append("DATEDIFF(NOW(), dob)/365.25 < {} and DATEDIFF(NOW(), dob)/365.25 >= {}".format(str(int(age) + 1), age))
             pass
         if eye_color:
             client_attrs.append("eyecolor = '{}'".format(eye_color))
@@ -65,16 +71,19 @@ class Database(object):
         if prev_marriage:
             client_attrs.append("prior_marriage = '{}'".format(prev_marriage))
         if interest_cat:
-            print(interest_cat)
-            # client_attrs.append("category = '{}'".format(interest_cat))
+            # print(interest_cat)
+            client_attrs.append("category = '{}'".format(interest_cat))
             pass
         if interest_type:
-            client_attrs.append("interest = '{}'".format(interest_type))
+            client_attrs.append("client_interests.interest = '{}'".format(interest_type))
             # print(interest_type)
             pass
-        # todo remember interest_type
+        if children:
+            if children == 'no':
+                client_attrs.append("childName is null")
+            else:
+                client_attrs.append("childName is not null")
 
-        # todo look into or querying
         attrs = " AND ".join(client_attrs)
         sql = "{}{} AND status = 'active'".format(select, attrs)
         print(sql)
@@ -331,6 +340,7 @@ class Database(object):
         cur = self.conn.cursor(pymysql.cursors.DictCursor)
         sql = "update fees set fee_status = 'paid' where ssn = %s and date_incurred = %s"
         result = cur.execute(sql, (ssn, date_incurred))
+        self.conn.commit()
         return result
 
     def insert_credit(self, ssn, value):
