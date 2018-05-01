@@ -717,7 +717,7 @@ class Database(object):
         client_attrs = []
 
         if ssn:
-            client_attrs.append("ssn = '{}'".format(ssn))
+            client_attrs.append("c.ssn = '{}'".format(ssn))
         if name:
             client_attrs.append("name = '{}'".format(self.conn.escape_string(name)))
         if gender:
