@@ -383,7 +383,7 @@ def log_see_again():
     """
     user_ssn = request.cookies['userID']
     # date_info = request.form['date_info']
-    value = 'yes' if request.form.get('see_again') else 'no'
+    value = 'yes' if request.form.get('see_again') == 'yes' else 'no'
     date_date = request.form['date_date']
     date_ssn = request.form['ssn1'] if int(request.form['ssn1']) != int(user_ssn) else request.form['ssn2']
     print("\n\nin see again")

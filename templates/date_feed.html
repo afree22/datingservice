@@ -59,8 +59,8 @@
           {% if not date['see_again'] %}
           <p>
             I'm interested in seeing this person again...
-            <input type="radio" name="see_again">Yes 
-            <input type="radio" name="see_again">No
+            <input type="radio" name="see_again" value="yes">Yes 
+            <input type="radio" name="see_again" value="no">No
             <input type="hidden" name="date_date" value="{{date['scheduled_date']}}">
             <input type="hidden" name="ssn1" value="{{date['c1_ssn']}}">
             <input type="hidden" name="ssn2" value="{{date['c2_ssn']}}">

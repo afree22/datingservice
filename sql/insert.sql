@@ -1,3 +1,4 @@
+use ds;
 INSERT INTO Client( ssn, name, gender, dob, phone, eyecolor, weight, height, prior_marriage, interest_in, date_open, date_close, status) 
 VALUES (123567823, 'John', 'male','1980-10-21','2028978394','blue', 170, 70, 'no', 'female', '2017-02-25', NULL, 'active'),
 	   (234765283, 'Charles', 'male', '1975-08-09', '3059872634', 'green', 220, 68, 'no', 'female', '2016-08-16', '2016-08-19', 'criminal_closed'),
